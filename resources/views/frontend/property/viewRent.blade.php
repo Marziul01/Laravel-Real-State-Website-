@@ -146,8 +146,8 @@
                             <h6 class="mt-2">
                                 Total Price: <span id="totalPrice">0</span> BDT
                             </h6>
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="fa-regular fa-calendar-check"></i> Book Now
+                            <button type="submit" class="btn btn-primary w-100 " {{ Auth::check() ? ' ' : 'disabled' }}>
+                                <i class="fa-regular fa-calendar-check"></i> {{ Auth::check() ? 'Book Now ' : 'Please Login to Rent !' }}
                             </button>
                         </form>
                     </div>
