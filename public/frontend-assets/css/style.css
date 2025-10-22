@@ -12,8 +12,8 @@
       font-weight: 400;
       font-style: normal
     }
-*{
-    font-family: Optima;
+p,h1,h2,h3,h4,h5,h6,span,a,button,input,select{
+    font-family: Optima !important;
     font-weight: 400;
 }
 a{
@@ -600,7 +600,7 @@ a:hover{
     background-color: var(--primary-color);
 }
 a{
-    font-family: Optima;
+    font-family: Optima !important;
     color: #000;
     padding: 0;
     text-transform: uppercase;
@@ -1324,6 +1324,7 @@ header#masthead .navbar-nav>li>a:hover:after{
 }
 .watsapp-tab .dropdown-menu.show {
     display: block;
+    margin-top: 12px;
 }
 .watsapp-tab .dropdown-toggle{
     background: transparent;
@@ -1333,7 +1334,7 @@ header#masthead .navbar-nav>li>a:hover:after{
 .whatsapp-tab .dropdown-menu a{
     color: black !important;
 }
-#masthead.fixed .watsapp-tab .dropdown-toggle {
+#masthead.fixed .watsapp-tab .dropdown-toggle , #masthead.OtherPages .watsapp-tab .dropdown-toggle{
     color: black;
 }
 #masthead.fixed .header_whatsapp{
@@ -1360,6 +1361,13 @@ header#masthead .navbar-nav>li>a:hover:after{
 }
 .forget-toogle{
     color: rgb(220 53 69) !important;
+}
+
+.payment-info {
+    border-left: 3px solid #0d6efd;
+}
+.card {
+    border-radius: 12px;
 }
 @media (max-width: 768px) {
     .property-card {
@@ -1436,10 +1444,10 @@ header#masthead .navbar-nav>li>a:hover:after{
         height: 20px;
         align-items: center;
     }
-    #masthead.fixed .hamburger-menu span::before , #masthead.fixed .hamburger-menu span::after , #masthead.fixed .hamburger-menu span{
+    #masthead.fixed .hamburger-menu span::before , #masthead.fixed .hamburger-menu span::after , #masthead.fixed .hamburger-menu span , #masthead.OtherPages .hamburger-menu span::before , #masthead.OtherPages .hamburger-menu span::after , #masthead.OtherPages .hamburger-menu span{
         background: black !important;
     }
-    .header_whatsapp span{
+    .header_whatsapp span , .dropdown-toggle span{
         display: none;
     }
     .nav-band{
@@ -1512,4 +1520,11 @@ header#masthead .navbar-nav>li>a:hover:after{
         font-size: 11px;
         padding: 8px 10px;
     }
+    .dropdown-menu.show .dropdown-item{
+        font-size: 12px !important;
+    }
+    .pagesheader{
+        height: 75px !important; 
+    }
+    
 }

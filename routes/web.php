@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomePropertyController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\UserAuthController;
+use App\Http\Controllers\UserBookingController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +47,7 @@ Route::post('/user/password/reset', [UserAuthController::class, 'reset'])->name(
 Route::middleware(['auth', 'user'])->prefix('user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/logout', [UserAuthController::class, 'logout'])->name('user.logout');
+    Route::get('/booking/rent/property',[UserBookingController::class,'booking'])->name('user.booking.rent');
 });
 
 
@@ -76,6 +80,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/get-upazillas', [PropertyController::class, 'getUpazillas'])->name('get.upazillas');
         Route::post('/property/gallery-image/{id}', [PropertyController::class, 'deleteGalleryImage'])->name('property.gallery.delete');
         Route::get('/create/sell/property', [PropertyController::class, 'sellcreate'])->name('sellcreate');
+        Route::resource('coupon', CouponController::class)->names('coupon');
+        Route::resource('payment_method', PaymentMethodController::class)->names('payment_method');
     });
 });
 

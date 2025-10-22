@@ -60,6 +60,22 @@
             </ul>
         </li>
 
+        <li class="menu-item {{ Route::currentRouteName() == 'coupon.index' ? 'active' : '' }}">
+            <a href="{{ route('coupon.index') }}"
+                class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <div class="text-truncate" data-i18n="Email">Coupons</div>
+            </a>
+        </li>
+
+        <li class="menu-item {{ Route::currentRouteName() == 'payment_method.index' ? 'active' : '' }}">
+            <a href="{{ route('payment_method.index') }}"
+                class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <div class="text-truncate" data-i18n="Email">Payment Methods</div>
+            </a>
+        </li>
+
         {{-- @if(Auth::user()->access->admin_panel == '1' || Auth::user()->access->admin_panel == '2')
         <li class="menu-item  {{ Route::currentRouteName() == 'admin.users' ? 'active open' : '' }} {{ Route::currentRouteName() == 'admin.categoryTableSettings' ? 'active open' : '' }} {{ Route::currentRouteName() == 'home.settings' ? 'active open' : '' }}  {{ Route::currentRouteName() == 'Export-Data' ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

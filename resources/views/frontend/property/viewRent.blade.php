@@ -138,18 +138,22 @@
                             <a href="" class="btn btn-primary"><i class="fa-solid fa-envelope"></i> Property Inquiry</a>
                             <a href="" class="btn btn-primary" onclick="print()"><i class="fa-solid fa-print"></i></a>
                         </div>
-                        <form id="rentProperty" class="mt-3">
-                            @csrf
+                        <div id="rentProperty" class="mt-3">
                             <div class="mb-3">
                                 <input type="text" id="rentDateRange" class="form-control" placeholder="Select Booking Dates" readonly>
                             </div>
+
                             <h6 class="mt-2">
                                 Total Price: <span id="totalPrice">0</span> BDT
                             </h6>
-                            <button type="submit" class="btn btn-primary w-100 " {{ Auth::check() ? ' ' : 'disabled' }}>
-                                <i class="fa-regular fa-calendar-check"></i> {{ Auth::check() ? 'Book Now ' : 'Please Login to Rent !' }}
-                            </button>
-                        </form>
+
+                            <a href="#" id="rentSubmitBtn"
+                            class="btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
+                            </a>
+                        </div>
+
                     </div>
                     <hr>
                     <div>
@@ -255,4 +259,36 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rentBtn = document.getElementById('rentSubmitBtn');
+    const rentDateRange = document.getElementById('rentDateRange');
+
+    rentBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Stop if user not logged in
+        if (rentBtn.classList.contains('disabled')) return;
+
+        const dateRange = rentDateRange.value.trim();
+        if (!dateRange) {
+            alert('Please select your booking dates.');
+            return;
+        }
+
+        // Extract start and end dates (assuming format: "YYYY-MM-DD to YYYY-MM-DD")
+        const [startDate, endDate] = dateRange.split(' to ');
+
+        // Build the GET URL with query params
+        const propertyId = {{ $property->id }};
+        const baseUrl = `{{ route('user.booking.rent') }}`;
+
+        // Redirect with query parameters
+        const finalUrl = `${baseUrl}?property_id=${propertyId}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
+
+        window.location.href = finalUrl;
+    });
+});
+</script>
+
 @endsection
