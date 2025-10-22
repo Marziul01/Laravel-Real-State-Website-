@@ -151,7 +151,7 @@ Home
                                     
                                 </form>
                             </div>
-
+ 
                             <!-- BUY TAB -->
                             <div class="tab-pane fade" id="buy" role="tabpanel">
                                 <form class="property-form-select" id="searchbuy-form">
