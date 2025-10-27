@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
@@ -30,7 +31,38 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|unique:coupons,code|max:50',
+            'discount_type' => 'required|in:percent,amount',
+            'discount' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+            'expire_date' => 'nullable|date|after_or_equal:start_date',
+            'max_uses' => 'nullable|integer|min:1',
+            'max_user_uses' => 'nullable|integer|min:1',
+        ]);
+
+        // ✅ Extra conditional check for percentage discount
+        $validator->after(function ($validator) use ($request) {
+            if ($request->discount_type === 'percent' && $request->discount > 100) {
+                $validator->errors()->add('discount', 'Percentage discount cannot be greater than 100.');
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        Coupon::create([
+            'code' => $request->code,
+            'discount_type' => $request->discount_type,
+            'discount' => $request->discount,
+            'start_date' => $request->start_date,
+            'expire_date' => $request->expire_date,
+            'max_uses' => $request->max_uses,
+            'max_user_uses' => $request->max_user_uses,
+        ]);
+
+        return response()->json(['message' => 'Coupon created successfully!']);
     }
 
     /**
@@ -54,7 +86,40 @@ class CouponController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $coupon = Coupon::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|max:50|unique:coupons,code,' . $coupon->id,
+            'discount_type' => 'required|in:percent,amount',
+            'discount' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+            'expire_date' => 'nullable|date|after_or_equal:start_date',
+            'max_uses' => 'nullable|integer|min:1',
+            'max_user_uses' => 'nullable|integer|min:1',
+        ]);
+
+        // ✅ Extra conditional check for percentage discount
+        $validator->after(function ($validator) use ($request) {
+            if ($request->discount_type === 'percent' && $request->discount > 100) {
+                $validator->errors()->add('discount', 'Percentage discount cannot be greater than 100.');
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $coupon->update([
+            'code' => $request->code,
+            'discount_type' => $request->discount_type,
+            'discount' => $request->discount,
+            'start_date' => $request->start_date,
+            'expire_date' => $request->expire_date,
+            'max_uses' => $request->max_uses,
+            'max_user_uses' => $request->max_user_uses,
+        ]);
+
+        return response()->json(['message' => 'Coupon updated successfully!']);
     }
 
     /**
@@ -62,6 +127,10 @@ class CouponController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $coupon = Coupon::findOrFail($id); 
+
+        $coupon->delete();
+        return back()->with('success', 'Coupon Deleted successfully !');
+
     }
 }

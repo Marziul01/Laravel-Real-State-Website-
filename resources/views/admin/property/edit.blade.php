@@ -115,6 +115,18 @@
                                     <input type="number" name="bathrooms" id="bathrooms" class="form-control" placeholder="Bathrooms" value="{{ $property->bathrooms }}">
                                 </div>
                             </div>
+                            @if($property->type == 'rent')
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="bedrooms">CheckIn Time</label>
+                                    <input type="time" name="check_in" class="form-control" placeholder="Check In Time" value="{{ $property->check_in }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="bathrooms">Check Out Time</label>
+                                    <input type="time" name="check_out" class="form-control" placeholder="Check Out Time" value="{{ $property->check_out }}">
+                                </div>
+                            </div>
+                            @endif
                             <div class="mb-3">
                                 <label for="">Decoration Status</label>
                                 <select name="decoration" class="form-select" id="">

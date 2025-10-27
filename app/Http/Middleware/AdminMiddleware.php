@@ -16,12 +16,15 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Check if user is logged in and has role = 0 (admin)
         if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 0) {
             return $next($request);
         }
 
-        // If not admin, redirect to home or show 403 page
-        return redirect(route('login'))->with('error', 'Access denied! Admins only.');
+        // If admin session expired or not logged in
+        if (!Auth::guard('admin')->check()) {
+            return redirect(route('admin.login'))->with('error', 'Please log in as admin.');
+        }
+
+        return redirect(route('home'))->with('error', 'Access denied! Admins only.');
     }
 }

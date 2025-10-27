@@ -942,6 +942,33 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
                   border-radius: 5px;
                   backdrop-filter: blur(2px);
                 }
+                .bg-primary{
+                  background-color: var(--primary-color) !important;
+                  color: white !important;
+                }.form-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  z-index: 10;
+}
+.form-loader.booking {
+  position: fixed !important;
+  height: 100vh !important;
+  z-index: 9999;
+}
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: .3em;
+  color: var(--primary-color) !important;
+}
 @media screen and (max-width: 768px) {
 
   .dt-buttons,

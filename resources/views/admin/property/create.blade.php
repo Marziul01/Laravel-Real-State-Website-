@@ -103,6 +103,16 @@
                                     <input type="number" name="bathrooms" id="bathrooms" class="form-control" placeholder="Bathrooms">
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="bedrooms">CheckIn Time</label>
+                                    <input type="time" name="check_in" id="bedrooms" class="form-control" placeholder="Check In Time">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="bathrooms">Check Out Time</label>
+                                    <input type="time" name="check_out" id="bathrooms" class="form-control" placeholder="Check Out Time">
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label for="">Decoration Status</label>
                                 <select name="decoration" class="form-select" id="">

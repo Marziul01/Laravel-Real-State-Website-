@@ -76,6 +76,57 @@
             </a>
         </li>
 
+        <li class="menu-item  {{ Route::currentRouteName() == 'booking.pending' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.active' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.visit' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.cancel' ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <div class="text-truncate" data-i18n="Dashboards">Booking Managment</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Route::currentRouteName() == 'booking.pending' ? 'active' : '' }}">
+                    <a href="{{ route('booking.pending') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Pending Bookings</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ Route::currentRouteName() == 'booking.active' ? 'active' : '' }}">
+                    <a href="{{ route('booking.active') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Active Bookings</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::currentRouteName() == 'booking.visit' ? 'active' : '' }}">
+                    <a href="{{ route('booking.visit') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Visited Bookings</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::currentRouteName() == 'booking.cancel' ? 'active' : '' }}">
+                    <a href="{{ route('booking.cancel') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Canceled Bookings</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item  {{ Route::currentRouteName() == 'rent.property.inquiry' ? 'active open' : '' }} {{ Route::currentRouteName() == 'sell.property.inquiry' ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <div class="text-truncate" data-i18n="Dashboards">Property Inquiries</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Route::currentRouteName() == 'rent.property.inquiry' ? 'active' : '' }}">
+                    <a href="{{ route('rent.property.inquiry') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Rent Property Inquiry</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ Route::currentRouteName() == 'sell.property.inquiry' ? 'active' : '' }}">
+                    <a href="{{ route('sell.property.inquiry') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Sell Property Inquiry</div>
+                    </a>
+                </li>
+                
+            </ul>
+        </li>
+
         {{-- @if(Auth::user()->access->admin_panel == '1' || Auth::user()->access->admin_panel == '2')
         <li class="menu-item  {{ Route::currentRouteName() == 'admin.users' ? 'active open' : '' }} {{ Route::currentRouteName() == 'admin.categoryTableSettings' ? 'active open' : '' }} {{ Route::currentRouteName() == 'home.settings' ? 'active open' : '' }}  {{ Route::currentRouteName() == 'Export-Data' ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

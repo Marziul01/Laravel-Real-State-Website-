@@ -94,7 +94,7 @@ class ProfileController extends Controller
                 unlink(public_path($setting->site_logo));
             }
 
-            $logoName = 'logo.'. time() . $request->site_logo->extension();
+            $logoName = 'logo'. time() . '.' .$request->site_logo->extension();
             $request->site_logo->move($uploadPath, $logoName);
             $setting->site_logo = $relativePath . $logoName;
         }
@@ -105,7 +105,7 @@ class ProfileController extends Controller
                 unlink(public_path($setting->site_favicon));
             }
 
-            $faviconName = 'favicon.'. time() . $request->site_favicon->extension();
+            $faviconName = 'favicon'. time() . '.' . $request->site_favicon->extension();
             $request->site_favicon->move($uploadPath, $faviconName);
             $setting->site_favicon = $relativePath . $faviconName;
         }

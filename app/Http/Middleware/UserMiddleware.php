@@ -20,7 +20,11 @@ class UserMiddleware
             return $next($request);
         }
 
-        // If not a user, just redirect
+        // If user session expired or not a user
+        if (!Auth::guard('web')->check()) {
+            return redirect(route('home'))->with('error', 'Please log in to continue.');
+        }
+
         return redirect(route('home'))->with('error', 'Access denied! Users only.');
     }
 }

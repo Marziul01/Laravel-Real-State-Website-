@@ -20,6 +20,8 @@ class Property extends Model
         'bathrooms',
         'space',
         'parking_space',
+        'check_in',
+        'check_out',
         'country_id',
         'state_id',
         'property_area_id',
@@ -62,5 +64,9 @@ class Property extends Model
 
     public function realtor(){
         return $this->belongsTo(User::class ,'realtor_id','id');
+    }
+
+    public function bookings(){
+        return $this->hasMany(Booking::class,'property_id');
     }
 }

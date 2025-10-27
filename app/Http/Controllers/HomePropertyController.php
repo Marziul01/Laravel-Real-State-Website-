@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Property;
+use App\Models\SiteSetting;
 use DateTime;
 use DatePeriod;
 use DateInterval;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomePropertyController extends Controller
 {
@@ -39,6 +42,7 @@ class HomePropertyController extends Controller
         return view('frontend.property.viewRent', [
             'property' => $property,
             'bookedDates' => $bookedDates,
+            'countries' => Country::all(),
         ]);
     }
 
@@ -46,7 +50,20 @@ class HomePropertyController extends Controller
         $property = Property::where('slug' , $slug)->first();
         return view('frontend.property.viewBuy' ,[
             'property' => $property,
+            'countries' => Country::all(),
         ]);
+    }
+
+    public function printProperty($id)
+    {
+        $property = Property::with(['images', 'features', 'amenities', 'realtor', 'propertyType', 'propertyarea', 'state'])->findOrFail($id);
+        $settings = SiteSetting::find(1);
+        // Optional: company logo
+        $companyLogo = public_path($settings->site_logo);
+
+        $pdf = Pdf::loadView('emails.print_pdf', compact('property', 'companyLogo'));
+        
+        return $pdf->stream('Property-' . $property->id . '.pdf'); // opens in browser
     }
 
 }

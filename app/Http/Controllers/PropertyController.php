@@ -179,6 +179,8 @@ class PropertyController extends Controller
             $property->bedrooms = $request->bedrooms;
             $property->bathrooms = $request->bathrooms;
             $property->decoration = $request->decoration;
+            $property->check_in = $request->check_in;
+            $property->check_out = $request->check_out;
             $property->city = $request->city;
             $property->road = $request->road;
             $property->house = $request->house;
@@ -354,6 +356,8 @@ class PropertyController extends Controller
                 'bedrooms' => $request->bedrooms,
                 'bathrooms' => $request->bathrooms,
                 'decoration' => $request->decoration,
+                'check_in' => $request->check_in,
+                'check_out' => $request->check_out,
                 'country_id' => $request->country_id,
                 'state_id' => $request->district_id ?: $request->state_id, // district if country=19
                 'property_area_id' => $request->upazilla_id ?: $request->state_id,
