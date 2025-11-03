@@ -15,6 +15,7 @@ use DateInterval;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Country;
 
 class UserBookingController extends Controller
 {
@@ -52,6 +53,7 @@ class UserBookingController extends Controller
             'endDate' => $endDate,
             'coupons' => Coupon::all(),
             'payments' => PaymentMethod::all(),
+            'countries' => Country::all(),
         ]);
     }
 

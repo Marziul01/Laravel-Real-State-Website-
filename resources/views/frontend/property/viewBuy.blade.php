@@ -260,10 +260,29 @@
                         <div class="col-12">
                             <label class="form-label">Select Multiple Demands</label>
                             <select name="demands[]" class="form-select" id="demands" multiple required>
-                                <option value="Buy">Buy</option>
-                                <option value="Rent">Rent</option>
-                                <option value="Investment">Investment</option>
-                                <option value="Consultation">Consultation</option>
+                                <option value="Rent Inquiry">Rent Inquiry</option>
+                                    <option value="Documentation Service Inquiry">Documentation Service Inquiry</option>
+                                    <option value="Buy Property">Buy Property</option>
+                                    <option value="Sell Property">Sell Property</option>
+                                    <option value="Rental Service">Rental Service</option>
+                                    <option value="Property Rent Management">Property Rent Management</option>
+                                    <option value="Transfer Permission">Transfer Permission</option>
+                                    <option value="Registration">Registration</option>
+                                    <option value="Authority Mutation">Authority Mutation</option>
+                                    <option value="Holding Mutation">Holding Mutation</option>
+                                    <option value="Gas Mutation">Gas Mutation</option>
+                                    <option value="Electricity Mutation">Electricity Mutation</option>
+                                    <option value="Legal Vetting">Legal Vetting</option>
+                                    <option value="Property Color">Property Color</option>
+                                    <option value="Property Renovation">Property Renovation</option>
+                                    <option value="Property Interior">Property Interior</option>
+                                    <option value="Project Development">Project Development</option>
+                                    <option value="Property Valuation">Property Valuation</option>
+                                    <option value="Buy property">Buy property</option>
+                                    <option value="Loan Service">Loan Service</option>
+                                    <option value="Holding Mutation1">Holding Mutation1</option>
+                                    <option value="RAJUK MUTATION">RAJUK MUTATION</option>
+                                    <option value="Sale Permission">Sale Permission</option>
                             </select>
                         </div>
 

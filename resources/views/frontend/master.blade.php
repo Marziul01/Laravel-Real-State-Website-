@@ -56,6 +56,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         const widget = document.querySelector('.chat-widget');
         const mainBtn = widget.querySelector('.main-btn');
@@ -69,6 +70,7 @@
             widget.classList.remove('active');
         });
     </script>
+
     <script>
         document.addEventListener("scroll", function() {
             const header = document.getElementById("masthead");
@@ -79,33 +81,42 @@
             }
         });
     </script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const openBtn = document.querySelector(".header_whatsapp");
-            const panel = document.getElementById("sideLoginModal");
-            const closeBtn = panel.querySelector(".close-panel");
+document.addEventListener("DOMContentLoaded", function() {
+    const openBtn = document.querySelector(".header_whatsapp");
+    const panel = document.getElementById("sideLoginModal");
+    const closeBtn = panel.querySelector(".close-panel");
 
-            // ✅ Toggle panel (open or close)
-            openBtn.addEventListener("click", function(e) {
-                e.preventDefault();
-                panel.classList.toggle("active");
-            });
+    // ✅ Toggle panel (open/close)
+    openBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        panel.classList.toggle("active");
+        document.body.style.overflow = panel.classList.contains("active") ? "hidden" : "auto";
+    });
 
-            // ✅ Close panel (button)
-            closeBtn.addEventListener("click", function() {
-                panel.classList.remove("active");
-            });
+    // ✅ Close panel (button)
+    closeBtn.addEventListener("click", function() {
+        panel.classList.remove("active");
+        document.body.style.overflow = "auto";
+    });
 
-            // ✅ Close when clicking outside
-            document.addEventListener("click", function(e) {
-                const isClickInside = panel.contains(e.target);
-                const isTrigger = e.target.closest(".header_whatsapp");
-                if (!isClickInside && !isTrigger && panel.classList.contains("active")) {
-                    panel.classList.remove("active");
-                }
-            });
-        });
-    </script>
+    // ✅ Close when clicking outside (but NOT on intl-tel-input dropdown)
+    document.addEventListener("click", function(e) {
+        const isClickInside = panel.contains(e.target);
+        const isTrigger = e.target.closest(".header_whatsapp");
+        const isPhoneDropdown = e.target.closest(".iti__country-list"); // <– ignore this
+        const isButtonLogin = e.target.closest(".dont-close"); // <– ignore this
+
+        if (!isClickInside && !isTrigger && !isPhoneDropdown && !isButtonLogin && panel.classList.contains("active")) {
+            panel.classList.remove("active");
+            document.body.style.overflow = "auto";
+        }
+    });
+});
+</script>
+
+
 
     <script>
         let iti;
@@ -210,6 +221,9 @@
                     url: url,
                     method: "POST",
                     data: $.param(formDataArray),
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
                     dataType: 'json',
                     success: function(response) {
                         loader.classList.add('d-none');
@@ -251,6 +265,9 @@
                 $.ajax({
                     url: "{{ route('user.verifyEmail') }}",
                     method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
                     data: formData,
                     dataType: 'json',
                     success: function(response) {
@@ -519,6 +536,91 @@
         });
     </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ✅ Initialize Select2
+    $('#seriveFormModal').on('shown.bs.modal', function() {
+        $('#demandsAll').select2({
+            dropdownParent: $('#seriveFormModal'),
+            width: '100%',
+            placeholder: "Select Multiple Demands",
+            allowClear: true
+        });
+    });
+
+    // ✅ Initialize intl-tel-input for phone field
+    const phoneInput = document.querySelector("#phoneInquiryservice");
+    const iti = window.intlTelInput(phoneInput, {
+        initialCountry: "bd",
+        preferredCountries: ["bd", "in", "us", "gb"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
+    });
+
+    // ✅ Handle form submit via AJAX
+    $('#seriveFormM').on('submit', function (e) {
+        e.preventDefault();
+
+        const phoneError = document.querySelector('#phoneErrorInquiryservice');
+        phoneError.textContent = '';
+
+        // ✅ Validate phone number
+        if (!iti.isValidNumber()) {
+            phoneError.textContent = 'Please enter a valid phone number.';
+            return;
+        }
+
+        // ✅ Prepare data
+        const formData = new FormData(this);
+        formData.set('phone', iti.getNumber()); // replace raw phone with full intl format
+
+        const actionUrl = $(this).attr('action');
+
+        const loader = document.getElementById('formLoaderbooking2');
+        loader.classList.remove('d-none');
+        // ✅ Send AJAX request
+        fetch(actionUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
+        })
+        .then(async response => {
+            loader.classList.add('d-none');
+
+            if (!response.ok) {
+                // If it's a validation error (422)
+                if (response.status === 422) {
+                    const data = await response.json();
+                    Object.values(data.errors).forEach(errorArray => {
+                        toastr.error(errorArray[0]); // Show first error of each field
+                    });
+                    return;
+                }
+
+                // Other server error
+                toastr.error('Something went wrong.');
+                return;
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                toastr.success(data.message);
+                $('#seriveFormM')[0].reset();
+                $('#demandsAll').val(null).trigger('change');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('seriveFormModal'));
+                modal.hide();
+            } else {
+                toastr.error(data.message || 'Something went wrong.');
+            }
+        })
+        .catch(() => {
+            loader.classList.add('d-none');
+            toastr.error('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
 
     @yield('customJs')
 

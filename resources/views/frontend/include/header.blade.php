@@ -24,15 +24,15 @@
                         <ul id="menu-top-menu" class="navbar-nav">
 
                             <li class="menu-item {{ $currentRoute == 'about' ? 'active' : '' }}">
-                                <a href="{{ route('about') }}">About Us</a>
+                                <a href="">About Us</a>
                             </li>
 
                             <li class="menu-item {{ $currentRoute == 'services' ? 'active' : '' }}">
-                                <a href="{{ route('services') }}">Services</a>
+                                <a href="">Services</a>
                             </li>
 
                             <li class="menu-item {{ $currentRoute == 'rent' ? 'active' : '' }}">
-                                <a href="{{ route('rent') }}">Property Rent & Booking</a>
+                                <a href="{{ route('rent', ['type' => 'rent']) }}">Property Rent & Booking</a>
                             </li>
 
                             @php
@@ -58,31 +58,31 @@
                                 <ul class="dropdown-menu border-0 shadow-lg rounded-3 mina-submenu" aria-labelledby="buyDropdown">
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property' ? 'active' : '' }}" 
-                                        href="{{ route('property') }}">All Buy Properties</a>
+                                        href="{{ route('rent', ['type' => 'sell']) }}">All Buy Properties</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.overview' ? 'active' : '' }}" 
-                                        href="{{ route('property.overview') }}">Property Upgrading Overview</a>
+                                        href="">Property Upgrading Overview</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.renovation' ? 'active' : '' }}" 
-                                        href="{{ route('property.renovation') }}">Property Renovation</a>
+                                        href="">Property Renovation</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.color' ? 'active' : '' }}" 
-                                        href="{{ route('property.color') }}">Property Color</a>
+                                        href="">Property Color</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.interior' ? 'active' : '' }}" 
-                                        href="{{ route('property.interior') }}">Property Interior</a>
+                                        href="">Property Interior</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.valuation' ? 'active' : '' }}" 
-                                        href="{{ route('property.valuation') }}">Property Valuation</a>
+                                        href="">Property Valuation</a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.development' ? 'active' : '' }}" 
-                                        href="{{ route('property.development') }}">Project Development</a>
+                                        href="">Project Development</a>
                                     </li>
                                 </ul>
                             </li>
@@ -117,8 +117,7 @@
                             </li>
 
                             <li class="register-tab">
-                                <a href="#contact-section" class="btn-blue get-touch-btn" data-toggle="modal"
-                                    data-target="#registerModal" data-formname="Get in Touch">Get in Touch</a>
+                                <a @if(Route::currentRouteName() != 'home')  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#seriveFormModal" @else href="#contact-section" @endif class="btn-blue get-touch-btn">Get in Touch</a>
                             </li>
                         </ul>
                     </div>
@@ -191,7 +190,7 @@
                     <div class="spinner-border text-primary" role="status"></div>
                 </div>
                 <div class="w-100 text-center mt-3">
-                    <button class="btn btn-outline-primary w-100" id="toggleFormBtn">
+                    <button class="btn btn-outline-primary w-100 dont-close" id="toggleFormBtn">
                         <i class="fa-regular fa-circle-user"></i> Sign Up
                     </button>
                 </div>
@@ -291,4 +290,105 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="modal fade" id="seriveFormModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header bg-dark text-white rounded-top-4">
+                <h5 class="modal-title" id="inquiryModalLabel">Contact/Service Inquiry</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body bg-light p-4">
+                
+                <!-- Inquiry Form -->
+                <form id="seriveFormM" class=" position-relative" action="{{ route('service.inquiries') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Number</label>
+                            <input id="phoneInquiryservice" type="tel" name="phone" class="form-control" placeholder="e.g. +880..." required>
+                            <small id="phoneErrorInquiryservice" class="text-danger"></small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter Your Email Address" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Living Country</label>
+                            <select name="country_id" class="form-select" required>
+                                <option value="">Select Your Living Country</option>
+                                @if ($countries->isNotEmpty())
+                                    @foreach ($countries as $country )
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Set Your Schedule (BD Time)</label>
+                            <input type="date" name="schedule_date" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Preferred Time</label>
+                            <input type="time" name="schedule_time" class="form-control" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Select Multiple Demands</label>
+                            <select name="demands[]" class="form-select" id="demandsAll" multiple required>
+                                <option value="Rent Inquiry">Rent Inquiry</option>
+                                    <option value="Documentation Service Inquiry">Documentation Service Inquiry</option>
+                                    <option value="Buy Property">Buy Property</option>
+                                    <option value="Sell Property">Sell Property</option>
+                                    <option value="Rental Service">Rental Service</option>
+                                    <option value="Property Rent Management">Property Rent Management</option>
+                                    <option value="Transfer Permission">Transfer Permission</option>
+                                    <option value="Registration">Registration</option>
+                                    <option value="Authority Mutation">Authority Mutation</option>
+                                    <option value="Holding Mutation">Holding Mutation</option>
+                                    <option value="Gas Mutation">Gas Mutation</option>
+                                    <option value="Electricity Mutation">Electricity Mutation</option>
+                                    <option value="Legal Vetting">Legal Vetting</option>
+                                    <option value="Property Color">Property Color</option>
+                                    <option value="Property Renovation">Property Renovation</option>
+                                    <option value="Property Interior">Property Interior</option>
+                                    <option value="Project Development">Project Development</option>
+                                    <option value="Property Valuation">Property Valuation</option>
+                                    <option value="Buy property">Buy property</option>
+                                    <option value="Loan Service">Loan Service</option>
+                                    <option value="Holding Mutation1">Holding Mutation1</option>
+                                    <option value="RAJUK MUTATION">RAJUK MUTATION</option>
+                                    <option value="Sale Permission">Sale Permission</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Your Message</label>
+                            <textarea name="message" class="form-control" rows="3" placeholder="Go ahead, we are listening..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-primary px-4">Send Inquiry</button>
+                    </div>
+                    <div id="formLoaderbooking2" class="form-loader d-none">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </div>

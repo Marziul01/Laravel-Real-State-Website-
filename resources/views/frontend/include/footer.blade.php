@@ -102,14 +102,14 @@
     </div>
 </footer>
 
-<div class="fixed-property-sec">
+<div class="fixed-property-sec {{ Route::currentRouteName() == 'sendyourproperty' ? 'd-none' : '' }}">
     <div class="d-flex flex-column align-items-end">
-        <a href="" class="fixed-property-btn rental-fixed">
+        <a href="{{ route('sendyourproperty',['type' => 'rent']) }}" class="fixed-property-btn rental-fixed">
             <div class="d-flex flex-column align-items-center justify-content-center position-relative z-index-9">
                 <i class="fa-regular fa-house mb-2"></i> <p class="mb-3"> Rent Your Property</p>
             </div>
         </a>
-        <a href="" class="fixed-property-btn selling-fixed">
+        <a href="{{ route('sendyourproperty',['type' => 'sell']) }}" class="fixed-property-btn selling-fixed">
             <div class="d-flex flex-column align-items-center justify-content-center position-relative z-index-9">
                 <i class="fa-regular fa-house mb-2"></i> <p class="mb-1"> Sell Your Property</p>
             </div>

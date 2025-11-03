@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Notification;
 use App\Models\Review;
 
@@ -29,6 +30,7 @@ class UserDashboardController extends Controller
             'totalBookings' => $totalBookings,
             'pendingBookings' => $pendingBookings,
             'visitedBookings' => $visitedBookings,
+            'countries' => Country::all(),
         ]);
     }
 

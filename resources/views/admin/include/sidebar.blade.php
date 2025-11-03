@@ -127,6 +127,39 @@
             </ul>
         </li>
 
+        <li class="menu-item  {{ Route::currentRouteName() == 'rent.submission' ? 'active open' : '' }} {{ Route::currentRouteName() == 'sell.submission' ? 'active open' : '' }} {{ Route::currentRouteName() == 'clients.confirmed' ? 'active open' : '' }} ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <div class="text-truncate" data-i18n="Dashboards">All Property Submission</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {{ Route::currentRouteName() == 'rent.submission' ? 'active' : '' }}">
+                    <a href="{{ route('rent.submission') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Rent Submission</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {{ Route::currentRouteName() == 'sell.submission' ? 'active' : '' }}">
+                    <a href="{{ route('sell.submission') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Sell Submission</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Route::currentRouteName() == 'clients.confirmed' ? 'active' : '' }}">
+                    <a href="{{ route('clients.confirmed') }}" class="menu-link">
+                        <div class="text-truncate" data-i18n="Analytics">Our Clients</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item {{ Route::currentRouteName() == 'admin.services' ? 'active' : '' }}">
+            <a href="{{ route('admin.services') }}"
+                class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <div class="text-truncate" data-i18n="Email">All Services</div>
+            </a>
+        </li>
+
         {{-- @if(Auth::user()->access->admin_panel == '1' || Auth::user()->access->admin_panel == '2')
         <li class="menu-item  {{ Route::currentRouteName() == 'admin.users' ? 'active open' : '' }} {{ Route::currentRouteName() == 'admin.categoryTableSettings' ? 'active open' : '' }} {{ Route::currentRouteName() == 'home.settings' ? 'active open' : '' }}  {{ Route::currentRouteName() == 'Export-Data' ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">

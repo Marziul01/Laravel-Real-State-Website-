@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\Inquiry;
 use App\Models\Notification;
 use App\Models\Property;
+use App\Models\PropertyType;
 use App\Models\SiteSetting;
 use App\Models\State;
 use App\Models\Upazila;
@@ -21,8 +22,27 @@ use Illuminate\Support\Facades\Log;
 class HomeController extends Controller
 {
     public static function index(){
+        $properties = Property::where('status', 1 )->get();
+        // ✅ Get dynamic min & max values from existing properties
+        $minPrice = $properties->min('price') ?? 0;
+        $maxPrice = $properties->max('price') ?? 1000;
+
+        $minBedrooms = $properties->min('bedrooms') ?? 0;
+        $maxBedrooms = $properties->max('bedrooms') ?? 5;
+
+        $minBathrooms = $properties->min('bathrooms') ?? 0;
+        $maxBathrooms = $properties->max('bathrooms') ?? 5;
         return view('frontend.home.home' , [
-            'properties' => Property::where('status', 1 )->get(),
+            'properties' => $properties,
+            'districts' => District::all(),
+            'property_categories' => PropertyType::all(),
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+            'minBedrooms' => $minBedrooms,
+            'maxBedrooms' => $maxBedrooms,
+            'minBathrooms' => $minBathrooms,
+            'maxBathrooms' => $maxBathrooms,
+            'countries' => Country::all(),
          ]);
     }
 
@@ -89,7 +109,78 @@ class HomeController extends Controller
 
     public static function rent(Request $request){
 
-        $properties = Property::where('status' , 1)->latest()->paginate(25);
+        $filters = $request;
+        
+        $query = Property::where('status', 1);
+
+        // ✅ If "type=rent" is passed in the URL, filter for only rent properties
+        if ($request->type === 'rent') {
+            $query->where('type', 'rent');
+        }
+
+        if ($request->type) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->property_type_id) {
+            $query->where('property_type_id', $request->property_type_id);
+        }
+
+        if ($request->min_price && $request->max_price) {
+            $query->whereBetween('price', [$request->min_price, $request->max_price]);
+        }
+
+        if ($request->bedrooms) {
+            $query->where('bedrooms', $request->bedrooms);
+        }
+
+        if ($request->type === 'rent' && $request->rent_date_range) {
+            [$start, $end] = explode(' to ', str_replace(' - ', ' to ', $request->rent_date_range));
+
+            $query->where('rent_start', '<=', $start) // ✅ must be available to rent by this date
+                ->whereDoesntHave('bookings', function($q) use ($start, $end) {
+                    $q->where(function($sub) use ($start, $end) {
+                        $sub->whereBetween('start_date', [$start, $end])
+                            ->orWhereBetween('end_date', [$start, $end])
+                            ->orWhere(function($inner) use ($start, $end) {
+                                $inner->where('start_date', '<', $start)
+                                        ->where('end_date', '>', $end);
+                            });
+                    });
+                });
+        }
+
+        if ($request->country_id) {
+            $query->where('country_id', $request->country_id);
+
+            if ($request->country_id == 19) {
+                // 🇧🇩 Bangladesh-specific filtering
+                if ($request->district_id) {
+                    $query->where('state_id', $request->district_id);
+                }
+
+                if ($request->upazila_id) {
+                    $query->where('property_area_id', $request->upazila_id);
+                }
+
+                if ($request->city) {
+                    $query->where('city', 'like', "%{$request->city}%");
+                }
+
+            } else {
+                // 🌍 Other countries
+                if ($request->state_id) {
+                    $query->where('state_id', $request->state_id);
+                }
+
+                if ($request->city) {
+                    $query->where('city', 'like', "%{$request->city}%");
+                }
+            }
+        }
+
+        $properties = $query->latest()->paginate(25);
+
         $lowestPrice  = Property::min('price') ?? 0;
         $highestPrice = Property::max('price') ?? 1000000;
         $countries = Country::where('status',1)->get();
@@ -99,6 +190,7 @@ class HomeController extends Controller
             'lowestPrice' => $lowestPrice,
             'highestPrice' => $highestPrice,
             'countries' => $countries,
+            'request' => $request,
         ]);
     }
 
@@ -194,41 +286,41 @@ class HomeController extends Controller
     }
 
     public function getDistricts()
-{
-    return response()->json(District::orderBy('name')->get());
-}
+    {
+        return response()->json(District::orderBy('name')->get());
+    }
 
-public function getUpazilas($districtId)
-{
-    return response()->json(Upazila::where('district_id', $districtId)->orderBy('name')->get());
-}
+    public function getUpazilas($districtId)
+    {
+        return response()->json(Upazila::where('district_id', $districtId)->orderBy('name')->get());
+    }
 
-public function getStates($countryId)
-{
-    return response()->json(State::where('country_id', $countryId)->orderBy('name')->get());
-}
+    public function getStates($countryId)
+    {
+        return response()->json(State::where('country_id', $countryId)->orderBy('name')->get());
+    }
 
-public function getCitiesByUpazila($upazilaId)
-{
-    // ✅ Get all cities from properties where property_area_id = selected upazila
-    $cities = Property::where('property_area_id', $upazilaId)
-        ->whereNotNull('city')
-        ->distinct()
-        ->pluck('city');
+    public function getCitiesByUpazila($upazilaId)
+    {
+        // ✅ Get all cities from properties where property_area_id = selected upazila
+        $cities = Property::where('property_area_id', $upazilaId)
+            ->whereNotNull('city')
+            ->distinct()
+            ->pluck('city');
 
-    return response()->json($cities);
-}
+        return response()->json($cities);
+    }
 
-public function getCitiesByState($stateId)
-{
-    // ✅ Get all cities from properties where state_id = selected state
-    $cities = Property::where('state_id', $stateId)
-        ->whereNotNull('city')
-        ->distinct()
-        ->pluck('city');
+    public function getCitiesByState($stateId)
+    {
+        // ✅ Get all cities from properties where state_id = selected state
+        $cities = Property::where('state_id', $stateId)
+            ->whereNotNull('city')
+            ->distinct()
+            ->pluck('city');
 
-    return response()->json($cities);
-}
+        return response()->json($cities);
+    }
 
 
 }

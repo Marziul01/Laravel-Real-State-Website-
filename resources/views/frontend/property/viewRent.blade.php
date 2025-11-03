@@ -1,11 +1,11 @@
 @extends('frontend.master')
 
 @section('title')
-{{ $property->name }}
+    {{ $property->name }}
 @endsection
 
 @section('description')
-{{ $property->description }}
+    {{ $property->description }}
 @endsection
 
 @section('content')
@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="container propertyView">
-        
+
         <div class="row py-3 ">
             <div class="col-md-8 d-flex flex-column">
                 <h3 class="mb-3 order-1">{{ $property->name }}</h3>
@@ -30,46 +30,48 @@
                 </div>
 
                 <div class="rent-section mb-4 d-block d-md-none order-3">
-                        <h5>
-                            <i class="fa-solid fa-wallet"></i>
-                            Price : <span class="pricePerNight">{{ $property->price }}</span> BDT
-                            <sup>(per night)</sup>
-                        </h5>
+                    <h5>
+                        <i class="fa-solid fa-wallet"></i>
+                        Price : <span class="pricePerNight">{{ $property->price }}</span> BDT
+                        <sup>(per night)</sup>
+                    </h5>
 
-                        <div>
-                            <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inquiryModal">
-                                <i class="fa-solid fa-envelope"></i> Property Inquiry
-                            </a>
-                            <a href="{{ route('property.print', $property->id) }}" target="_blank" class="btn btn-primary">
-                                <i class="fa-solid fa-print"></i>
-                            </a>
-                        </div>
-
-                        <div class="rentProperty mt-3">
-                            <div class="mb-3">
-                                <input type="text" class="rentDateRange form-control" placeholder="Select Booking Dates" readonly>
-                            </div>
-
-                            <h6 class="mt-2">
-                                Total Price: <span class="totalPrice">0</span> BDT
-                            </h6>
-
-                            <a href="#" class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
-                                <i class="fa-regular fa-calendar-check"></i>
-                                {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
-                            </a>
-                        </div>
+                    <div>
+                        <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#inquiryModal">
+                            <i class="fa-solid fa-envelope"></i> Property Inquiry
+                        </a>
+                        <a href="{{ route('property.print', $property->id) }}" target="_blank" class="btn btn-primary">
+                            <i class="fa-solid fa-print"></i>
+                        </a>
                     </div>
 
+                    <div class="rentProperty mt-3">
+                        <div class="mb-3">
+                            <input type="text" class="rentDateRange form-control" placeholder="Select Booking Dates"
+                                readonly>
+                        </div>
+
+                        <h6 class="mt-2">
+                            Total Price: <span class="totalPrice">0</span> BDT
+                        </h6>
+
+                        <a href="#" class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
+                        </a>
+                    </div>
+                </div>
+
                 <div class="property-info mb-4  order-4 order-md-3">
-                    @if($property->space)
+                    @if ($property->space)
                         <div class="tag">
                             <i class="fa-regular fa-house"></i>
                             Property Space : SFT {{ $property->space }}
                         </div>
                     @endif
 
-                    @if($property->country_id == 19 && ($property->city || $property->propertyarea))
+                    @if ($property->country_id == 19 && ($property->city || $property->propertyarea))
                         <div class="tag">
                             <i class="fa-solid fa-location-dot"></i>
                             Property Area : {{ $property->city . ', ' . $property->propertyarea->name }}
@@ -81,28 +83,28 @@
                         </div>
                     @endif
 
-                    @if($property->bedrooms)
+                    @if ($property->bedrooms)
                         <div class="tag">
                             <i class="fa-solid fa-bed"></i>
                             Bedrooms : {{ $property->bedrooms }}
                         </div>
                     @endif
 
-                    @if($property->bathrooms)
+                    @if ($property->bathrooms)
                         <div class="tag">
                             <i class="fa-solid fa-sink"></i>
                             Bathrooms : {{ $property->bathrooms }}
                         </div>
                     @endif
 
-                    @if($property->parking_space)
+                    @if ($property->parking_space)
                         <div class="tag">
                             <i class="fa-solid fa-car"></i>
                             Parking Space : {{ $property->parking_space }}
                         </div>
                     @endif
 
-                    @if($property->decoration)
+                    @if ($property->decoration)
                         <div class="tag">
                             @if ($property->decoration == 'Full Furnished')
                                 <i class="fa-solid fa-couch"></i>
@@ -114,13 +116,13 @@
                         </div>
                     @endif
 
-                    @if($property->check_in)
+                    @if ($property->check_in)
                         <div class="tag">
                             <i class="fa-regular fa-clock"></i>
                             Check In Time : {{ $property->check_in }}
                         </div>
                     @endif
-                    @if($property->check_out)
+                    @if ($property->check_out)
                         <div class="tag">
                             <i class="fa-regular fa-clock"></i>
                             Check Out Time : {{ $property->check_out }}
@@ -136,7 +138,7 @@
                             </div>
                         @endif
                         @if ($property->images->isNotEmpty())
-                            @foreach ($property->images as $images )
+                            @foreach ($property->images as $images)
                                 <div class="swiper-slide">
                                     <img class="slider-img" src="{{ asset($images->image) }}" alt="">
                                 </div>
@@ -155,8 +157,9 @@
                     <h4 class="mb-3">Property Features :</h4>
                     <div class="grid-container">
                         @if ($property->features)
-                            @foreach ($property->features as $feature )
-                                <p class="mb-1"><strong> {{ $feature->feature_keys }} : </strong> {{ $feature->feature_values }} </p>
+                            @foreach ($property->features as $feature)
+                                <p class="mb-1"><strong> {{ $feature->feature_keys }} : </strong>
+                                    {{ $feature->feature_values }} </p>
                             @endforeach
                         @endif
                     </div>
@@ -166,7 +169,7 @@
                     <h4 class="mb-3">Amenities :</h4>
                     <div class="grid-container">
                         @if ($property->amenities)
-                            @foreach ($property->amenities as $amenity )
+                            @foreach ($property->amenities as $amenity)
                                 <p class="mb-1"><i class="fa-solid fa-check-double"></i> {{ $amenity->amenities }} </p>
                             @endforeach
                         @endif
@@ -184,7 +187,8 @@
                         </h5>
 
                         <div>
-                            <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inquiryModal">
+                            <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#inquiryModal">
                                 <i class="fa-solid fa-envelope"></i> Property Inquiry
                             </a>
                             <a href="{{ route('property.print', $property->id) }}" target="_blank" class="btn btn-primary">
@@ -194,14 +198,16 @@
 
                         <div class="rentProperty mt-3">
                             <div class="mb-3">
-                                <input type="text" class="rentDateRange form-control" placeholder="Select Booking Dates" readonly>
+                                <input type="text" class="rentDateRange form-control" placeholder="Select Booking Dates"
+                                    readonly>
                             </div>
 
                             <h6 class="mt-2">
                                 Total Price: <span class="totalPrice">0</span> BDT
                             </h6>
 
-                            <a href="#" class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                            <a href="#"
+                                class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
                                 <i class="fa-regular fa-calendar-check"></i>
                                 {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
                             </a>
@@ -216,18 +222,29 @@
 
                             if ($property->country_id == 19) {
                                 $district = District::where('id', $property->property_area_id)->first();
-                                $address = $property->road . ', ' . $property->city . ', ' . ($property->propertyarea->name ?? '') . ', ' . ($district->name ?? '') . ', ' . ($property->country->name ?? '');
+                                $address =
+                                    $property->road .
+                                    ', ' .
+                                    $property->city .
+                                    ', ' .
+                                    ($property->propertyarea->name ?? '') .
+                                    ', ' .
+                                    ($district->name ?? '') .
+                                    ', ' .
+                                    ($property->country->name ?? '');
                             } else {
-                                $address = $property->road . ', ' . $property->city . ', ' . ($property->state->name ?? '') . ', ' . ($property->country->name ?? '');
+                                $address =
+                                    $property->road .
+                                    ', ' .
+                                    $property->city .
+                                    ', ' .
+                                    ($property->state->name ?? '') .
+                                    ', ' .
+                                    ($property->country->name ?? '');
                             }
                         @endphp
 
-                        <iframe
-                            width="100%"
-                            height="400"
-                            style="border:0"
-                            loading="lazy"
-                            allowfullscreen
+                        <iframe width="100%" height="400" style="border:0" loading="lazy" allowfullscreen
                             src="https://www.google.com/maps?q={{ urlencode($address ?? 'Dhaka, Bangladesh') }}&output=embed">
                         </iframe>
 
@@ -237,7 +254,8 @@
                         <p>Realtor :</p>
                         <div class="row border m-0 rounded p-3">
                             <div class="col-md-4">
-                                <img src="{{ asset('admin-assets/img/assets/1746548373_681a369536d71.png') }}" style="width: 100% ;" alt="">
+                                <img src="{{ asset('admin-assets/img/assets/1746548373_681a369536d71.png') }}"
+                                    style="width: 100% ;" alt="">
                             </div>
                             <div class="col-md-8">
                                 <h4>{{ $property->realtor->name }}</h4>
@@ -250,236 +268,265 @@
             </div>
         </div>
     </div>
-<div class="modal fade position-relative" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow-lg">
-            <div class="modal-header bg-dark text-white rounded-top-4">
-                <h5 class="modal-title" id="inquiryModalLabel">Product Inquiry</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body bg-light p-4">
-                <!-- Property Info -->
-                <div class="d-flex align-items-center mb-4">
-                    <img src="{{ asset($property->featured_image) }}" alt="Product" class="rounded me-3" style="width:100px; height:80px; object-fit:cover;">
-                    <div>
-                        <h6 class="mb-0 fw-bold">{{ $property->name }}</h6>
-                    </div>
+    <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg ">
+                <div class="modal-header bg-dark text-white rounded-top-4">
+                    <h5 class="modal-title" id="inquiryModalLabel">Product Inquiry</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
 
-                <!-- Inquiry Form -->
-                <form id="inquiryForm" action="{{ route('property.inquiries', $property->id) }}" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Enter Your Name" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Contact Number</label>
-                            <input id="phoneInquiry" type="tel" name="phone" class="form-control" placeholder="e.g. +880..." required>
-                            <small id="phoneErrorInquiry" class="text-danger"></small>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Email Address</label>
-                            <input type="email" name="email" class="form-control" placeholder="Enter Your Email Address" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Living Country</label>
-                            <select name="country_id" class="form-select" required>
-                                <option value="">Select Your Living Country</option>
-                                @if ($countries->isNotEmpty())
-                                    @foreach ($countries as $country )
-                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Set Your Schedule (BD Time)</label>
-                            <input type="date" name="schedule_date" class="form-control" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label">Preferred Time</label>
-                            <input type="time" name="schedule_time" class="form-control" required>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label">Select Multiple Demands</label>
-                            <select name="demands[]" class="form-select" id="demands" multiple required>
-                                <option value="Buy">Buy</option>
-                                <option value="Rent">Rent</option>
-                                <option value="Investment">Investment</option>
-                                <option value="Consultation">Consultation</option>
-                            </select>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label">Your Message</label>
-                            <textarea name="message" class="form-control" rows="3" placeholder="Go ahead, we are listening..." required></textarea>
+                <div class="modal-body bg-light p-4">
+                    <!-- Property Info -->
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{{ asset($property->featured_image) }}" alt="Product" class="rounded me-3"
+                            style="width:100px; height:80px; object-fit:cover;">
+                        <div>
+                            <h6 class="mb-0 fw-bold">{{ $property->name }}</h6>
                         </div>
                     </div>
 
-                    <div class="text-end mt-4">
-                        <button type="submit" class="btn btn-primary px-4">Send Inquiry</button>
-                    </div>
-                </form>
+                    <!-- Inquiry Form -->
+                    <form id="inquiryForm" class="position-relative" action="{{ route('property.inquiries', $property->id) }}"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter Your Name"
+                                    required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Contact Number</label>
+                                <input id="phoneInquiry" type="tel" name="phone" class="form-control"
+                                    placeholder="e.g. +880..." required>
+                                <small id="phoneErrorInquiry" class="text-danger"></small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="email" class="form-control"
+                                    placeholder="Enter Your Email Address" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Living Country</label>
+                                <select name="country_id" class="form-select" required>
+                                    <option value="">Select Your Living Country</option>
+                                    @if ($countries->isNotEmpty())
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Set Your Schedule (BD Time)</label>
+                                <input type="date" name="schedule_date" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Preferred Time</label>
+                                <input type="time" name="schedule_time" class="form-control" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Select Multiple Demands</label>
+                                <select name="demands[]" class="form-select" id="demands" multiple required>
+                                    <option value="Rent Inquiry">Rent Inquiry</option>
+                                    <option value="Documentation Service Inquiry">Documentation Service Inquiry</option>
+                                    <option value="Buy Property">Buy Property</option>
+                                    <option value="Sell Property">Sell Property</option>
+                                    <option value="Rental Service">Rental Service</option>
+                                    <option value="Property Rent Management">Property Rent Management</option>
+                                    <option value="Transfer Permission">Transfer Permission</option>
+                                    <option value="Registration">Registration</option>
+                                    <option value="Authority Mutation">Authority Mutation</option>
+                                    <option value="Holding Mutation">Holding Mutation</option>
+                                    <option value="Gas Mutation">Gas Mutation</option>
+                                    <option value="Electricity Mutation">Electricity Mutation</option>
+                                    <option value="Legal Vetting">Legal Vetting</option>
+                                    <option value="Property Color">Property Color</option>
+                                    <option value="Property Renovation">Property Renovation</option>
+                                    <option value="Property Interior">Property Interior</option>
+                                    <option value="Project Development">Project Development</option>
+                                    <option value="Property Valuation">Property Valuation</option>
+                                    <option value="Buy property">Buy property</option>
+                                    <option value="Loan Service">Loan Service</option>
+                                    <option value="Holding Mutation1">Holding Mutation1</option>
+                                    <option value="RAJUK MUTATION">RAJUK MUTATION</option>
+                                    <option value="Sale Permission">Sale Permission</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Your Message</label>
+                                <textarea name="message" class="form-control" rows="3" placeholder="Go ahead, we are listening..." required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-primary px-4">Send Inquiry</button>
+                        </div>
+                        <div id="formLoaderbooking" class="form-loader d-none">
+                            <div class="spinner-border text-primary" role="status"></div>
+                        </div>
+                    </form>
+                </div>
+                
             </div>
         </div>
+        
     </div>
-    <div id="formLoaderbooking" class="form-loader d-none">
-                    <div class="spinner-border text-primary" role="status"></div>
-                </div>
-</div>
 @endsection
 
 @section('customJs')
-<script>
+    <script>
         const swiper = new Swiper(".mySwiper", {
             loop: true,
             effect: "slide", // or "fade" for a smoother dissolve effect
             speed: 1500, // 1.5 seconds for smooth sliding
             autoplay: {
-              delay: 5000, // 5 seconds before changing slides
-              disableOnInteraction: false,
+                delay: 5000, // 5 seconds before changing slides
+                disableOnInteraction: false,
             },
             // autoplay: false,
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true,
             },
-            
+
         });
-</script>
+    </script>
     <script>
-document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
 
-    const bookedDates = @json($bookedDates);
-    const bookingStartDate = "{{ $property->rent_start }}";
-    const propertyId = {{ $property->id }};
-    const baseUrl = `{{ route('user.booking.rent') }}`;
+            const bookedDates = @json($bookedDates);
+            const bookingStartDate = "{{ $property->rent_start }}";
+            const propertyId = {{ $property->id }};
+            const baseUrl = `{{ route('user.booking.rent') }}`;
 
-    // Loop through each rent section (for desktop + mobile)
-    document.querySelectorAll('.rent-section').forEach(section => {
-        const pricePerNight = parseFloat(section.querySelector('.pricePerNight').innerText);
-        const totalPriceEl = section.querySelector('.totalPrice');
-        const dateInput = section.querySelector('.rentDateRange');
-        const rentBtn = section.querySelector('.rentSubmitBtn');
+            // Loop through each rent section (for desktop + mobile)
+            document.querySelectorAll('.rent-section').forEach(section => {
+                const pricePerNight = parseFloat(section.querySelector('.pricePerNight').innerText);
+                const totalPriceEl = section.querySelector('.totalPrice');
+                const dateInput = section.querySelector('.rentDateRange');
+                const rentBtn = section.querySelector('.rentSubmitBtn');
 
-        // ✅ Initialize Flatpickr
-        flatpickr(dateInput, {
-            mode: "range",
-            minDate: bookingStartDate < new Date().toISOString().split('T')[0]
-                ? new Date().toISOString().split('T')[0]
-                : bookingStartDate,
-            dateFormat: "Y-m-d",
-            disable: bookedDates,
-            onChange: function(selectedDates) {
-                if (selectedDates.length === 2) {
-                    const diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    const total = diffDays * pricePerNight;
-                    totalPriceEl.innerText = total.toLocaleString();
-                } else {
-                    totalPriceEl.innerText = 0;
+                // ✅ Initialize Flatpickr
+                flatpickr(dateInput, {
+                    mode: "range",
+                    minDate: bookingStartDate < new Date().toISOString().split('T')[0] ?
+                        new Date().toISOString().split('T')[0] :
+                        bookingStartDate,
+                    dateFormat: "Y-m-d",
+                    disable: bookedDates,
+                    onChange: function(selectedDates) {
+                        if (selectedDates.length === 2) {
+                            const diffTime = Math.abs(selectedDates[1] - selectedDates[0]);
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            const total = diffDays * pricePerNight;
+                            totalPriceEl.innerText = total.toLocaleString();
+                        } else {
+                            totalPriceEl.innerText = 0;
+                        }
+                    }
+                });
+
+                // ✅ Handle booking button click
+                rentBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    if (rentBtn.classList.contains('disabled')) return;
+
+                    const dateRange = dateInput.value.trim();
+                    if (!dateRange) {
+                        alert('Please select your booking dates.');
+                        return;
+                    }
+
+                    const [startDate, endDate] = dateRange.split(' to ');
+                    const finalUrl =
+                        `${baseUrl}?property_id=${propertyId}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
+
+                    window.location.href = finalUrl;
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ✅ Initialize Select2
+            $('#inquiryModal').on('shown.bs.modal', function() {
+                $('#demands').select2({
+                    dropdownParent: $('#inquiryModal'),
+                    width: '100%',
+                    placeholder: "Select Multiple Demands",
+                    allowClear: true
+                });
+            });
+
+            // ✅ Initialize intl-tel-input for phone field
+            const phoneInput = document.querySelector("#phoneInquiry");
+            const iti = window.intlTelInput(phoneInput, {
+                initialCountry: "bd",
+                preferredCountries: ["bd", "in", "us", "gb"],
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
+            });
+
+            // ✅ Handle form submit via AJAX
+            $('#inquiryForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const phoneError = document.querySelector('#phoneErrorInquiry');
+                phoneError.textContent = '';
+
+                // ✅ Validate phone number
+                if (!iti.isValidNumber()) {
+                    phoneError.textContent = 'Please enter a valid phone number.';
+                    return;
                 }
-            }
+
+                // ✅ Prepare data
+                const formData = new FormData(this);
+                formData.set('phone', iti.getNumber()); // replace raw phone with full intl format
+
+                const actionUrl = $(this).attr('action');
+                const loader = document.getElementById('formLoaderbooking');
+                loader.classList.remove('d-none');
+                // ✅ Send AJAX request
+                fetch(actionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        loader.classList.add('d-none');
+                        if (data.status === 'success') {
+                            toastr.success(data.message);
+                            $('#inquiryForm')[0].reset();
+                            $('#demands').val(null).trigger('change');
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(
+                                'inquiryModal'));
+                            modal.hide();
+                        } else {
+                            toastr.error(data.message || 'Something went wrong.');
+                        }
+                    })
+                    .catch(() => {
+                        loader.classList.add('d-none');
+                        toastr.error('An error occurred. Please try again.');
+                    });
+            });
         });
-
-        // ✅ Handle booking button click
-        rentBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            if (rentBtn.classList.contains('disabled')) return;
-
-            const dateRange = dateInput.value.trim();
-            if (!dateRange) {
-                alert('Please select your booking dates.');
-                return;
-            }
-
-            const [startDate, endDate] = dateRange.split(' to ');
-            const finalUrl = `${baseUrl}?property_id=${propertyId}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
-
-            window.location.href = finalUrl;
-        });
-    });
-});
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // ✅ Initialize Select2
-    $('#inquiryModal').on('shown.bs.modal', function() {
-        $('#demands').select2({
-            dropdownParent: $('#inquiryModal'),
-            width: '100%',
-            placeholder: "Select Multiple Demands",
-            allowClear: true
-        });
-    });
-
-    // ✅ Initialize intl-tel-input for phone field
-    const phoneInput = document.querySelector("#phoneInquiry");
-    const iti = window.intlTelInput(phoneInput, {
-        initialCountry: "bd",
-        preferredCountries: ["bd", "in", "us", "gb"],
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
-    });
-
-    // ✅ Handle form submit via AJAX
-    $('#inquiryForm').on('submit', function (e) {
-        e.preventDefault();
-
-        const phoneError = document.querySelector('#phoneErrorInquiry');
-        phoneError.textContent = '';
-
-        // ✅ Validate phone number
-        if (!iti.isValidNumber()) {
-            phoneError.textContent = 'Please enter a valid phone number.';
-            return;
-        }
-
-        // ✅ Prepare data
-        const formData = new FormData(this);
-        formData.set('phone', iti.getNumber()); // replace raw phone with full intl format
-
-        const actionUrl = $(this).attr('action');
-        const loader = document.getElementById('formLoaderbooking');
-        loader.classList.remove('d-none');
-        // ✅ Send AJAX request
-        fetch(actionUrl, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            loader.classList.add('d-none');
-            if (data.status === 'success') {
-                toastr.success(data.message);
-                $('#inquiryForm')[0].reset();
-                $('#demands').val(null).trigger('change');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('inquiryModal'));
-                modal.hide();
-            } else {
-                toastr.error(data.message || 'Something went wrong.');
-            }
-        })
-        .catch(() => {
-            loader.classList.add('d-none');
-            toastr.error('An error occurred. Please try again.');
-        });
-    });
-});
-</script>
-
+    </script>
 @endsection

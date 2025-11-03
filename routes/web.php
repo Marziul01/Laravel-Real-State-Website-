@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminBookingController;
+use App\Http\Controllers\AdminServiceController;
+use App\Http\Controllers\ClientPropertySubmission;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomePropertyController;
 use App\Http\Controllers\PaymentMethodController;
@@ -43,7 +46,9 @@ Route::get('/collect-upazilas/{district}', [HomeController::class, 'getUpazilas'
 Route::get('/collect-states/{country}', [HomeController::class, 'getStates'])->name('collect.states');
 Route::get('/get-cities-by-upazila/{upazila}', [HomeController::class, 'getCitiesByUpazila'])->name('collect.cities.upazila');
 Route::get('/get-cities-by-state/{state}', [HomeController::class, 'getCitiesByState'])->name('collect.cities.state');
-
+Route::post('/service/inquiries', [FormController::class, 'propertyInquiry'])->name('service.inquiries');
+Route::get('/send/your/property/', [FormController::class, 'sendyourproperty'])->name('sendyourproperty');
+Route::post('/client/properties/submit', [FormController::class, 'clientProperties'])->name('client.properties');
 
 Route::get('/get-time', function () { 
     return response()->json([
@@ -128,6 +133,16 @@ Route::prefix('admin')->group(function () {
         Route::get('/admin/inquiries/show', [PropertyInquiryController::class, 'show'])->name('admin.inquiries.show');
         Route::post('/admin/inquiries/update-status', [PropertyInquiryController::class, 'updateStatus'])->name('admin.inquiries.updateStatus');
         Route::post('/admin/inquiries/delete/{id}', [PropertyInquiryController::class, 'delete'])->name('admin.inquiries.delete');
+        Route::get('/rent/property/submission', [ClientPropertySubmission::class, 'rentSubmission'])->name('rent.submission');
+        Route::get('/sell/property/submission', [ClientPropertySubmission::class, 'sellSubmission'])->name('sell.submission');
+        Route::get('/admin/submission/show', [ClientPropertySubmission::class, 'show'])->name('admin.submission.show');
+        Route::post('/admin/submission/update-status', [ClientPropertySubmission::class, 'updateStatus'])->name('admin.submission.updateStatus');
+        Route::post('/admin/submission/delete/{id}', [ClientPropertySubmission::class, 'delete'])->name('admin.submission.delete');
+        Route::get('/our/clients', [ClientPropertySubmission::class, 'clients'])->name('clients.confirmed');
+        Route::get('/clients/data', [ClientPropertySubmission::class, 'getClients'])->name('clients.data');
+        Route::get('/all/services/managment', [AdminServiceController::class, 'services'])->name('admin.services');
+        Route::post('/admin/services/store', [AdminServiceController::class, 'store'])->name('admin.services.store');
+        Route::get('/admin/services/data', [AdminServiceController::class, 'getData'])->name('admin.services.data');
     });
 });
 

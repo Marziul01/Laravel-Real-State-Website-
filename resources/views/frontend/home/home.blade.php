@@ -70,71 +70,75 @@
                         <div class="tab-content">
                             <!-- RENT TAB -->
                             <div class="tab-pane fade show active" id="rent" role="tabpanel">
-                                <form class="property-form-select" id="searchrent-form">
+                                <form class="property-form-select" id="searchrent-form" method="GET" action="{{ route('rent') }}">
+                                    <!-- Hidden fields -->
+                                    <input type="hidden" name="type" value="rent">
+                                    <input type="hidden" name="country_id" value="19">
+                                    <input type="hidden" id="rentDateRangeHidden" name="rent_date_range">
+                                    <input type="hidden" id="property_type_id" name="property_type_id" value="{{ request('property_type_id') }}">
+                                    <input type="hidden" id="district_id_hidden" name="district_id" value="{{ request('district_id_hidden') }}">
+
                                     <div
                                         class="d-flex flex-wrap align-items-center w-100 flex-column flex-md-row gap-4 gap-md-0">
+                                        <!-- 🔹 Price Range -->
                                         <div class="custom-dropdown position-relative">
                                             <div class="price-range">
                                                 <div class="d-flex align-items-center">
                                                     <label>Price Range :</label>
                                                     <div class="price-inputs">
-                                                        <input type="number" id="rentMinPrice" class="form-control"
-                                                            value="0">
+                                                        <input type="number" id="rentMinPrice" class="form-control" name="min_price"
+                                                            value="{{ request('min_price', $minPrice) }}">
                                                         <span>-to-</span>
-                                                        <input type="number" id="rentMaxPrice" class="form-control"
-                                                            value="1000">
+                                                        <input type="number" id="rentMaxPrice" class="form-control" name="max_price"
+                                                            value="{{ request('max_price', $maxPrice) }}">
                                                     </div>
                                                 </div>
                                                 <div class="d-flex align-items-center">
-                                                    <input type="range" id="rentPriceRangeMin" min="0"
-                                                        max="1000" value="0">
-                                                    <input type="range" id="rentPriceRangeMax" min="0"
-                                                        max="1000" value="1000">
+                                                    <input type="range" id="rentPriceRangeMin" min="{{ $minPrice }}" max="{{ $maxPrice }}"
+                                                        value="{{ request('min_price', $minPrice) }}">
+                                                    <input type="range" id="rentPriceRangeMax" min="{{ $minPrice }}" max="{{ $maxPrice }}"
+                                                        value="{{ request('max_price', $maxPrice) }}">
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Property Type -->
+                                        <!-- 🔹 Property Type (Dynamic from DB) -->
                                         <div class="custom-dropdown">
-
-                                            <input type="text" class="form-control" id="rentTypeInput"
-                                                placeholder="Select Property Type" readonly>
-                                            <div class="dropdown-box">
+                                            <input type="text" class="form-control" id="rentTypeInput" placeholder="Select Property Type"
+                                             readonly>
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">Duplex</div>
-                                                    <div class="option-box">Apartment</div>
-                                                    <div class="option-box">Office</div>
-                                                    <div class="option-box">Shop</div>
+                                                    @foreach($property_categories as $type)
+                                                        <div class="option-box" data-value="{{ $type->id }}">{{ $type->property_type }}</div>
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Bedrooms -->
+                                        <!-- 🔹 Bedrooms -->
                                         <div class="custom-dropdown diffrent">
-
-                                            <input type="text" class="form-control" id="rentBedroomsInput"
-                                                placeholder="Select Bedrooms" readonly>
-                                            <div class="dropdown-box">
+                                            <input type="text" class="form-control" id="rentBedroomsInput" placeholder="Select Bedrooms"
+                                                name="bedrooms" value="{{ request('bedrooms') }}" readonly>
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">1</div>
-                                                    <div class="option-box">2</div>
-                                                    <div class="option-box">3</div>
-                                                    <div class="option-box">4+</div>
+                                                    @for($i = $minBedrooms; $i <= $maxBedrooms; $i++)
+                                                        <div class="option-box">{{ $i }}</div>
+                                                    @endfor
                                                 </div>
                                             </div>
                                         </div>
+
 
                                         <!-- Location -->
                                         <div class="custom-dropdown">
 
                                             <input type="text" class="form-control" id="rentLocationInput"
                                                 placeholder="Select Location" readonly>
-                                            <div class="dropdown-box">
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">Dhaka</div>
-                                                    <div class="option-box">Chittagong</div>
-                                                    <div class="option-box">Sylhet</div>
-                                                    <div class="option-box">Rajshahi</div>
+                                                    @foreach($districts as $district)
+                                                        <div class="option-box" data-value="{{ $district->id }}">{{ $district->name }}</div>
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -156,7 +160,12 @@
 
                             <!-- BUY TAB -->
                             <div class="tab-pane fade" id="buy" role="tabpanel">
-                                <form class="property-form-select" id="searchbuy-form">
+                                <form class="property-form-select" id="searchbuy-form" method="GET" action="{{ route('rent') }}">
+                                    <input type="hidden" name="type" value="sell">
+                                    <input type="hidden" name="country_id" value="19">
+                                    
+                                    <input type="hidden" id="sell_property_type_id" name="property_type_id" value="{{ request('property_type_id') }}">
+                                    <input type="hidden" id="sell_district_id_hidden" name="district_id" value="{{ request('district_id_hidden') }}">
                                     <div
                                         class="d-flex flex-wrap align-items-center w-100 flex-column flex-md-row gap-4 gap-md-0">
 
@@ -168,17 +177,19 @@
                                                     <label>Price Range :</label>
                                                     <div class="price-inputs">
                                                         <input type="number" id="buyMinPrice" class="form-control"
-                                                            value="0">
+                                                            name="min_price"
+                                                            value="{{ request('min_price', $minPrice) }}">
                                                         <span>-to-</span>
                                                         <input type="number" id="buyMaxPrice" class="form-control"
-                                                            value="1000">
+                                                            name="max_price"
+                                                            value="{{ request('max_price', $maxPrice) }}">
                                                     </div>
                                                 </div>
                                                 <div class="d-flex align-items-center">
-                                                    <input type="range" id="buyPriceRangeMin" min="0"
-                                                        max="1000" value="0">
-                                                    <input type="range" id="buyPriceRangeMax" min="0"
-                                                        max="1000" value="1000">
+                                                    <input type="range" id="buyPriceRangeMin" min="{{ $minPrice }}" max="{{ $maxPrice }}"
+                                                        value="{{ request('min_price', $minPrice) }}">
+                                                    <input type="range" id="buyPriceRangeMax" min="{{ $minPrice }}" max="{{ $maxPrice }}"
+                                                        value="{{ request('max_price', $maxPrice) }}">
                                                 </div>
 
                                             </div>
@@ -188,28 +199,26 @@
                                         <div class=" custom-dropdown buy">
 
                                             <input type="text" class="form-control" id="buyTypeInput"
-                                                placeholder="Select Property Type" readonly>
-                                            <div class="dropdown-box">
+                                                placeholder="Select Property Type"  readonly>
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">Duplex</div>
-                                                    <div class="option-box">Apartment</div>
-                                                    <div class="option-box">Office</div>
-                                                    <div class="option-box">Land</div>
+                                                     @foreach($property_categories as $type)
+                                                        <div class="option-box" data-value="{{ $type->id }}">{{ $type->property_type }}</div>
+                                                    @endforeach
                                                 </div>
-                                            </div>
+                                            </div> 
                                         </div>
 
                                         <!-- Bedrooms -->
                                         <div class="custom-dropdown buy">
 
                                             <input type="text" class="form-control" id="buyBedroomsInput"
-                                                placeholder="Select Bedrooms" readonly>
-                                            <div class="dropdown-box">
+                                                placeholder="Select Bedrooms"  name="bedrooms" value="{{ request('bedrooms') }}" readonly>
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">1</div>
-                                                    <div class="option-box">2</div>
-                                                    <div class="option-box">3</div>
-                                                    <div class="option-box">4+</div>
+                                                    @for($i = $minBedrooms; $i <= $maxBedrooms; $i++)
+                                                        <div class="option-box">{{ $i }}</div>
+                                                    @endfor
                                                 </div>
                                             </div>
                                         </div>
@@ -219,12 +228,11 @@
 
                                             <input type="text" class="form-control" id="buyLocationInput"
                                                 placeholder="Select Location" readonly>
-                                            <div class="dropdown-box">
+                                            <div class="dropdown-box" style="max-height: 250px; overflow-y: auto;">
                                                 <div class="option-grid">
-                                                    <div class="option-box">Dhaka</div>
-                                                    <div class="option-box">Chittagong</div>
-                                                    <div class="option-box">Sylhet</div>
-                                                    <div class="option-box">Rajshahi</div>
+                                                    @foreach($districts as $district)
+                                                        <div class="option-box" data-value="{{ $district->id }}">{{ $district->name }}</div>
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -898,52 +906,79 @@
                 </div>
                 <div class="row g-5 m-0">
                     <div class="col-lg-6 form-column">
-                        <form class="contact-form">
+                        <form id="inquiryForm-footer" class="contact-form position-relative" action="{{ route('service.inquiries') }}" method="POST" enctype="multipart/form-data">
 
                             <label for="full_name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control mb-3" id="full_name"
+                            <input type="text" class="form-control mb-3" id="full_name" name="name"
                                 placeholder="Enter Your Name">
 
                             <label for="contact_number" class="form-label">Contact Number</label>
                             <div class="input-group mb-3">
-                                <input type="tel" class="form-control" id="contact_number"
-                                    placeholder="Contact Nubmer">
-                                <span class="input-group-text">(Bangladesh)</span>
+                                <input type="tel" class="form-control" id="phoneInquiry-footer"
+                                    placeholder="Contact Nubmer" name="phone">
+                                <small id="phoneErrorInquiry-footer" class="text-danger"></small>
                             </div>
 
                             <label for="email_address" class="form-label">Email Address</label>
                             <input type="email" class="form-control mb-3" id="email_address"
-                                placeholder="Enter Your Email Address">
+                                placeholder="Enter Your Email Address" name="email">
 
                             <label for="country" class="form-label">Select Your Living Country</label>
-                            <select class="form-select mb-3" id="country">
-                                <option selected>Bangladesh</option>
-                                <option>USA</option>
-                                <option>UK</option>
+                            <select class="form-select mb-3" id="country" name="country_id">
+                                @if ($countries->isNotEmpty())
+                                    @foreach ($countries as $country )
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                    @endforeach
+                                @endif
                             </select>
 
-                            <label class="form-label">Set Your Schedule (BD Time)</label>
-                            <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <input type="time" class="form-control" value="10:00" step="600">
+                            <div class="d-flex mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Set Your Schedule (BD Time)</label>
+                                    <input type="date" name="schedule_date" class="form-control" required>
                                 </div>
-                                <div class="col-6">
-                                    <input type="date" class="form-control">
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Preferred Time</label>
+                                    <input type="time" name="schedule_time" class="form-control" required>
                                 </div>
                             </div>
 
                             <label for="demands" class="form-label">Select Multiple Demands</label>
-                            <select class="form-select mb-3" id="demands" multiple>
+                            <select class="form-select mb-3" name="demands[]" id="demands-footer" multiple>
                                 <option>...Select Multiple Demands</option>
-                                <option>Property Inquiry</option>
-                                <option>Consultation</option>
-                                <option>Document Service</option>
+                                <option value="Rent Inquiry">Rent Inquiry</option>
+                                    <option value="Documentation Service Inquiry">Documentation Service Inquiry</option>
+                                    <option value="Buy Property">Buy Property</option>
+                                    <option value="Sell Property">Sell Property</option>
+                                    <option value="Rental Service">Rental Service</option>
+                                    <option value="Property Rent Management">Property Rent Management</option>
+                                    <option value="Transfer Permission">Transfer Permission</option>
+                                    <option value="Registration">Registration</option>
+                                    <option value="Authority Mutation">Authority Mutation</option>
+                                    <option value="Holding Mutation">Holding Mutation</option>
+                                    <option value="Gas Mutation">Gas Mutation</option>
+                                    <option value="Electricity Mutation">Electricity Mutation</option>
+                                    <option value="Legal Vetting">Legal Vetting</option>
+                                    <option value="Property Color">Property Color</option>
+                                    <option value="Property Renovation">Property Renovation</option>
+                                    <option value="Property Interior">Property Interior</option>
+                                    <option value="Project Development">Project Development</option>
+                                    <option value="Property Valuation">Property Valuation</option>
+                                    <option value="Buy property">Buy property</option>
+                                    <option value="Loan Service">Loan Service</option>
+                                    <option value="Holding Mutation1">Holding Mutation1</option>
+                                    <option value="RAJUK MUTATION">RAJUK MUTATION</option>
+                                    <option value="Sale Permission">Sale Permission</option>
                             </select>
 
-                            <label for="message" class="form-label">Your Message</label>
-                            <textarea class="form-control mb-4" id="message" rows="3" placeholder="...go ahead. We are listening"></textarea>
+                            <label for="message" class="form-label mt-3">Your Message</label>
+                            <textarea class="form-control mb-4" id="message" rows="3"  name="message" placeholder="...go ahead. We are listening"></textarea>
 
-                            <button type="submit" class="btn btn-submit w-100">Submit</button>
+                            <button type="submit" class="btn btn-primary  w-100">Submit</button>
+                            <div id="formLoaderbooking1" class="form-loader d-none">
+                                <div class="spinner-border text-primary" role="status"></div>
+                            </div>
                         </form>
                     </div>
                     <div class="col-lg-6">
@@ -1005,6 +1040,27 @@
             mode: "range",
             minDate: "today",
             dateFormat: "d M Y",
+            onChange: function(selectedDates, dateStr, instance) {
+                // When both start and end dates are selected
+                if (selectedDates.length === 2) {
+                    const startDate = selectedDates[0];
+                    const endDate = selectedDates[1];
+
+                    // Format for sending (YYYY-MM-DD)
+                    const formattedStart = instance.formatDate(startDate, "Y-m-d");
+                    const formattedEnd = instance.formatDate(endDate, "Y-m-d");
+
+                    // ✅ Save to hidden input
+                    document.getElementById("rentDateRangeHidden").value =
+                        formattedStart + " to " + formattedEnd;
+                }
+            },
+            onClose: function(selectedDates, dateStr, instance) {
+                // Optional: if user clears date
+                if (selectedDates.length === 0) {
+                    document.getElementById("rentDateRangeHidden").value = "";
+                }
+            }
         });
 
         // ✅ Dual Range System (Reusable Function)
@@ -1141,4 +1197,144 @@
             }));
         });
     </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Property Type selection
+            document.querySelectorAll('#searchrent-form .custom-dropdown .option-box').forEach(option => {
+                option.addEventListener('click', function() {
+                    const parentDropdown = this.closest('.custom-dropdown');
+                    const input = parentDropdown.querySelector('input.form-control');
+
+                    // Set visible input text
+                    input.value = this.textContent.trim();
+
+                    // For property type
+                    if (input.id === 'rentTypeInput') {
+                        document.querySelector('#property_type_id').value = this.getAttribute('data-value');
+                    }
+
+                    // For district
+                    if (input.id === 'rentLocationInput') {
+                        document.querySelector('#district_id_hidden').value = this.getAttribute('data-value');
+                    }
+                });
+            });
+
+        });
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Property Type selection
+            document.querySelectorAll('#searchbuy-form .custom-dropdown .option-box').forEach(option => {
+                option.addEventListener('click', function() {
+                    const parentDropdown = this.closest('.custom-dropdown');
+                    const input = parentDropdown.querySelector('input.form-control');
+
+                    // Set visible input text
+                    input.value = this.textContent.trim();
+
+                    // For property type
+                    if (input.id === 'buyTypeInput') {
+                        document.querySelector('#sell_property_type_id').value = this.getAttribute('data-value');
+                    }
+
+                    // For district
+                    if (input.id === 'buyLocationInput') {
+                        document.querySelector('#sell_district_id_hidden').value = this.getAttribute('data-value');
+                    }
+                });
+            });
+
+        });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ✅ Initialize Select2
+    
+        $('#demands-footer').select2({
+            width: '100%',
+            placeholder: "Select Multiple Demands",
+            allowClear: true
+        });
+    
+
+    // ✅ Initialize intl-tel-input for phone field
+    const phoneInput = document.querySelector("#phoneInquiry-footer");
+    const iti = window.intlTelInput(phoneInput, {
+        initialCountry: "bd",
+        preferredCountries: ["bd", "in", "us", "gb"],
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
+    });
+
+    // ✅ Handle form submit via AJAX
+    $('#inquiryForm-footer').on('submit', function (e) {
+        e.preventDefault();
+
+        const phoneError = document.querySelector('#phoneErrorInquiry-footer');
+        phoneError.textContent = '';
+
+        // ✅ Validate phone number
+        if (!iti.isValidNumber()) {
+            phoneError.textContent = 'Please enter a valid phone number.';
+            return;
+        }
+
+        // ✅ Prepare data
+        const formData = new FormData(this);
+        formData.set('phone', iti.getNumber()); // replace raw phone with full intl format
+
+        const actionUrl = $(this).attr('action');
+
+        const loader = document.getElementById('formLoaderbooking1');
+        loader.classList.remove('d-none');
+        // ✅ Send AJAX request
+        fetch(actionUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
+        })
+        .then(async response => {
+            loader.classList.add('d-none');
+
+            if (!response.ok) {
+                // If it's a validation error (422)
+                if (response.status === 422) {
+                    const data = await response.json();
+                    Object.values(data.errors).forEach(errorArray => {
+                        toastr.error(errorArray[0]); // Show first error of each field
+                    });
+                    return;
+                }
+
+                // Other server error
+                toastr.error('Something went wrong.');
+                return;
+            }
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                toastr.success(data.message);
+                $('#inquiryForm-footer')[0].reset();
+                $('#demands-footer').val(null).trigger('change');
+                
+            } else {
+                toastr.error(data.message || 'Something went wrong.');
+            }
+        })
+        
+        .catch(() => {
+            loader.classList.add('d-none');
+            toastr.error('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
+
 @endsection

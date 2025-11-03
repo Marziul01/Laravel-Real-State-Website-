@@ -969,6 +969,12 @@ div:where(.swal2-container).swal2-center>.swal2-popup {
   border-width: .3em;
   color: var(--primary-color) !important;
 }
+.iconpicker-popover {
+    z-index: 1056 !important; /* Modal z-index is 1055 in Bootstrap 5 */
+}
+.iconpicker-popover.fade:not(.show) {
+    opacity:1 !important;
+}
 @media screen and (max-width: 768px) {
 
   .dt-buttons,

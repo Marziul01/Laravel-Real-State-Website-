@@ -213,6 +213,9 @@ a:hover{
     transition: 0.2s;
     font-size: 13px ;
     font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .property-form .option-box:hover {
@@ -1562,7 +1565,7 @@ header#masthead .navbar-nav>li>a:hover:after{
     #main-nav {
         position: fixed;
         top: 75px;
-        left: -60%;
+        left: -80%;
         width: 80%;
         height: 100%;
         background: #fff;
