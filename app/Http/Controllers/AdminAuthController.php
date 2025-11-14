@@ -57,6 +57,15 @@ class AdminAuthController extends Controller
             ], 422);
         }
 
+        if($user->status == 2){
+            return response()->json([
+                'success' => false,
+                'errors' => [
+                    'email' => 'Your account has been blocked. Please contact support.',
+                ],
+            ], 422);
+        }
+
         // Authenticate the user with the instructor guard
         Auth::guard('admin')->login($user);
 

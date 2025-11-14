@@ -8,7 +8,7 @@
                     <p class="cta-subtitle">As an Agents</p>
                     <h3 class="cta-title">Do you want to work with DHR</h3>
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <a href="#" class="cta-arrow"><i class="fas fa-arrow-right"></i></a>
+                        <a href="{{ route('agents') }}" class="cta-arrow"><i class="fas fa-arrow-right"></i></a>
                         <p class="cta-action mb-0">Let's us show you the ropes</p>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
                     <p class="cta-subtitle">As a Clients</p>
                     <h3 class="cta-title">Are you seeking professional documentation services for your Property</h3>
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <a href="#" class="cta-arrow"><i class="fas fa-arrow-right"></i></a>
+                        <a href="{{ route('document.services') }}" class="cta-arrow"><i class="fas fa-arrow-right"></i></a>
                         <p class="cta-action mb-0">We support you to make a hassle free Property Documentation</p>
                     </div>
                 </div>
@@ -45,32 +45,35 @@
             <div class="col-6 col-md-3 col-lg-2 order-lg-2 order-3">
                 <h5 class="footer-column-title">COMPANY</h5>
                 <ul class="list-unstyled footer-links">
-                    <li><a href="#">About us</a></li>
-                    <li><a href="#">Blogs</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Contact us</a></li>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">Admin Panel</a></li>
+                    <li><a href="{{ route('about') }}">About us</a></li>
+                    <li><a href="{{ route('all.blogs') }}">Blogs</a></li>
+                    <li><a href="{{ route('careers.all') }}">Careers</a></li>
+                    <li><a href="{{ route('contact') }}">Contact us</a></li>
+                    <li><a href="{{ route('gallery') }}">Gallery</a></li>
                 </ul>
             </div>
             
             <div class="col-6 col-md-3 col-lg-2 order-lg-3 order-4">
-                <h5 class="footer-column-title">PRODUCT</h5>
+                <h5 class="footer-column-title">Services</h5>
+                @php
+                    $currentSlug = request()->route('slug'); // get current service slug from URL
+                    $servicesheaderfooter = \App\Models\Service::where('type', 'LIKE', '%Others%')->take(5)->get();
+                @endphp
                 <ul class="list-unstyled footer-links">
-                    <li><a href="#">Top Listed Property</a></li>
-                    <li><a href="#">Buy Property</a></li>
-                    <li><a href="#">Rent Property</a></li>
-                    <li><a href="#">Loan Services</a></li>
-                    <li><a href="#">Our Services</a></li>
+                    @if ($servicesheaderfooter->count())
+                        @foreach ($servicesheaderfooter as $serviceheaderfooter)
+                            <li><a href="{{ route('home.serives', $serviceheaderfooter->slug) }}">{{ $serviceheaderfooter->name }}</a></li>
+                        @endforeach
+                    @endif
                 </ul>
             </div>
             
             <div class="col-md-6 col-lg-4 order-lg-4 order-1">
                 <div class="agency-info">
-                    <h5 class="agency-name">DHR Housing Agency</h5>
-                    <p>Corporate Address: 2nd Floor (2B), House: 14/A, Road: 02, Block: L, Banani, Dhaka-1213</p>
-                    <p>Phone: +8801955443322</p>
-                    <p>Skype: emkt@194.233.87.193</p>
+                    <h5 class="agency-name">{{ $setting->site_name }}</h5>
+                    <p>Corporate Address: {{ $setting->site_address }}</p>
+                    <p>Phone: {{ $setting->site_phone }}</p>
+                    <p>Email: {{ $setting->site_email }}</p>
                     
                     <div class="footer-logo-container mt-4">
                         <img src="{{ asset($setting->site_logo) }}" alt="DHR Housing Agency Logo" class="footer-logo">
@@ -87,13 +90,14 @@
             <div class="row align-items-center">
                 
                 <div class="col-md-6 social-icons text-start mb-2 mb-md-0">
-                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="{{ $setting->facebook }}" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="{{ $setting->twitter }}" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="{{ $setting->instagram }}" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $setting->whatsapp) }}" class="social-link"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
                 
                 <div class="col-md-6 text-end">
-                    <p class="copyright-text mb-0">Copyright Reserved by DHR Housing Agency</p>
+                    <p class="copyright-text mb-0">Copyright Reserved by {{ $setting->site_name  }}</p>
                     <p class="designed-by mb-0">Designed & Developed by SoftDivz</p>
                 </div>
                 
@@ -119,9 +123,9 @@
 
 <div class="chat-widget">
   <div class="chat-icons">
-    <a href="#" class="icon messenger"><i class="fab fa-facebook-messenger"></i></a>
-    <a href="#" class="icon whatsapp"><i class="fab fa-whatsapp"></i></a>
-    <a href="#" class="icon phone"><i class="fas fa-phone"></i></a>
+    <a href="{{ $setting->facebook }}" class="icon messenger"><i class="fab fa-facebook-messenger"></i></a>
+    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $setting->whatsapp) }}" class="icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+    <a href="tel:{{ $setting->site_phone }}" class="icon phone"><i class="fas fa-phone"></i></a>
   </div>
 
   <button class="main-btn">

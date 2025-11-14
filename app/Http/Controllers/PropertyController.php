@@ -26,6 +26,9 @@ class PropertyController extends Controller
      */
     public function index(Request $request)
     {
+        if(auth()->user()->adminAccess->rent_property == 2){
+            return redirect(route('user.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
 
         if ($request->ajax()) {
             $properties = Property::where('type' , 'rent')->with(['propertyType','images', 'features' , 'amenities', 'country' ,'propertyarea','state'])->orderByDesc('created_at');
@@ -68,7 +71,9 @@ class PropertyController extends Controller
 
     public function sell(Request $request)
     {
-
+        if(auth()->user()->adminAccess->sell_property == 2){
+            return redirect(route('user.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $properties = Property::where('type' , 'sell')->with(['propertyType','images', 'features' , 'amenities', 'country' ,'propertyarea','state'])->orderByDesc('created_at');
 
@@ -110,6 +115,9 @@ class PropertyController extends Controller
      */
     public function create()
     {
+        if(auth()->user()->adminAccess->rent_property != 3){
+            return redirect(route('user.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.property.create',[
             'propertyTypes' => PropertyType::all(),
             'countries' => Country::where('status' , 1)->get(),
@@ -119,6 +127,9 @@ class PropertyController extends Controller
 
     public function sellcreate()
     {
+        if(auth()->user()->adminAccess->sell_property != 3){
+            return redirect(route('user.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.property.sellcreate',[
             'propertyTypes' => PropertyType::all(),
             'countries' => Country::where('status' , 1)->get(),
@@ -131,6 +142,16 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
+        if($request->type == 'rent'){
+            if(auth()->user()->adminAccess->rent_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }elseif($request->type == 'sell'){
+            if(auth()->user()->adminAccess->sell_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }
+
         try {
             // ✅ Validate request
             $validated = $request->validate([
@@ -287,8 +308,18 @@ class PropertyController extends Controller
      */
     public function edit($id)
     {
+        $property = Property::findOrFail($id);
+        if($property->type == 'rent'){
+            if(auth()->user()->adminAccess->rent_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }elseif($property->type == 'sell'){
+            if(auth()->user()->adminAccess->sell_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }
         return view('admin.property.edit',[
-            'property' => Property::find($id),
+            'property' => $property,
             'propertyTypes' => PropertyType::all(),
             'countries' => Country::where('status' , 1)->get(),
             'realtors' => User::where('role_type', 'Realtor' )->get(),
@@ -303,7 +334,17 @@ class PropertyController extends Controller
         try {
 
             $property = Property::findOrFail($id);
-            
+
+            if($property->type == 'rent'){
+                if(auth()->user()->adminAccess->rent_property != 3){
+                    return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+                }
+            }elseif($property->type == 'sell'){
+                if(auth()->user()->adminAccess->sell_property != 3){
+                    return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+                }
+            }
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
@@ -465,6 +506,16 @@ class PropertyController extends Controller
     {
         $property = Property::findOrFail($id);
 
+        if($property->type == 'rent'){
+            if(auth()->user()->adminAccess->rent_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }elseif($property->type == 'sell'){
+            if(auth()->user()->adminAccess->sell_property != 3){
+                return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            }
+        }
+        
         // ✅ Delete featured image if exists
         if ($property->featured_image && Storage::disk('public')->exists($property->featured_image)) {
             Storage::disk('public')->delete($property->featured_image);

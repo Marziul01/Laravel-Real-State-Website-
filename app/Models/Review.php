@@ -12,5 +12,24 @@ class Review extends Model
         'booking_id',
         'rating',
         'comment',
+        'service_id',
+        'name',
+        'status',
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'property_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class , 'service_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

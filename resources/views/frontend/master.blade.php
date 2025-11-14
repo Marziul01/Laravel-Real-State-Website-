@@ -3,32 +3,51 @@
 
 <head>
     <meta charset="UTF-8">
-
-
-    <link rel='icon' href='{{ asset($setting->site_favicon) }}' type='image/x-icon' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
     <title>{{ $setting->site_name }} | @yield('title')</title>
     <meta name="description" content="@yield('description')" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {{-- Canonical URL --}}
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- Favicon --}}
     <link rel="icon" href="{{ asset($setting->site_favicon) }}" sizes="32x32" />
     <link rel="icon" href="{{ asset($setting->site_favicon) }}" sizes="192x192" />
+    <link rel="apple-touch-icon" href="{{ asset($setting->site_favicon) }}" />
+
+    {{-- Open Graph (Facebook, LinkedIn) --}}
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="@yield('title', $setting->site_name)">
+    <meta property="og:description" content="@yield('description', 'Explore expert insights, property guides, and real estate trends by ' . $setting->site_name . '.')">
+    <meta property="og:image" content="@yield('meta_image', asset($setting->site_favicon))">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="{{ $setting->site_name }}">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', $setting->site_name)">
+    <meta name="twitter:description" content="@yield('description', 'Explore expert insights, property guides, and real estate trends by ' . $setting->site_name . '.')">
+    <meta name="twitter:image" content="@yield('meta_image', asset($setting->site_favicon))">
+
+    {{-- External Libraries --}}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.min.css" />
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="apple-touch-icon" href="{{ asset($setting->site_favicon) }}" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.min.css" />
+
+    {{-- Local Styles --}}
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/style.css') }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- CSRF Token --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
+
 
 <body
     class="home wp-singular page-template page-template-front-page page-template-front-page-php page page-id-7 wp-embed-responsive wp-theme-twentytwenty wp-child-theme-twentytwenty-child singular enable-search-modal missing-post-thumbnail has-no-pagination not-showing-comments show-avatars front-page footer-top-hidden">
@@ -236,20 +255,37 @@ document.addEventListener("DOMContentLoaded", function() {
                                 toastr.success('Login successful!');
                                 setTimeout(() => location.reload(), 1000);
                             }
-                        } else {
-                            if (!isSignup) $('#passwordError').text(response.message ||
-                                'Invalid credentials.');
+                        }else {
+                            // Only show message when success = false but NOT validation error
+                            if (response.message) {
+                                $('#passwordError').text(response.message);
+                            }
                         }
                     },
                     error: function(xhr) {
                         loader.classList.add('d-none');
                         if (xhr.status === 422) {
-                            const errors = xhr.responseJSON.errors;
-                            if (errors.email) $('#emailError').text(errors.email[0]);
-                            if (errors.password) $('#passwordError').text(errors.password[0]);
-                            if (errors.name) $('#nameError').text(errors.name[0]);
-                            if (errors.phone) $('#phoneError').text(errors.phone[0]);
-                        } else {
+                            const errors = xhr.responseJSON.errors || {};
+
+                            // For Access Denied and Blocked — they return "email" error
+                            if (errors.email) {
+                                $('#emailError').text(errors.email[0]);
+                            }
+
+                            if (errors.password) {
+                                $('#passwordError').text(errors.password[0]);
+                            }
+
+                            if (errors.name) {
+                                $('#nameError').text(errors.name[0]);
+                            }
+
+                            if (errors.phone) {
+                                $('#phoneError').text(errors.phone[0]);
+                            }
+
+                            return;
+                        }else {
                             $('#passwordError').text("Something went wrong. Please try again.");
                         }
                     }

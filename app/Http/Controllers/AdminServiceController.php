@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -40,10 +41,21 @@ class AdminServiceController extends Controller
                     else
                         return 'N/A';
                 })
-                ->addColumn('action', function($row){
+                ->addColumn('action', function($row) {
+                    $deleteRoute = route('admin.services.delete', $row->id);
+                    $csrf = csrf_field();
+
                     return '
-                        <button class="btn btn-sm btn-warning editServiceBtn" data-id="'.$row->id.'"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger deleteServiceBtn" data-id="'.$row->id.'"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-warning editServiceBtn" data-id="' . $row->id . '">
+                            <i class="fa fa-edit"></i>
+                        </button>
+
+                        <form action="' . $deleteRoute . '" method="POST" class="d-inline delete-confirm-form">
+                            ' . $csrf . '
+                            <button type="submit" class="btn btn-sm btn-danger deleteInquiryBtn delete-confirm">
+                                Delete
+                            </button>
+                        </form>
                     ';
                 })
                 ->rawColumns(['icon','type','file_display','action'])
@@ -108,6 +120,13 @@ class AdminServiceController extends Controller
                 'description' => $validated['description'] ?? null,
             ]);
 
+            $notification = new Notification();
+            $notification->user_id = auth()->id();
+            $notification->message = 'New Service created .';
+            $notification->notification_for = 'Services';
+            $notification->item_id = $service->id;
+            $notification->save();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Service added successfully!',
@@ -122,4 +141,116 @@ class AdminServiceController extends Controller
             ], 500);
         }
     }
+
+    public function edit($id)
+    {
+        $service = Service::findOrFail($id);
+        return response()->json($service);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $service = Service::findOrFail($id);
+
+        // ================= VALIDATION =================
+        $validator = Validator::make($request->all(), [
+            'type'        => 'required|array',
+            'type.*'      => 'string',
+            'name'        => 'required|string|max:255',
+            'icon'        => 'required|string|max:255',
+            'file_type'   => 'required|string|in:Image,Video File,Video Link',
+            'file'        => 'nullable',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
+
+        try {
+            $filePath = $service->file; // Keep existing file unless replaced
+
+            // ================ FILE UPLOAD =================
+            if (in_array($validated['file_type'], ['Image', 'Video File']) && $request->hasFile('file')) {
+                $ext = $request->file('file')->getClientOriginalExtension();
+                $filename = uniqid('service_') . '.' . $ext;
+                $folder = $validated['file_type'] === 'Image' ? 'images' : 'videos';
+                $path = public_path("admin-assets/services/{$folder}");
+                if (!file_exists($path)) mkdir($path, 0777, true);
+                $request->file('file')->move($path, $filename);
+                $filePath = "admin-assets/services/{$folder}/{$filename}";
+            } elseif ($validated['file_type'] === 'Video Link') {
+                $filePath = $request->file;
+            }
+
+            // ================ UNIQUE SLUG (IF NAME CHANGED) =================
+            if ($service->name !== $validated['name']) {
+                $baseSlug = Str::slug($validated['name']);
+                $slug = $baseSlug;
+                $count = 1;
+                while (Service::where('slug', $slug)->where('id', '!=', $service->id)->exists()) {
+                    $slug = $baseSlug . '-' . $count++;
+                }
+                $validated['slug'] = $slug;
+            }
+
+            // ================ UPDATE SERVICE =================
+            $service->update([
+                'type'        => implode(',', $validated['type']),
+                'name'        => $validated['name'],
+                'slug'        => $validated['slug'] ?? $service->slug,
+                'icon'        => $validated['icon'],
+                'file_type'   => $validated['file_type'],
+                'file'        => $filePath,
+                'description' => $validated['description'] ?? null,
+            ]);
+
+            // ================ NOTIFICATION =================
+            $notification = new Notification();
+            $notification->user_id = auth()->id();
+            $notification->message = 'Service updated.';
+            $notification->notification_for = 'Services';
+            $notification->item_id = $service->id;
+            $notification->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Service updated successfully!',
+                'data'    => $service
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while updating service!',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function delete($id)
+        {
+            $Service = Service::findOrFail($id);
+
+            if ($Service->file && file_exists(public_path($Service->file))) {
+                unlink(public_path($Service->file));
+            }
+
+            $notification = new Notification();
+            $notification->user_id = auth()->id();
+            $notification->message = $Service->name. ' Service has been deleted .';
+            $notification->notification_for = 'Services';
+            $notification->item_id = $Service->id;
+            $notification->save();
+            $Service->delete();
+
+            return back()->with('success','A Service has been deleted');
+        }
+
 }

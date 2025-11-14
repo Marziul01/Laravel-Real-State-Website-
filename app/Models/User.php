@@ -23,6 +23,11 @@ class User extends Authenticatable
         'password',
         'phone',
         'email_verified_at',
+        'role',
+        'role_type',
+        'image',
+        'last_login_at',
+        'under_admin',
     ];
 
     /**
@@ -46,5 +51,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id');
+    }
+
+    public function adminAccess()
+    {
+        return $this->hasOne(AdminAccess::class, 'admin_id');
     }
 }

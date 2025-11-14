@@ -6,7 +6,9 @@
         <div class="card ">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">Selling Properties</h5>
+                @if ($access->sell_property == 3)
                 <a href="{{ route('sellcreate') }}" class="btn btn-primary">Add Property</a>
+                @endif
             </div>
             <div class="card-body  text-nowrap">
                 <div class="table-responsive">

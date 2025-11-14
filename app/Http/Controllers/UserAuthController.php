@@ -27,20 +27,36 @@ class UserAuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || $user->role != 1) {
+        // ❌ Access Denied (not admin)
+        if (!$user) {
             return response()->json([
-                'success' => false,
-                'errors' => ['email' => 'Access denied!'],
+                'errors' => ['email' => ['Invalid email!']]
             ], 422);
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password , ]) ) {
+        if ($user->role != 1) {
+            return response()->json([
+                'errors' => ['email' => ['Access denied!']]
+            ], 422);
+        }
+
+        // ❌ Blocked
+        if ($user->status == 2) {
+            return response()->json([
+                'errors' => ['email' => ['Account blocked!']]
+            ], 422);
+        }
+
+        // Login
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
             return response()->json(['success' => true, 'message' => 'Login successful!']);
         }
 
+        // Wrong password
         return response()->json(['success' => false, 'message' => 'Invalid email or password.']);
     }
+
 
     public function register(Request $request)
 {

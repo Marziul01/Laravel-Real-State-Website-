@@ -4,11 +4,27 @@
     Home
 @endsection
 
+@section('description')
+    Welcome to DHR Real Estate, your trusted partner for buying, selling, and renting properties. Explore our extensive listings and expert services today.
+@endsection
+
 @section('content')
     <div id="content" class="site-content">
         <div class="home-hero-section loading-normal-page">
             <div class="swiper mySwiper" slides-per-view="auto">
                 <div class="swiper-wrapper" slides-per-view="auto">
+                    @if ($sliders->isNotEmpty())
+                    @foreach ($sliders as $slider )
+                        <div class="swiper-slide">
+                            <img class="slider-img" src="{{ asset($slider->image) }}" alt="">
+                            <div class="container slide-caption">
+                                <h2 class="slider-heading">{{ $slider->title }}</h2>
+                                <p class="slider-subheading">{{ $slider->description }}</p>
+                                <a href="{{ $slider->property->type == 'rent' ? route('view.rent.property', $slider->property->slug) : route('view.buy.property', $slider->property->slug) }}" class="btn slider-btn">Learn More</a>
+                            </div>
+                        </div> 
+                    @endforeach
+                    @else
                     <div class="swiper-slide">
                         <img class="slider-img" src="{{ asset('frontend-assets') }}/images/slider.jpg" alt="">
                         <div class="container slide-caption">
@@ -17,38 +33,8 @@
                             <a href="#" class="btn slider-btn">Learn More</a>
                         </div>
                     </div>
-                    <div class="swiper-slide">
-                        <img class="slider-img" src="{{ asset('frontend-assets') }}/images/slider1.webp" alt="">
-                        <div class="container slide-caption">
-                            <h2 class="slider-heading">Lyvia By Palace at Dubai Creek Harbour</h2>
-                            <p class="slider-subheading">Serene Haven of Branded Living</p>
-                            <a href="#" class="btn slider-btn">Learn More</a>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <img class="slider-img" src="{{ asset('frontend-assets') }}/images/slider2.jpg" alt="">
-                        <div class="container slide-caption">
-                            <h2 class="slider-heading">Lyvia By Palace at Dubai Creek Harbour</h2>
-                            <p class="slider-subheading">Serene Haven of Branded Living</p>
-                            <a href="#" class="btn slider-btn">Learn More</a>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <img class="slider-img" src="{{ asset('frontend-assets') }}/images/slider3.jpg" alt="">
-                        <div class="container slide-caption">
-                            <h2 class="slider-heading">Lyvia By Palace at Dubai Creek Harbour</h2>
-                            <p class="slider-subheading">Serene Haven of Branded Living</p>
-                            <a href="#" class="btn slider-btn">Learn More</a>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <img class="slider-img" src="{{ asset('frontend-assets') }}/images/slider4.jpg" alt="">
-                        <div class="container slide-caption">
-                            <h2 class="slider-heading">Lyvia By Palace at Dubai Creek Harbour</h2>
-                            <p class="slider-subheading">Serene Haven of Branded Living</p>
-                            <a href="#" class="btn slider-btn">Learn More</a>
-                        </div>
-                    </div>
+                    @endif
+                    
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -520,151 +506,18 @@
         <div class="container my-5">
             <h2 class=" mb-4 reviews-title">OUR SERVICES</h2>
             <div class="row row-cols-2 row-cols-md-4 g-4">
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-home"></i>
+                @if ($services->isNotEmpty())
+                    @foreach ($services as $service )
+                        <div class="col">
+                            <a class="service-card p-3" href="{{ route('home.serives', $service->slug) }}">
+                                <div class="icon-placeholder mb-2">
+                                    <i class="{{ $service->icon }}"></i>
+                                </div>
+                                <p class="service-text mb-0">{{ $service->name }}</p>
+                            </a>
                         </div>
-                        <p class="service-text mb-0">Property Rent Management</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-key"></i>
-                        </div>
-                        <p class="service-text mb-0">Rental Service</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-tag"></i>
-                        </div>
-                        <p class="service-text mb-0">Sell Property</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-shopping-bag"></i>
-                        </div>
-                        <p class="service-text mb-0">Buy Property</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <p class="service-text mb-0">Holding Mutation</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-gavel"></i>
-                        </div>
-                        <p class="service-text mb-0">Authority Mutation</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <div class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-registered"></i>
-                        </div>
-                        <p class="service-text mb-0">Registration</p>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-handshake"></i>
-                        </div>
-                        <p class="service-text mb-0">Transfer Permission</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <p class="service-text mb-0">Property Color</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-file-contract"></i>
-                        </div>
-                        <p class="service-text mb-0">Legal Vetting</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <p class="service-text mb-0">Electricity Mutation</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <p class="service-text mb-0">Gas Mutation</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <p class="service-text mb-0">Property Valuation</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-drafting-compass"></i>
-                        </div>
-                        <p class="service-text mb-0">Project Development</p>
-                    </a>
-                </div>
-
-                <div class="col focused-card-col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-chair"></i>
-                        </div>
-                        <p class="service-text mb-0">Property Interior</p>
-                    </a>
-                </div>
-
-                <div class="col">
-                    <a class="service-card p-3">
-                        <div class="icon-placeholder mb-2">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <p class="service-text mb-0">Property Renovation</p>
-                    </a>
-                </div>
-
+                    @endforeach
+                @endif
             </div>
         </div>
 
@@ -673,67 +526,38 @@
                 <div class="">
                     <div class="d-flex justify-content-between align-items-center position-relative">
                         <h3 class="reviews-title">Team DHR</h3>
-                        <a href="#">All Members <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="{{ route('about') }}">All Members <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
 
                     <div class="team-photo-container my-4">
-                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c" alt="Team Melody Group"
+                        <img src="{{ $homepage->image }}" alt="Team Group"
                             class="img-fluid team-group-photo">
                     </div>
 
                     <div class="swiper-container member-slider">
                         <div class="swiper-wrapper">
-
-                            <div class="swiper-slide">
-                                <div class="member-card">
-                                    <div class="member-image-wrapper">
-                                        <img src="{{ asset('frontend-assets') }}/images/slider1.webp" alt="Md Saif Uddin"
-                                            class="member-image">
+                            @if ($teams->isNotEmpty())
+                                @foreach ($teams as $team)
+                                    <div class="swiper-slide">
+                                        <div class="member-card">
+                                            <div class="member-image-wrapper">
+                                                <img src="{{ asset($team->photo) }}" alt="{{ $team->name }}"
+                                                    class="member-image">
+                                            </div>
+                                            <h4 class="member-name">{{ $team->name }}</h4>
+                                            <p class="member-role">{{ $team->position }}</p>
+                                            @if ($team->email)
+                                                <p class="member-contact mb-0">{{ $team->email }}</p>
+                                            @endif
+                                            @if ($team->phone)
+                                                <p class="member-contact">{{ $team->phone }}</p>
+                                            @endif
+                                            
+                                        </div>
                                     </div>
-                                    <h4 class="member-name">Md Saif Uddin</h4>
-                                    <p class="member-role">Executive, Accounts & Admin</p>
-                                    <p class="member-contact">01974422770</p>
-                                    <button class="btn btn-appointment">Get Appointment</button>
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="member-card">
-                                    <div class="member-image-wrapper">
-                                        <img src="{{ asset('frontend-assets') }}/images/slider1.webp"
-                                            alt="Salah Uddin Shikder" class="member-image">
-                                    </div>
-                                    <h4 class="member-name">Salah Uddin Shikder</h4>
-                                    <p class="member-role">Managing Director</p>
-                                    <p class="member-contact">01955443322</p>
-                                    <button class="btn btn-appointment">Get Appointment</button>
-                                </div>
-                            </div>
-
-                            <div class="swiper-slide">
-                                <div class="member-card">
-                                    <div class="member-image-wrapper">
-                                        <img src="{{ asset('frontend-assets') }}/images/slider1.webp"
-                                            alt="Rainessa Mostafa" class="member-image">
-                                    </div>
-                                    <h4 class="member-name">Rainessa Mostafa</h4>
-                                    <p class="member-role">Chairman</p>
-                                    <p class="member-contact">01716679276</p>
-                                    <button class="btn btn-appointment">Get Appointment</button>
-                                </div>
-                            </div>
-                            <div class="swiper-slide">
-                                <div class="member-card">
-                                    <div class="member-image-wrapper">
-                                        <img src="{{ asset('frontend-assets') }}/images/slider1.webp"
-                                            alt="Rainessa Mostafa" class="member-image">
-                                    </div>
-                                    <h4 class="member-name">Rainessa Mostafa</h4>
-                                    <p class="member-role">Chairman</p>
-                                    <p class="member-contact">01716679276</p>
-                                    <button class="btn btn-appointment">Get Appointment</button>
-                                </div>
-                            </div>
+                                @endforeach
+                            @endif
+                            
                         </div>
 
                         <div class="swiper-button-prev swiper-button-prev3"></div>
@@ -752,56 +576,34 @@
                 </div>
 
                 <div class="row g-3 mb-5 justify-content-center">
-
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="metric-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <span class="metric-number">+170</span>
-                                <i class="fas fa-home metric-icon"></i>
+                    @php
+                        // Extract results from database
+                        $results = [];
+                        if ($homepage) {
+                            for ($i = 1; $i <= 5; $i++) {
+                                $col = "result_$i";
+                                if (!empty($homepage->$col)) {
+                                    $parts = explode(',', $homepage->$col);
+                                    $results[] = [
+                                        'icon' => $parts[0] ?? 'fas fa-star',
+                                        'name' => $parts[1] ?? 'N/A',
+                                        'number' => $parts[2] ?? '+0',
+                                    ];
+                                }
+                            }
+                        }
+                    @endphp
+                    @foreach ($results as $result)
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="metric-card text-center border rounded-3 p-3 shadow-sm">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <span class="metric-number">+ {{ $result['number'] }}</span>
+                                    <i class="{{ $result['icon'] }} metric-icon fs-4"></i>
+                                </div>
+                                <p class="metric-label mt-2">{{ $result['name'] }}</p>
                             </div>
-                            <p class="metric-label">Sold</p>
                         </div>
-                    </div>
-
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="metric-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <span class="metric-number">+180</span>
-                                <i class="fas fa-chart-bar metric-icon"></i>
-                            </div>
-                            <p class="metric-label">Property Inventory</p>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="metric-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <span class="metric-number">+3200</span>
-                                <i class="fas fa-user-tie metric-icon"></i>
-                            </div>
-                            <p class="metric-label">Listed Agent</p>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="metric-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <span class="metric-number">+175000</span>
-                                <i class="fas fa-database metric-icon"></i>
-                            </div>
-                            <p class="metric-label">Client Database</p>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="metric-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <span class="metric-number">+14</span>
-                                <i class="fas fa-calendar-alt metric-icon"></i>
-                            </div>
-                            <p class="metric-label">Years</p>
-                        </div>
-                    </div>
+                    @endforeach
 
                 </div>
 
@@ -814,82 +616,27 @@
 
                 <div class="swiper-container review-slider">
                     <div class="swiper-wrapper">
+                    @if ($reviews->isNotEmpty())
+                        @foreach ($reviews as $review)
+                            <div class="swiper-slide">
+                                <div class="review-card">
+                                    <div class="stars mb-3">
+                                        @for ($i = 0; $i < $review->rating; $i++)
+                                            <i class="fas fa-star"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="review-text">{{ $review->comment }}</p>
 
-                        <div class="swiper-slide">
-                            <div class="review-card">
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <p class="review-text">Excellent service! They saved me days of work and ensured my
-                                    documents were 100% accurate.</p>
-
-                                <div class="reviewer-info d-flex align-items-center mt-4">
-                                    <img src="path/to/manirul/sarker.jpg" alt="Md. Manirul Haque Sarker"
-                                        class="reviewer-avatar">
-                                    <div class="ms-3 text-start">
-                                        <p class="reviewer-name">Md. Manirul Haque Sarker</p>
-                                        <p class="reviewer-role">Document Service</p>
+                                    <div class="reviewer-info d-flex align-items-center mt-4">
+                                        <div class="text-start">
+                                            <p class="reviewer-name">{{ $review->user_id ? $review->user->name : $review->name }}</p>
+                                            <p class="reviewer-role">{{ $review->property_id ? 'Property: ' .$review->property->name : 'Service: ' . $review->service->name }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="swiper-slide">
-                            <div class="review-card">
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <p class="review-text">I had no idea about land documentation, but their team handled
-                                    everything perfectly.</p>
-
-                                <div class="reviewer-info d-flex align-items-center mt-4">
-                                    <img src="path/to/sadman/khan.jpg" alt="Sadman Mahmud Khan" class="reviewer-avatar">
-                                    <div class="ms-3 text-start">
-                                        <p class="reviewer-name">Sadman Mahmud Khan</p>
-                                        <p class="reviewer-role">Document Service</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="swiper-slide">
-                            <div class="review-card">
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <p class="review-text">Quick processing, clear communication, and no hidden charges —
-                                    exactly what I needed.</p>
-
-                                <div class="reviewer-info d-flex align-items-center mt-4">
-                                    <img src="path/to/shahidul/huq.jpg" alt="MD. Shahidul Huq" class="reviewer-avatar">
-                                    <div class="ms-3 text-start">
-                                        <p class="reviewer-name">MD. Shahidul Huq</p>
-                                        <p class="reviewer-role">Document Service</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="review-card">
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <p class="review-text">Quick processing, clear communication, and no hidden charges —
-                                    exactly what I needed.</p>
-
-                                <div class="reviewer-info d-flex align-items-center mt-4">
-                                    <img src="path/to/shahidul/huq.jpg" alt="MD. Shahidul Huq" class="reviewer-avatar">
-                                    <div class="ms-3 text-start">
-                                        <p class="reviewer-name">MD. Shahidul Huq</p>
-                                        <p class="reviewer-role">Document Service</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+                    @endif
                     </div>
 
 

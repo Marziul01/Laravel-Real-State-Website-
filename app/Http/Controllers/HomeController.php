@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Mail\InquiryReceived;
+use App\Models\AboutPage;
+use App\Models\AgentPage;
+use App\Models\Blog;
 use App\Models\Booking;
+use App\Models\Carrer;
 use App\Models\Country;
 use App\Models\District;
+use App\Models\Gallery;
+use App\Models\HomePage;
 use App\Models\Inquiry;
 use App\Models\Notification;
 use App\Models\Property;
 use App\Models\PropertyType;
+use App\Models\Review;
+use App\Models\Service;
 use App\Models\SiteSetting;
+use App\Models\Slider;
 use App\Models\State;
+use App\Models\Team;
 use App\Models\Upazila;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,6 +53,11 @@ class HomeController extends Controller
             'minBathrooms' => $minBathrooms,
             'maxBathrooms' => $maxBathrooms,
             'countries' => Country::all(),
+            'services' => Service::all(),
+            'sliders' => Slider::all(),
+            'homepage' => HomePage::first(),
+            'teams' => Team::all(),
+            'reviews' => Review::all(),
          ]);
     }
 
@@ -322,5 +337,124 @@ class HomeController extends Controller
         return response()->json($cities);
     }
 
+    public function services(Request $request, $slug)
+    {
+        $service = Service::where('slug', $slug)->firstOrFail();
 
+        return view('frontend.services.service_details', [
+            'service' => $service,
+            'countries' => Country::all(),
+        ]);
+    }
+
+    public function service()
+    {
+        $services = Service::all();
+
+        return view('frontend.services.service', [
+            'services' => $services,
+            'countries' => Country::all(),
+        ]);
+    }
+
+    public function about()
+    {
+        $services = Service::all();
+        $about = AboutPage::first();
+        return view('frontend.pages.about', [
+            'services' => $services,
+            'countries' => Country::all(),
+            'about' => $about,
+            'teams' => Team::all(),
+        ]);
+    }
+
+    public static function contact()
+    {
+        $services = Service::all();
+        return view('frontend.pages.contact', [
+            'services' => $services,
+            'countries' => Country::all(),
+        ]);
+    }
+
+    public function blog()
+    {
+        $blogs = Blog::latest()->paginate(12);
+        $services = Service::all();
+        return view('frontend.blogs.blog', [
+            'blogs' => $blogs,
+            'countries' => Country::all(),
+            'services' => $services,
+        ]);
+    }
+
+    public function blogDetails(Request $request,  $slug)
+    {
+        $blog = Blog::where('slug', $slug)->firstOrFail();
+        $services = Service::all();
+        $relatedPosts = Blog::where('id', '!=', $blog->id)
+        // ->where(function($q) use ($blog) {
+        //     foreach (explode(',', $blog->tags) as $tag) {
+        //         $q->orWhere('tags', 'like', '%' . trim($tag) . '%');
+        //     }
+        // })
+        ->take(4)->get();
+        return view('frontend.blogs.blog_details', [
+            'blog' => $blog,
+            'countries' => Country::all(),
+            'services' => $services,
+            'relatedPosts' => $relatedPosts,
+        ]);
+    }
+
+
+    public function carrer()
+    {
+        $services = Service::all();
+        $careers = Carrer::latest()->paginate(10);
+        $countries = Country::all();
+        return view('frontend.pages.careers', compact('careers','services','countries'));
+    }
+
+    public function carrershow($id)
+    {
+        $services = Service::all();
+        $career = Carrer::findOrFail($id);
+        $countries = Country::all();
+        return view('frontend.pages.career-details', compact('career','services','countries'));
+    }
+
+    public function gallery()
+    {
+        $services = Service::all();
+        $galleryImages = Gallery::latest()->get();
+        return view('frontend.pages.gallery', [
+            'countries' => Country::all(),
+            'services' => $services,
+            'galleryImages' => $galleryImages,
+        ]);
+    }
+
+    public function Agents()
+    {
+        $services = Service::all();
+        
+        return view('frontend.pages.agents', [
+            'countries' => Country::all(),
+            'services' => $services,
+            'agentpage' => AgentPage::first(),
+        ]);
+    }
+
+    public function documentServices()
+    {
+        $docunment = Service::where('type', 'LIKE', '%Property Document Services%')->get();
+        $services = Service::all();
+        return view('frontend.pages.document_services', [
+            'countries' => Country::all(),
+            'services' => $services,
+            'docunments' => $docunment,
+        ]);
+    }
 }

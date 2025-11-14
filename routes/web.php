@@ -1,22 +1,32 @@
 <?php
 
+use App\Http\Controllers\AboutPageController;
+use App\Http\Controllers\AdminAccessController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AdminServiceController;
+use App\Http\Controllers\AgentPageController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CarrerController;
 use App\Http\Controllers\ClientPropertySubmission;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomePropertyController;
+use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyInquiryController;
 use App\Http\Controllers\PropertyTypeController;
+use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserBookingController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserManagmentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -24,7 +34,7 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about-us', [HomeController::class, 'about'])->name('about');
-Route::get('/services', [HomeController::class, 'services'])->name('services');
+Route::get('/services', [HomeController::class, 'service'])->name('services');
 Route::get('/all-properties', [HomeController::class, 'rent'])->name('rent');
 Route::get('/buy-properties', [HomeController::class, 'property'])->name('property');
 Route::get('/contact-us', [HomeController::class, 'contact'])->name('contact');
@@ -49,6 +59,16 @@ Route::get('/get-cities-by-state/{state}', [HomeController::class, 'getCitiesByS
 Route::post('/service/inquiries', [FormController::class, 'propertyInquiry'])->name('service.inquiries');
 Route::get('/send/your/property/', [FormController::class, 'sendyourproperty'])->name('sendyourproperty');
 Route::post('/client/properties/submit', [FormController::class, 'clientProperties'])->name('client.properties');
+Route::get('/our/servies/{slug}', [HomeController::class, 'services'])->name('home.serives');
+Route::get('/all/blogs', [HomeController::class, 'blog'])->name('all.blogs');
+Route::get('/view/blog/{slug}', [HomeController::class, 'blogDetails'])->name('blog.details');
+Route::get('/all/careers', [HomeController::class, 'carrer'])->name('careers.all');
+Route::get('/show/careers/details/{id}', [HomeController::class, 'carrershow'])->name('careers.show');
+Route::get('/gallery', [HomeController::class, 'gallery'])->name('gallery');
+Route::get('/be/agents', [HomeController::class, 'Agents'])->name('agents');
+Route::get('/document/services', [HomeController::class, 'documentServices'])->name('document.services');
+
+
 
 Route::get('/get-time', function () { 
     return response()->json([
@@ -143,6 +163,58 @@ Route::prefix('admin')->group(function () {
         Route::get('/all/services/managment', [AdminServiceController::class, 'services'])->name('admin.services');
         Route::post('/admin/services/store', [AdminServiceController::class, 'store'])->name('admin.services.store');
         Route::get('/admin/services/data', [AdminServiceController::class, 'getData'])->name('admin.services.data');
+        Route::get('/admin/services/{id}/edit', [AdminServiceController::class, 'edit'])->name('admin.services.edit');
+        Route::post('/admin/services/{id}', [AdminServiceController::class, 'update'])->name('admin.services.update');
+        Route::post('/admin/services/delete/{id}', [AdminServiceController::class, 'delete'])->name('admin.services.delete');
+
+        Route::get('/all/teams/managment', [TeamController::class, 'teams'])->name('admin.teams');
+        Route::post('/admin/teams/store', [TeamController::class, 'store'])->name('admin.teams.store');
+        Route::get('/admin/teams/data', [TeamController::class, 'getData'])->name('admin.teams.data');
+        Route::get('/admin/teams/{id}/edit', [TeamController::class, 'edit'])->name('admin.teams.edit');
+        Route::post('/admin/teams/{id}', [TeamController::class, 'update'])->name('admin.teams.update');
+        Route::post('/admin/teams/delete/{id}', [TeamController::class, 'delete'])->name('admin.teams.delete');
+
+        Route::get('/about/page/managment', [AboutPageController::class, 'aboutPage'])->name('admin.about.page');
+        Route::post('/admin/about/update', [AboutPageController::class, 'update'])->name('admin.about.update');
+
+        Route::get('/all/reviews/managment', [ReviewsController::class, 'reviews'])->name('admin.reviews');
+        Route::post('/admin/reviews/store', [ReviewsController::class, 'store'])->name('admin.reviews.store');
+        Route::get('/admin/reviews/data', [ReviewsController::class, 'getData'])->name('admin.reviews.data');
+        Route::get('/admin/reviews/{id}/edit', [ReviewsController::class, 'edit'])->name('admin.reviews.edit');
+        Route::post('/admin/reviews/{id}', [ReviewsController::class, 'update'])->name('admin.reviews.update');
+        Route::post('/admin/reviews/delete/{id}', [ReviewsController::class, 'delete'])->name('admin.reviews.delete');
+
+        Route::get('/all/home/slider/managment', [PagesController::class, 'homepage'])->name('admin.homeslider');
+        Route::post('/admin/home/slider/store', [PagesController::class, 'store'])->name('admin.homeslider.store');
+        Route::get('/admin/home/slider/data', [PagesController::class, 'getData'])->name('admin.homeslider.data');
+        Route::get('/admin/home/slider/{id}/edit', [PagesController::class, 'edit'])->name('admin.homeslider.edit');
+        Route::post('/admin/home/slider/{id}', [PagesController::class, 'update'])->name('admin.homeslider.update');
+        Route::post('/admin/home/slider/delete/{id}', [PagesController::class, 'delete'])->name('admin.homeslider.delete');
+        Route::post('/admin/homepage/update', [PagesController::class, 'homeupdate'])->name('admin.homepage.update');
+
+        Route::resource('blogs', BlogController::class)->names('blogs');
+        Route::get('/get/blogs/data', [BlogController::class, 'getData'])->name('admin.blogs.data');
+        Route::resource('careers', CarrerController::class)->names('careers');
+        Route::get('/get/careers/data', [CarrerController::class, 'getData'])->name('admin.careers.data');
+
+        Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::post('gallery/upload', [GalleryController::class, 'store'])->name('admin.gallery.store');
+        Route::delete('gallery/{id}', [GalleryController::class, 'destroy'])->name('admin.gallery.destroy');
+
+        Route::get('/agent/page/managment', [AgentPageController::class, 'index'])->name('admin.agent.page');
+        Route::post('/admin/agent/update', [AgentPageController::class, 'update'])->name('admin.agent.update');
+
+        Route::get('/all/users/managment', [UserManagmentController::class, 'users'])->name('admin.users');
+        Route::get('/admin/users/data', [UserManagmentController::class, 'getData'])->name('admin.users.data');
+        Route::post('/admin/users/{id}/{status}', [UserManagmentController::class, 'updateStatus'])->name('admin.users.update');
+        Route::post('/users/delete/{id}', [UserManagmentController::class, 'delete'])->name('admin.users.deleted');
+
+        Route::get('/control/panel/admins', [AdminAccessController::class, 'admins'])->name('admin.control.panel');
+        Route::post('/control/panel/store', [AdminAccessController::class, 'store'])->name('admin.control.store');
+        Route::post('/control/panel/{id}/status', [AdminAccessController::class, 'status'])->name('admin.control.status');
+        Route::post('/control/panel/{id}', [AdminAccessController::class, 'update'])->name('admin.control.update');
+        Route::post('/control/panel/delete/{id}', [AdminAccessController::class, 'delete'])->name('admin.control.delete');
+
     });
 });
 

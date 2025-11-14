@@ -24,66 +24,42 @@
                         <ul id="menu-top-menu" class="navbar-nav">
 
                             <li class="menu-item {{ $currentRoute == 'about' ? 'active' : '' }}">
-                                <a href="">About Us</a>
+                                <a href="{{ route('about') }}">About Us</a>
                             </li>
 
                             <li class="menu-item {{ $currentRoute == 'services' ? 'active' : '' }}">
-                                <a href="">Services</a>
+                                <a href="{{ route('services') }}">Services</a>
                             </li>
 
                             <li class="menu-item {{ $currentRoute == 'rent' ? 'active' : '' }}">
                                 <a href="{{ route('rent', ['type' => 'rent']) }}">Property Rent & Booking</a>
                             </li>
 
-                            @php
-                                // Define all Buy Properties-related routes
-                                $buyRoutes = [
-                                    'property',
-                                    'property.overview',
-                                    'property.renovation',
-                                    'property.color',
-                                    'property.interior',
-                                    'property.valuation',
-                                    'property.development',
-                                ];
-
-                                $isBuyActive = in_array($currentRoute, $buyRoutes);
-                            @endphp
-
                             <!-- Buy Properties Dropdown -->
-                            <li class="nav-item dropdown position-relative {{ $isBuyActive ? 'active' : '' }}">
-                                <a href="javascript:void(0)" class="nav-link dropdown-toggle" id="buyDropdown">
+                            <li class="nav-item dropdown position-relative">
+                                <a href="{{ route('rent', ['type' => 'sell']) }}" class="nav-link dropdown-toggle" id="buyDropdown">
                                     Buy Properties
                                 </a>
                                 <ul class="dropdown-menu border-0 shadow-lg rounded-3 mina-submenu" aria-labelledby="buyDropdown">
                                     <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property' ? 'active' : '' }}" 
+                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'rent' ? 'active' : '' }}" 
                                         href="{{ route('rent', ['type' => 'sell']) }}">All Buy Properties</a>
                                     </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.overview' ? 'active' : '' }}" 
-                                        href="">Property Upgrading Overview</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.renovation' ? 'active' : '' }}" 
-                                        href="">Property Renovation</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.color' ? 'active' : '' }}" 
-                                        href="">Property Color</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.interior' ? 'active' : '' }}" 
-                                        href="">Property Interior</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.valuation' ? 'active' : '' }}" 
-                                        href="">Property Valuation</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item mina-submenuitem {{ $currentRoute == 'property.development' ? 'active' : '' }}" 
-                                        href="">Project Development</a>
-                                    </li>
+                                    @php
+                                        $currentSlug = request()->route('slug'); // get current service slug from URL
+                                        $servicesheaderfooter = \App\Models\Service::where('type', 'LIKE', '%Buy Property Services%')->get();
+                                    @endphp
+
+                                    @if ($servicesheaderfooter->count())
+                                            @foreach ($servicesheaderfooter as $serviceheaderfooter)
+                                                <li>
+                                                    <a class="dropdown-item mina-submenuitem {{ $currentSlug == $serviceheaderfooter->slug ? 'active' : '' }}"
+                                                    href="{{ route('home.serives', $serviceheaderfooter->slug) }}">
+                                                        {{ $serviceheaderfooter->name }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        @endif
                                 </ul>
                             </li>
                         </ul>
@@ -283,9 +259,10 @@
                 <hr>
                 <p class="text-center"> Follow us on : </p>
                 <div class="social-icons text-center mb-2 mb-md-0">
-                    <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="{{ $setting->facebook }}" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="{{ $setting->twitter }}" class="social-link"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="{{ $setting->instagram }}" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $setting->whatsapp) }}" class="social-link"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
             </div>
         </div>
