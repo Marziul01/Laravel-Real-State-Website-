@@ -68,9 +68,11 @@
 
       <div class="modal-footer d-flex justify-content-between">
         <span id="inquiryStatus" class="fw-bold text-secondary"></span>
+        @if ($access->property_inquiries == 3)
         <button type="button" id="markRepliedBtn" class="btn btn-success d-none">
           <i class="fa-solid fa-check me-1"></i> Mark as Replied
         </button>
+        @endif
       </div>
     </div>
   </div>

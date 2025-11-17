@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 class ReviewsController extends Controller
 {
     public static function reviews() {
+        if(auth()->user()->adminAccess->reviews == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.review',[
            'reviews' => Review::all(), 
            'services' => Service::all(),
@@ -71,7 +74,7 @@ class ReviewsController extends Controller
                 ->addColumn('action', function ($row) {
                     $deleteRoute = route('admin.reviews.delete', $row->id);
                     $csrf = csrf_field();
-
+                    if (auth()->user()->adminAccess->reviews === 3)
                     return '
                         <button class="btn btn-sm btn-warning editReviewBtn" data-id="' . $row->id . '">
                             <i class="fa fa-edit"></i>
@@ -84,6 +87,8 @@ class ReviewsController extends Controller
                             </button>
                         </form>
                     ';
+                    else
+                        return 'N/A';
                 })
 
                 ->rawColumns(['rating_display', 'status_display', 'action'])
@@ -94,6 +99,9 @@ class ReviewsController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->reviews != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
@@ -151,6 +159,9 @@ class ReviewsController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(auth()->user()->adminAccess->reviews != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $review = Review::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -203,6 +214,9 @@ class ReviewsController extends Controller
 
     public function delete($id)
         {
+            if(auth()->user()->adminAccess->reviews != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
             $Review = Review::findOrFail($id);
             $notification = new Notification();
             $notification->user_id = auth()->id();

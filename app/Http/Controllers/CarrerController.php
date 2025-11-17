@@ -16,6 +16,9 @@ class CarrerController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->adminAccess->pages_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.carrers',[
            'carrers' => Carrer::all(), 
         ]);
@@ -36,7 +39,7 @@ class CarrerController extends Controller
                     $deleteRoute = route('careers.destroy', $row->id);
                     $csrf = csrf_field();
                     $method = method_field('DELETE');
-
+                    if (auth()->user()->adminAccess->pages_management === 3)
                     return '
                         <button class="btn btn-sm btn-warning editServiceBtn" data-id="' . $row->id . '">
                             <i class="fa fa-edit"></i>
@@ -50,6 +53,8 @@ class CarrerController extends Controller
                             </button>
                         </form>
                     ';
+                    else
+                        return 'N/A';
                 })
 
                 ->rawColumns(['file_display','action'])
@@ -70,6 +75,9 @@ class CarrerController extends Controller
      */
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
@@ -158,6 +166,9 @@ class CarrerController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Carrer = Carrer::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -231,6 +242,9 @@ class CarrerController extends Controller
      */
     public function destroy(string $id)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Carrer = Carrer::findOrFail($id);
 
             if ($Carrer->image && file_exists(public_path($Carrer->image))) {

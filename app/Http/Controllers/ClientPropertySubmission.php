@@ -13,6 +13,9 @@ class ClientPropertySubmission extends Controller
 {
     public static function rentSubmission(Request $request)
     {
+        if(auth()->user()->adminAccess->property_submissions == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $inquiries = Client::where('type', 'rent')->orderByDesc('created_at'); // ✅ property.type = 'rent'
 
@@ -47,6 +50,9 @@ class ClientPropertySubmission extends Controller
 
     public static function sellSubmission(Request $request)
     {
+        if(auth()->user()->adminAccess->property_submissions == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $inquiries = Client::where('type', 'sell')->orderByDesc('created_at');
 
@@ -101,6 +107,9 @@ class ClientPropertySubmission extends Controller
 
     public function updateStatus(Request $request)
     {
+        if(auth()->user()->adminAccess->property_submissions != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $inquiry = Client::findOrFail($request->id);
         $inquiry->status = $request->status;
         $inquiry->save();
@@ -115,6 +124,9 @@ class ClientPropertySubmission extends Controller
 
     public function delete($id)
     {
+        if(auth()->user()->adminAccess->property_submissions != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Inquiry = Client::findOrFail($id);
         $notification = new Notification();
         $notification->user_id = auth()->id();
@@ -128,6 +140,9 @@ class ClientPropertySubmission extends Controller
     }
 
     public static function clients(Request $request){
+        if(auth()->user()->adminAccess->property_submissions == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.client.client');
     }
 

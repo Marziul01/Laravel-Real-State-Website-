@@ -6,9 +6,11 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">All Sliders</h5>
+                @if ($access->pages_management == 3)
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
                     <i class="bi bi-plus-circle"></i> Add New Slider
                 </button>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -30,7 +32,7 @@
 
         <form id="homePageForm" enctype="multipart/form-data">
             @csrf
-            <div class="card mb-4">
+            <div class="card">
                 <div class="card-header text-white">Home Page Image</div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -95,10 +97,11 @@
                             </div>
                         @endfor
                     </div>
-
+                    @if ($access->pages_management == 3)
                     <div class="text-end mt-3">
                         <button type="submit" class="btn btn-success px-4">Save All</button>
                     </div>
+                    @endif
                 </div>
             </div>
         </form>

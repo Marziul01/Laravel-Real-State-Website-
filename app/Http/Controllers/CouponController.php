@@ -13,6 +13,9 @@ class CouponController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->adminAccess->coupons == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.coupon.coupon',[
             'coupons' => Coupon::all(),
         ]);
@@ -31,6 +34,9 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->coupons != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $validator = Validator::make($request->all(), [
             'code' => 'required|unique:coupons,code|max:50',
             'discount_type' => 'required|in:percent,amount',
@@ -86,6 +92,9 @@ class CouponController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if(auth()->user()->adminAccess->coupons != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
          $coupon = Coupon::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -127,6 +136,9 @@ class CouponController extends Controller
      */
     public function destroy(string $id)
     {
+        if(auth()->user()->adminAccess->coupons != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $coupon = Coupon::findOrFail($id); 
 
         $coupon->delete();

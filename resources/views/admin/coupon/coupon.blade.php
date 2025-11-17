@@ -6,7 +6,9 @@
         <div class="card ">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">Coupons</h5>
+                @if ($access->coupons == 3)
                 <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNew">Add New Coupon</a>
+                @endif
             </div>
             <div class="card-body  text-nowrap">
                 <div class="table-responsive">
@@ -39,6 +41,7 @@
                                             {{ $coupon->expire_date ? \Carbon\Carbon::parse($coupon->expire_date)->format('d M, Y') : 'Continue' }}
                                         </td>
                                         <td class="table-action-td d-flex align-items-center column-gap-3">
+                                            @if ($access->coupons == 3)
                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#EditCategoryModal_{{ $coupon->id }}"><i
                                                     class="bi bi-pen-fill"></i> Edit</a>
@@ -49,6 +52,9 @@
                                                 <button type="submit" class="btn btn-sm btn-danger"><i
                                                         class="bi bi-trash-fill"></i> Delete</button>
                                             </form>
+                                            @else
+                                            <span class="text-muted">No Actions Available</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

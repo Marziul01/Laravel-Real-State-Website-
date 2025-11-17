@@ -23,10 +23,11 @@
                 </div>
             </div>
         </div>
-
+        @if ($access->pages_management == 3)
         <div class="text-end">
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
+        @endif
     </form>
 </div>
     </div>

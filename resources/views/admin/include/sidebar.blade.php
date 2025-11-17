@@ -214,6 +214,16 @@
             </a>
         </li>
         @endif
+
+        @if ($access->seo != 2)
+        <li class="menu-item {{ Route::currentRouteName() == 'admin.seo.settings' ? 'active' : '' }}">
+            <a href="{{ route('admin.seo.settings') }}"
+                class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <div class="text-truncate" data-i18n="Email">Seo Settings</div>
+            </a>
+        </li>
+        @endif
         
         @if ($access->pages_management != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'admin.homeslider' ? 'active open' : '' }} {{ Route::currentRouteName() == 'admin.about.page' ? 'active open' : '' }} {{ Route::currentRouteName() == 'blogs.index' ? 'active open' : '' }} ">

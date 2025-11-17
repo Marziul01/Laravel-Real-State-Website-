@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 class AboutPageController extends Controller
 {
     public static function aboutPage(){
+        if(auth()->user()->adminAccess->pages_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.about-page',[
             'about' => AboutPage::first(),
         ]);
@@ -15,6 +18,9 @@ class AboutPageController extends Controller
 
     public function update(Request $request)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $about = AboutPage::firstOrNew(['id' => 1]);
 
         $validated = $request->validate([

@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 class AdminServiceController extends Controller
 {
     public static function services() {
+        if(auth()->user()->adminAccess->services == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.services',[
            'services' => Service::all(), 
         ]);
@@ -44,7 +47,7 @@ class AdminServiceController extends Controller
                 ->addColumn('action', function($row) {
                     $deleteRoute = route('admin.services.delete', $row->id);
                     $csrf = csrf_field();
-
+                    if (auth()->user()->adminAccess->services === 3)
                     return '
                         <button class="btn btn-sm btn-warning editServiceBtn" data-id="' . $row->id . '">
                             <i class="fa fa-edit"></i>
@@ -57,6 +60,8 @@ class AdminServiceController extends Controller
                             </button>
                         </form>
                     ';
+                    else
+                        return 'N/A';
                 })
                 ->rawColumns(['icon','type','file_display','action'])
                 ->make(true);
@@ -65,6 +70,9 @@ class AdminServiceController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->services != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
             'type'        => 'required|array',
@@ -150,6 +158,9 @@ class AdminServiceController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(auth()->user()->adminAccess->services != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $service = Service::findOrFail($id);
 
         // ================= VALIDATION =================
@@ -236,6 +247,9 @@ class AdminServiceController extends Controller
 
     public function delete($id)
         {
+            if(auth()->user()->adminAccess->services != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
             $Service = Service::findOrFail($id);
 
             if ($Service->file && file_exists(public_path($Service->file))) {

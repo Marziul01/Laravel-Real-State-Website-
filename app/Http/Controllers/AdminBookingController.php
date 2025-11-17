@@ -23,7 +23,9 @@ use App\Models\Notification;
 class AdminBookingController extends Controller
 {
     public static function bookingPending(Request $request){
-
+        if(auth()->user()->adminAccess->booking == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $bookings = Booking::where('status', 1)
                 ->with(['property', 'coupon', 'payment', 'user'])
@@ -81,12 +83,14 @@ class AdminBookingController extends Controller
         }
 
         return view('admin.booking.pending',[
-            'bookings' => Booking::where('status' ,1 )->get(),
+            'bookings' => Booking::where('status' ,1 )->get(), 
         ]);
     }
 
     public static function bookingActive(Request $request){
-
+        if(auth()->user()->adminAccess->booking == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $bookings = Booking::where('status', 2)
                 ->with(['property', 'coupon', 'payment', 'user'])
@@ -149,7 +153,9 @@ class AdminBookingController extends Controller
     }
 
     public static function bookingVisit(Request $request){
-
+        if(auth()->user()->adminAccess->booking == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $bookings = Booking::where('status', 3)
                 ->with(['property', 'coupon', 'payment', 'user'])
@@ -212,7 +218,9 @@ class AdminBookingController extends Controller
     }
 
     public static function bookingCancel(Request $request){
-
+        if(auth()->user()->adminAccess->booking == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $bookings = Booking::where('status', 4)
                 ->with(['property', 'coupon', 'payment', 'user'])
@@ -276,6 +284,9 @@ class AdminBookingController extends Controller
 
     public function creates()
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $properties = Property::where('type','rent')->get();
         $users = User::where('role',1)->get();
         $payments = PaymentMethod::all();
@@ -320,6 +331,9 @@ class AdminBookingController extends Controller
 
     public function confirm($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $booking = Booking::findOrFail($id);
         $booking->payment_status = 2; // confirmed
         $booking->status = 2; // confirmed
@@ -337,6 +351,9 @@ class AdminBookingController extends Controller
 
     public function cancel($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $booking = Booking::findOrFail($id);
         $booking->payment_status = 3; // confirmed
         $booking->status = 4; // cancelled
@@ -354,6 +371,9 @@ class AdminBookingController extends Controller
 
     public function visitedBooking($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $booking = Booking::findOrFail($id);
         $booking->payment_status = 2; // confirmed
         $booking->status = 3; // cancelled
@@ -371,6 +391,9 @@ class AdminBookingController extends Controller
 
     public function pendingBooking($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $booking = Booking::findOrFail($id);
         $booking->payment_status = 1; // confirmed
         $booking->status = 1; // cancelled
@@ -423,6 +446,9 @@ class AdminBookingController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $request->validate([
             'property_id' => 'required|exists:properties,id',
             'name' => 'required|string|max:255',
@@ -556,6 +582,9 @@ class AdminBookingController extends Controller
 
     public static function editing($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // dd('hello');
         $properties = Property::where('type','rent')->get();
         $users = User::where('role',1)->get();
@@ -570,6 +599,9 @@ class AdminBookingController extends Controller
 
     public function update(Request $request, $id)
 {
+    if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
     $request->validate([
         'property_id' => 'required|exists:properties,id',
         'name' => 'required|string|max:255',
@@ -703,6 +735,9 @@ class AdminBookingController extends Controller
 
 public function delete($id)
     {
+        if(auth()->user()->adminAccess->booking != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $booking = Booking::findOrFail($id);
         $notification = new Notification();
             $notification->user_id = auth()->id();

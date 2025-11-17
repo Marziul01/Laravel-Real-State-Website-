@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 class UserManagmentController extends Controller
 {
     public static function users() {
+        if(auth()->user()->adminAccess->user_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.users.manage',[
            'users' => User::where('role', 1)->get(), 
         ]);
@@ -82,8 +85,10 @@ class UserManagmentController extends Controller
                                 <i class="fa fa-trash"></i>
                             </button>
                         </form>';
-
+                    if (auth()->user()->adminAccess->user_management === 3)
                     return $toggleButton . ' ' . $deleteButton;
+                    else
+                        return 'N/A';
                 })
 
                 ->rawColumns(['status_display', 'action'])
@@ -93,6 +98,9 @@ class UserManagmentController extends Controller
 
     public function updateStatus($id, $status)
     {
+        if(auth()->user()->adminAccess->user_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $user = User::findOrFail($id);
         $user->status = $status;
         $user->save();
@@ -110,6 +118,9 @@ class UserManagmentController extends Controller
 
     public function delete($id)
         {
+            if(auth()->user()->adminAccess->user_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
             $User = User::findOrFail($id);
             $notification = new Notification();
             $notification->user_id = auth()->id();

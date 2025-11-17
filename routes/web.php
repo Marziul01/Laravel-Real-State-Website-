@@ -22,6 +22,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyInquiryController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\ReviewsController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserBookingController;
@@ -67,7 +68,7 @@ Route::get('/show/careers/details/{id}', [HomeController::class, 'carrershow'])-
 Route::get('/gallery', [HomeController::class, 'gallery'])->name('gallery');
 Route::get('/be/agents', [HomeController::class, 'Agents'])->name('agents');
 Route::get('/document/services', [HomeController::class, 'documentServices'])->name('document.services');
-
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap']);
 
 
 Route::get('/get-time', function () { 
@@ -214,6 +215,9 @@ Route::prefix('admin')->group(function () {
         Route::post('/control/panel/{id}/status', [AdminAccessController::class, 'status'])->name('admin.control.status');
         Route::post('/control/panel/{id}', [AdminAccessController::class, 'update'])->name('admin.control.update');
         Route::post('/control/panel/delete/{id}', [AdminAccessController::class, 'delete'])->name('admin.control.delete');
+        Route::get('/seo/settings', [SeoController::class, 'edit'])->name('admin.seo.settings');
+        Route::post('/seo/settings/update', [SeoController::class, 'update'])->name('admin.seo.settings.update');
+        
 
     });
 });

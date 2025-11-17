@@ -6,9 +6,11 @@
         <div class="card ">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">All Job Circulars</h5>
+                @if ($access->pages_management == 3)
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
                     <i class="bi bi-plus-circle"></i> Add New Job Circular
                 </button>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">

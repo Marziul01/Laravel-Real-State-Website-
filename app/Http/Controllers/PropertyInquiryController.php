@@ -13,6 +13,9 @@ class PropertyInquiryController extends Controller
 {
     public static function rentPropertyInquiry(Request $request)
     {
+        if(auth()->user()->adminAccess->property_inquiries == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $inquiries = Inquiry::with(['property' => function ($q) {
                 $q->where('type', 'rent'); // ✅ property.type = 'rent'
@@ -71,6 +74,9 @@ class PropertyInquiryController extends Controller
 
     public static function sellPropertyInquiry(Request $request)
     {
+        if(auth()->user()->adminAccess->property_inquiries == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         if ($request->ajax()) {
             $inquiries = Inquiry::with(['property' => function ($q) {
                 $q->where('type', 'sell'); // ✅ property.type = 'rent'
@@ -153,6 +159,9 @@ class PropertyInquiryController extends Controller
 
     public function updateStatus(Request $request)
     {
+        if(auth()->user()->adminAccess->property_inquiries != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $inquiry = Inquiry::findOrFail($request->id);
         $inquiry->status = 2;
         $inquiry->save();
@@ -167,6 +176,9 @@ class PropertyInquiryController extends Controller
 
     public function delete($id)
     {
+        if(auth()->user()->adminAccess->property_inquiries != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Inquiry = Inquiry::findOrFail($id);
         $notification = new Notification();
         $notification->user_id = auth()->id();

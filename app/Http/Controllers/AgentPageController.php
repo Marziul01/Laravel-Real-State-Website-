@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 class AgentPageController extends Controller
 {
     public static function index(){
+        if(auth()->user()->adminAccess->pages_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.agent-page',[
             'agentpage' => AgentPage::first(),
         ]);
@@ -15,6 +18,9 @@ class AgentPageController extends Controller
 
     public function update(Request $request)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $agent = AgentPage::firstOrNew(['id' => 1]);
 
         $validated = $request->validate([

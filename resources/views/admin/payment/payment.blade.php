@@ -6,7 +6,9 @@
         <div class="card ">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">Payment Methods</h5>
+                @if ($access->payment_methods == 3)
                 <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNew" >Add New Payment Methods</a>
+                @endif
             </div>
             <div class="card-body  text-nowrap">
                 <div class="table-responsive">
@@ -33,6 +35,7 @@
                                         <td>{{ $payment->account_name }}</td>
                                         <td>{{ $payment->branch_name }}</td>
                                         <td class="table-action-td d-flex align-items-center column-gap-3">
+                                            @if ($access->payment_methods == 3)
                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#EditCategoryModal_{{ $payment->id }}"><i
                                                     class="bi bi-pen-fill"></i> Edit</a>
@@ -43,6 +46,9 @@
                                                 <button type="submit" class="btn btn-sm btn-danger"><i
                                                         class="bi bi-trash-fill"></i> Delete</button>
                                             </form>
+                                            @else
+                                            <span class="text-muted">No Actions Available</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

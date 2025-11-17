@@ -14,6 +14,9 @@ use Illuminate\Support\Str;
 class PagesController extends Controller
 {
      public static function homepage() {
+        if(auth()->user()->adminAccess->pages_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.homepage',[
            'sliders' => Slider::all(), 
            'homepage' => HomePage::first(),
@@ -44,7 +47,7 @@ class PagesController extends Controller
                 ->addColumn('action', function ($row) {
                     $deleteRoute = route('admin.homeslider.delete', $row->id);
                     $csrf = csrf_field();
-
+                    if (auth()->user()->adminAccess->pages_management === 3)
                     return '
                         <button class="btn btn-sm btn-warning editReviewBtn" data-id="' . $row->id . '">
                             <i class="fa fa-edit"></i>
@@ -57,6 +60,8 @@ class PagesController extends Controller
                             </button>
                         </form>
                     ';
+                    else
+                        return 'N/A';
                 })
 
                 ->rawColumns(['property', 'file_display', 'action'])
@@ -67,6 +72,9 @@ class PagesController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
             'title'        => 'required|string|max:255',
@@ -137,6 +145,9 @@ class PagesController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Slider = Slider::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -209,6 +220,9 @@ class PagesController extends Controller
 
     public function delete($id)
         {
+            if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
             $Slider = Slider::findOrFail($id);
 
             if ($Slider->image && file_exists(public_path($Slider->image))) {
@@ -228,6 +242,9 @@ class PagesController extends Controller
 
         public function homeupdate(Request $request)
         {
+            if(auth()->user()->adminAccess->pages_management != 3){
+                return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+            }
             $request->validate([
                 'image' => 'nullable|image|max:2048',
             ]);

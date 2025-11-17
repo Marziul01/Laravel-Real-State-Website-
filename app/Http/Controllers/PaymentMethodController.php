@@ -13,6 +13,9 @@ class PaymentMethodController extends Controller
      */
     public function index()
     {
+        if(auth()->user()->adminAccess->payment_methods == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.payment.payment',[
             'payments' => PaymentMethod::all(),
         ]);
@@ -31,6 +34,9 @@ class PaymentMethodController extends Controller
      */
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->payment_methods != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $rules = [
             'payment_method_type' => 'required|in:bank,mobile_banking',
             'name' => 'required|string|max:100',
@@ -82,6 +88,9 @@ class PaymentMethodController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if(auth()->user()->adminAccess->payment_methods != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $method = PaymentMethod::findOrFail($id);
 
         $rules = [
@@ -117,6 +126,9 @@ class PaymentMethodController extends Controller
      */
     public function destroy(string $id)
     {
+        if(auth()->user()->adminAccess->payment_methods != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $method = PaymentMethod::findOrFail($id);
         $method->delete();
 

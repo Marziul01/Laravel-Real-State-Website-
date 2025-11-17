@@ -12,6 +12,9 @@ use App\Models\Notification;
 class TeamController extends Controller
 {
     public static function teams() {
+        if(auth()->user()->adminAccess->teams == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         return view('admin.pages.team',[
            'teams' => Team::all(), 
         ]);
@@ -31,7 +34,7 @@ class TeamController extends Controller
                 ->addColumn('action', function($row) {
                     $deleteRoute = route('admin.teams.delete', $row->id);
                     $csrf = csrf_field();
-
+                    if (auth()->user()->adminAccess->teams === 3)
                     return '
                         <button class="btn btn-sm btn-warning editServiceBtn" data-id="' . $row->id . '">
                             <i class="fa fa-edit"></i>
@@ -44,6 +47,8 @@ class TeamController extends Controller
                             </button>
                         </form>
                     ';
+                    else
+                        return 'N/A';
                 })
                 ->rawColumns(['file_display','action'])
                 ->make(true);
@@ -52,6 +57,9 @@ class TeamController extends Controller
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->teams != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
@@ -123,6 +131,9 @@ class TeamController extends Controller
 
     public function update(Request $request, $id)
     {
+        if(auth()->user()->adminAccess->teams != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $Team = Team::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -191,6 +202,9 @@ class TeamController extends Controller
 
     public function delete($id)
         {
+            if(auth()->user()->adminAccess->teams != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
             $Team = Team::findOrFail($id);
 
             if ($Team->photo && file_exists(public_path($Team->photo))) {

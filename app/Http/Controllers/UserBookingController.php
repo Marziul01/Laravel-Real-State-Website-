@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Country;
+use App\Services\MetaConversionApiService;
 
 class UserBookingController extends Controller
 {
@@ -194,6 +195,15 @@ class UserBookingController extends Controller
             $notification->notification_for = 'Property Booking';
             $notification->item_id = $booking->id;
             $notification->save();
+
+            
+            MetaConversionApiService::sendEvent('Purchase', [
+                'value' => $booking->grand_total,
+                'currency' => 'BDT',
+                'content_name' => $booking->property->name,
+                'content_id' => $booking->property_id,
+                'order_id' => $booking->id,
+            ]);
 
             return response()->json([
                 'status' => 'success',

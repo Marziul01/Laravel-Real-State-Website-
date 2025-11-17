@@ -85,13 +85,14 @@
           <p id="booking_notes" class="fst-italic"></p>
         </div>
       </div>
-
+      @if ($access->booking == 3)
       <div class="modal-footer">
         <button id="pendingBookingBtn" class="btn btn-primary">Pending Booking</button>
         <button id="confirmBookingBtn" class="btn btn-primary">Confirm Booking</button>
         <button id="visitedBookingBtn" class="btn btn-success">Visited Booking</button>
         <button id="cancelBookingBtn" class="btn btn-danger">Cancel Booking</button>
       </div>
+      @endif
     </div>
   </div>
 </div>

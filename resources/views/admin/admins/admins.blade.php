@@ -69,7 +69,7 @@
                             <div class="mb-2">
                                 @if ($currentaccess)
                                     @foreach ($currentaccess->getAttributes() as $key => $val)
-                                        @if ($val == 3 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'seo' && $key !== 'reports' && $key !== 'control_panel')
+                                        @if ($val == 3 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'reports' && $key !== 'control_panel')
                                             <span class="badge bg-success">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
                                         @endif
                                     @endforeach
@@ -82,7 +82,7 @@
                             <div class="mb-2">
                                 @if ($currentaccess)
                                     @foreach ($currentaccess->getAttributes() as $key => $val)
-                                        @if ($val == 1 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'seo' && $key !== 'reports' && $key !== 'control_panel')
+                                        @if ($val == 1 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'reports' && $key !== 'control_panel')
                                             <span class="badge bg-primary">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
                                         @endif
                                     @endforeach
@@ -95,7 +95,7 @@
                             <div class="mb-2">
                                 @if ($currentaccess)
                                     @foreach ($currentaccess->getAttributes() as $key => $val)
-                                        @if ($val == 2 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'seo' && $key !== 'reports' && $key !== 'control_panel')
+                                        @if ($val == 2 && $key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'reports' && $key !== 'control_panel')
                                             <span class="badge bg-danger">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
                                         @endif
                                     @endforeach
@@ -170,7 +170,7 @@
                                         <h5>Admin Access</h5>
                                         @if ($currentaccess)
                                             @foreach ($currentaccess->getAttributes() as $key => $val)
-                                                @if ($key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'seo' && $key !== 'reports' && $key !== 'control_panel')
+                                                @if ($key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'reports' && $key !== 'control_panel')
                                                     <div class="col-md-4">
                                                         <label>{{ ucwords(str_replace('_', ' ', $key)) }}</label>
                                                         <select class="form-select" name="{{ $key }}" required>
@@ -251,7 +251,7 @@
                                 <h5>Admin Access</h5>
 
                                 @foreach ($adminAccess->first()->getAttributes() as $key => $val)
-                                    @if ($key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'seo' && $key !== 'reports' && $key !== 'control_panel' )
+                                    @if ($key !== 'id' && $key !== 'admin_id' && $key !== 'created_at' && $key !== 'updated_at' && $key !== 'reports' && $key !== 'control_panel' )
                                         <div class="col-md-4">
                                             <label>{{ ucwords(str_replace('_', ' ', $key)) }}</label>
                                             <select class="form-select" name="{{ $key }}" required>

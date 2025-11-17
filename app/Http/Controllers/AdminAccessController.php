@@ -16,7 +16,7 @@ class AdminAccessController extends Controller
 {
     public function admins(){
         if(auth()->user()->adminAccess->control_panel == 2){
-            return redirect(route('user.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
         }
         return view('admin.admins.admins',[
             'admins' => User::where('role', 0)->where('role_type' , '!=' , 'Super Admin' )->get(),
@@ -28,7 +28,7 @@ class AdminAccessController extends Controller
     {
 
         if(auth()->user()->adminAccess->control_panel != 3){
-            return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
         // ================= VALIDATION =================
         $validator = Validator::make($request->all(), [
@@ -132,7 +132,7 @@ class AdminAccessController extends Controller
     public function update(Request $request, $id)
     {
         if(auth()->user()->adminAccess->control_panel != 3){
-            return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
 
         $admin = User::findOrFail($id);
@@ -253,7 +253,7 @@ class AdminAccessController extends Controller
     public function status($id)
     {
         if(auth()->user()->adminAccess->control_panel != 3){
-            return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
         $admin = User::findOrFail($id);
 
@@ -276,7 +276,7 @@ class AdminAccessController extends Controller
     public function delete($id)
     {
         if(auth()->user()->adminAccess->control_panel != 3){
-            return redirect(route('user.dashboard'))->with('error', 'Access Denied!');
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
         $admin = User::findOrFail($id);
 

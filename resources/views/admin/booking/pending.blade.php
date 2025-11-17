@@ -6,7 +6,9 @@
         <div class="card ">
             <div class="card-header d-flex justify-content-between align-items-center border-bottom-1">
                 <h5 class="mb-0">Pending Bookings</h5>
+                @if ($access->booking == 3)
                 <a href="{{ route('admin.booking.create') }}" class="btn btn-primary">Add Booking Manually</a>
+                @endif
             </div>
             <div class="card-body  text-nowrap">
                 <div class="table-responsive">
@@ -86,13 +88,14 @@
           <p id="booking_notes" class="fst-italic"></p>
         </div>
       </div>
-
+      @if ($access->booking == 3)
       <div class="modal-footer">
         <button id="pendingBookingBtn" class="btn btn-primary">Pending Booking</button>
         <button id="confirmBookingBtn" class="btn btn-primary">Confirm Booking</button>
         <button id="visitedBookingBtn" class="btn btn-success">Visited Booking</button>
         <button id="cancelBookingBtn" class="btn btn-danger">Cancel Booking</button>
       </div>
+        @endif
     </div>
   </div>
 </div>

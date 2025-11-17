@@ -7,9 +7,11 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Gallery</h4>
+        @if ($access->pages_management == 3)
         <div>
             <button id="saveAllBtn" class="btn btn-primary">Save Selected</button>
         </div>
+        @endif
     </div>
 
     <p class="hint">Click the <strong>+</strong> box to add images (multiple). Remove preview before saving by clicking the top-right ×. After saving, saved images can also be removed.</p>
@@ -25,11 +27,12 @@
         @endforeach
 
         {{-- Previews (unsaved) will be appended here by JS (they have class preview) --}}
-
+        @if ($access->pages_management == 3)
         <!-- Add button always at the end -->
         <div id="addBox" class="gallery-add" title="Add images">
             <div class="plus">+</div>
         </div>
+        @endif
     </div>
 
     <div class="controls">

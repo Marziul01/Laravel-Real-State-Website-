@@ -12,12 +12,18 @@ class GalleryController extends Controller
 {
     public function index()
     {
+        if(auth()->user()->adminAccess->pages_management == 2){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
+        }
         $images = Gallery::latest()->get(); // show saved images
         return view('admin.pages.gallery', compact('images'));
     }
 
     public function store(Request $request)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         // Accept 'images[]' multiple files
         $files = $request->file('images');
         if (!$files || !count($files)) {
@@ -67,6 +73,9 @@ class GalleryController extends Controller
 
     public function destroy($id)
     {
+        if(auth()->user()->adminAccess->pages_management != 3){
+            return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
+        }
         $gallery = Gallery::find($id);
         if (!$gallery) {
             return response()->json(['status'=>'error','message'=>'Image not found.'], 404);
