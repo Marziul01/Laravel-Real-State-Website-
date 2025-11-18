@@ -50,13 +50,16 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="{{ asset('admin-assets') }}/assets/js/config.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/css/fontawesome-iconpicker.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -84,19 +87,20 @@
                 <div class="content-wrapper">
                     <!-- Content -->
                     @yield('content')
-                    
+
 
                     <div class="content-backdrop fade"></div>
                 </div>
                 <!-- Content wrapper -->
             </div>
-    
+
         </div>
 
         <!-- Overlay -->
         <div class="layout-overlay layout-menu-toggle"></div>
 
-        <div id="fullscreenLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999999999;">
+        <div id="fullscreenLoader"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999999999;">
             <div style="display:flex; justify-content:center; align-items:center; width:100%; height:100%;">
                 <div id="custom-onlyloading"></div>
             </div>
@@ -106,11 +110,13 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        
+
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body d-flex justify-content-center flex-column align-items-center auth-success-modal" >
-                        <img src="{{ asset('admin-assets/img/Check Mark - Success.gif') }}" width="25%" alt="">
+                    <div
+                        class="modal-body d-flex justify-content-center flex-column align-items-center auth-success-modal">
+                        <img src="{{ asset('admin-assets/img/Check Mark - Success.gif') }}" width="25%"
+                            alt="">
                         <h5 class="modal-title text-center" id="successModalLabel">Success</h5>
                         <p id="successMessage" class="text-center">Login successful!</p>
                     </div>
@@ -123,7 +129,9 @@
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
+    </script>
     <script src="{{ asset('admin-assets') }}/assets/vendor/libs/jquery/jquery.js"></script>
     <script src="{{ asset('admin-assets') }}/assets/vendor/libs/popper/popper.js"></script>
     <script src="{{ asset('admin-assets') }}/assets/vendor/js/bootstrap.js"></script>
@@ -144,7 +152,7 @@
     <!-- Place this tag before closing body tag for github widget button. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- jQuery -->
-    
+
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -159,47 +167,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
-   <!-- Icon Picker -->
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js"></script>
-   <script>
-document.querySelectorAll('.myDate').forEach(function(el) {
-    let placeholderText = el.getAttribute('placeholder') || 'YY-MM-DD';
-    let value = el.value?.trim();
 
-    // Determine the effective placeholder
-    if (!value) {
-        // if input has a placeholder use that, else fallback
-        el.setAttribute('placeholder', placeholderText);
-    }
 
-    // Initialize flatpickr
-    flatpickr(el, {
-        dateFormat: "Y-m-d",
-        defaultDate: value || null, // show existing date if available
-        disableMobile: false, // allow native picker for mobile
-        onReady: function(selectedDates, dateStr, instance) {
-            // If no value selected, show placeholder visually
+    <!-- Icon Picker -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fontawesome-iconpicker/3.2.0/js/fontawesome-iconpicker.min.js">
+    </script>
+    <script>
+        document.querySelectorAll('.myDate').forEach(function(el) {
+            let placeholderText = el.getAttribute('placeholder') || 'YY-MM-DD';
+            let value = el.value?.trim();
+
+            // Determine the effective placeholder
             if (!value) {
-                instance.input.placeholder = placeholderText;
+                // if input has a placeholder use that, else fallback
+                el.setAttribute('placeholder', placeholderText);
             }
-        },
-        onChange: function(selectedDates, dateStr, instance) {
-            // When user picks a date, remove placeholder
-            if (dateStr) {
-                instance.input.placeholder = '';
-            }
-        },
-        onClose: function(selectedDates, dateStr, instance) {
-            // If cleared, restore placeholder
-            if (!dateStr) {
-                instance.input.placeholder = placeholderText;
-            }
-        }
-    });
-});
-</script>
+
+            // Initialize flatpickr
+            flatpickr(el, {
+                dateFormat: "Y-m-d",
+                defaultDate: value || null, // show existing date if available
+                disableMobile: false, // allow native picker for mobile
+                onReady: function(selectedDates, dateStr, instance) {
+                    // If no value selected, show placeholder visually
+                    if (!value) {
+                        instance.input.placeholder = placeholderText;
+                    }
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    // When user picks a date, remove placeholder
+                    if (dateStr) {
+                        instance.input.placeholder = '';
+                    }
+                },
+                onClose: function(selectedDates, dateStr, instance) {
+                    // If cleared, restore placeholder
+                    if (!dateStr) {
+                        instance.input.placeholder = placeholderText;
+                    }
+                }
+            });
+        });
+    </script>
 
     <script>
         const toggleCheckbox = document.getElementById('themeToggle');
@@ -300,8 +310,157 @@ document.querySelectorAll('.myDate').forEach(function(el) {
     </script> --}}
 
 
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const bell = document.getElementById("notificationIcon");
+    const dropdown = document.getElementById("notificationDropdown");
+    const listBox = document.getElementById("notificationList");
+    const countBox = document.getElementById("notificationCount");
+    const viewAllBtn = document.getElementById("viewAllNotifBtn");
+
+    // -------------------------
+    // LOAD UNREAD COUNT ON PAGE LOAD
+    // -------------------------
+    function loadNotificationCount() {
+        fetch("{{ route('notifications.dropdown') }}")
+            .then(res => res.json())
+            .then(data => {
+
+                // unread = read == 1
+                let unreadCount = data.notifications.filter(n => n.read == 1).length;
+
+                if (unreadCount > 0) {
+                    countBox.style.display = "inline-block";
+                    countBox.textContent = unreadCount;
+                } else {
+                    countBox.style.display = "none";
+                }
+
+                // View All button is ALWAYS visible
+                viewAllBtn.style.display = "block";
+            });
+    }
+
+    // Run immediately on page load
+    loadNotificationCount();
+
+
+    // -------------------------
+    // WHEN CLICKING THE BELL
+    // -------------------------
+    bell.addEventListener("click", function () {
+
+        if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+            return;
+        }
+        dropdown.style.display = "block";
+
+        fetch("{{ route('notifications.dropdown') }}")
+            .then(res => res.json())
+            .then(data => {
+
+                // unread count update
+                let unreadCount = data.notifications.filter(n => n.read == 1).length;
+
+                if (unreadCount > 0) {
+                    countBox.style.display = "inline-block";
+                    countBox.textContent = unreadCount;
+                } else {
+                    countBox.style.display = "none";
+                }
+
+                // Clear list
+                listBox.innerHTML = "";
+
+                if (data.notifications.length === 0) {
+                    listBox.innerHTML = `<div class="text-center py-2 text-muted">No notifications</div>`;
+                }
+
+                // Add notification items
+                data.notifications.forEach(n => {
+                    let bg = n.sender_type == 'user' ? "user" : "admin";
+
+                    listBox.innerHTML += `
+                        <div class="notification-item ${bg}">
+                            <div class="text-primary small fw-bold">${n.sender}</div>
+                            <div class="small text-muted">${n.notification_for}</div>
+                            <div class="message">${n.message}</div>
+                            <div class="text-end small">${n.time}</div>
+                        </div>
+                    `;
+                });
+
+                // View All button is ALWAYS visible
+                viewAllBtn.style.display = "block";
+            });
+
+        // Mark all as read when dropdown is opened
+        fetch("{{ route('notifications.markRead') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            }
+        });
+    });
+
+
+    // -------------------------
+    // MARK ALL READ ON "VIEW ALL"
+    // -------------------------
+    viewAllBtn.addEventListener("click", function () {
+
+        fetch("{{ route('notifications.markRead') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Accept": "application/json"
+            }
+        })
+            .then(res => res.json())
+            .then(response => {
+
+                countBox.style.display = "none"; // instantly hide
+                loadNotificationCount(); // refresh count
+            });
+    });
+
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const countBox = document.getElementById("notificationCount");
+
+    fetch("{{ route('notifications.dropdown') }}")
+        .then(res => res.json())
+        .then(data => {
+
+            // TOTAL unread from controller (NOT from top 10)
+            let unreadCount = data.total;
+
+            if (unreadCount > 0) {
+                countBox.style.display = "inline-block";
+                countBox.textContent = unreadCount;
+            } else {
+                countBox.style.display = "none";
+            }
+        });
+
+});
+</script>
+
+
+
+
+
+
     @yield('scripts')
-    
+
     {{-- <script>
         // Disable right-click context menu
         document.addEventListener('contextmenu', event => event.preventDefault());

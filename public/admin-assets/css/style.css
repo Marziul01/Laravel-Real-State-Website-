@@ -765,13 +765,23 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
     }
     .notification-item {
         display: flex;
-        align-items: center;
+        flex-direction: column;
+        align-items: start;
         padding: 10px;
         border-bottom: 1px solid #eee;
         cursor: pointer;
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        position: relative;
+    }
+    .notification-item .message{
+      font-size: 12px !important;
+    } 
+    .notification-item .time{
+      position: absolute;
+      top: 10px;
+      right: 5px;
+      font-size: 9px;
     }
     .notification-item i {
         margin-right: 8px;

@@ -21,7 +21,14 @@
                     <i id="notificationIcon" class="fa-solid fa-bell btn btn-sm btn-outline-secondary themecolor"></i>
                     <span id="notificationCount" class="notification-badge"></span>
 
-                    <div id="notificationDropdown" class="notification-dropdown bg-menu-theme"></div>
+                    <div id="notificationDropdown" class="notification-dropdown bg-menu-theme p-2" style="display:none; width:300px;">
+                        <div id="notificationList"></div>
+
+                        <div id="viewAllBtn" class="text-center mt-2" style="">
+                            <a href="{{ route('notifications.all') }}" class="btn btn-sm btn-primary w-100">View All</a>
+                        </div>
+                    </div>
+
                 </div>
             </li>
             <li class="nav-item lh-1 me-2">

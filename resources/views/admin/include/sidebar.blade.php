@@ -23,7 +23,7 @@
             <li class="menu-item {{ Route::currentRouteName() == 'admin.control.panel' ? 'active' : '' }}">
                 <a href="{{ route('admin.control.panel') }}"
                     class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                    <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
                     <div class="text-truncate" data-i18n="Email">Control Panel</div>
                 </a>
             </li>
@@ -32,7 +32,7 @@
         @if ($access->rent_property != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'property.index' ? 'active open' : '' }} {{ Route::currentRouteName() == 'property.create' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-hotel"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Rent Property Managment</div>
             </a>
             <ul class="menu-sub">
@@ -54,7 +54,7 @@
         @if ($access->sell_property != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'property.sell' ? 'active open' : '' }} {{ Route::currentRouteName() == 'sellcreate' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-regular fa-building"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Sell Property Managment</div>
             </a>
             <ul class="menu-sub">
@@ -77,7 +77,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'coupon.index' ? 'active' : '' }}">
             <a href="{{ route('coupon.index') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-percent"></i>
                 <div class="text-truncate" data-i18n="Email">Coupons</div>
             </a>
         </li>
@@ -87,7 +87,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'payment_method.index' ? 'active' : '' }}">
             <a href="{{ route('payment_method.index') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-wallet"></i>
                 <div class="text-truncate" data-i18n="Email">Payment Methods</div>
             </a>
         </li>
@@ -96,7 +96,7 @@
         @if ($access->booking != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'booking.pending' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.active' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.visit' ? 'active open' : '' }} {{ Route::currentRouteName() == 'booking.cancel' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-building-circle-check"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Booking Managment</div>
             </a>
             <ul class="menu-sub">
@@ -128,7 +128,7 @@
         @if ($access->property_inquiries != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'rent.property.inquiry' ? 'active open' : '' }} {{ Route::currentRouteName() == 'sell.property.inquiry' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-building-circle-exclamation"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Property Inquiries</div>
             </a>
             <ul class="menu-sub">
@@ -151,7 +151,7 @@
         @if ($access->property_submissions != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'rent.submission' ? 'active open' : '' }} {{ Route::currentRouteName() == 'sell.submission' ? 'active open' : '' }} {{ Route::currentRouteName() == 'clients.confirmed' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-building-user"></i>
                 <div class="text-truncate" data-i18n="Dashboards">All Property Submission</div>
             </a>
             <ul class="menu-sub">
@@ -179,7 +179,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'admin.services' ? 'active' : '' }}">
             <a href="{{ route('admin.services') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-handshake-angle"></i>
                 <div class="text-truncate" data-i18n="Email">All Services</div>
             </a>
         </li>
@@ -189,7 +189,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'admin.teams' ? 'active' : '' }}">
             <a href="{{ route('admin.teams') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-users"></i>
                 <div class="text-truncate" data-i18n="Email">All Teams</div>
             </a>
         </li>
@@ -199,7 +199,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'admin.reviews' ? 'active' : '' }}">
             <a href="{{ route('admin.reviews') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-envelopes-bulk"></i>
                 <div class="text-truncate" data-i18n="Email">Reviews</div>
             </a>
         </li>
@@ -209,7 +209,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'admin.users' ? 'active' : '' }}">
             <a href="{{ route('admin.users') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-user-shield"></i>
                 <div class="text-truncate" data-i18n="Email">Users Management</div>
             </a>
         </li>
@@ -219,7 +219,7 @@
         <li class="menu-item {{ Route::currentRouteName() == 'admin.seo.settings' ? 'active' : '' }}">
             <a href="{{ route('admin.seo.settings') }}"
                 class="menu-link">
-                <i class="menu-icon tf-icons bx bx-home-smile"></i>
+                <i class="menu-icon1 tf-icons <i fa-brands fa-searchengin"></i>
                 <div class="text-truncate" data-i18n="Email">Seo Settings</div>
             </a>
         </li>
@@ -228,7 +228,7 @@
         @if ($access->pages_management != 2)
         <li class="menu-item  {{ Route::currentRouteName() == 'admin.homeslider' ? 'active open' : '' }} {{ Route::currentRouteName() == 'admin.about.page' ? 'active open' : '' }} {{ Route::currentRouteName() == 'blogs.index' ? 'active open' : '' }} ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon1 tf-icons fa-solid fa-user-gear"></i>
+                <i class="menu-icon1 tf-icons fa-solid fa-file-lines"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Pages Managment</div>
             </a>
             <ul class="menu-sub">

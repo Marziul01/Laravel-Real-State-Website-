@@ -183,6 +183,7 @@
                     </div>
                 </div>
             </div>
+             @if ($access->booking != 2)
             <div class="col-md-12 order-0 mb-6">
                 <div class="card contact-card h-100">
                     <div class="card-header d-flex justify-content-between">
@@ -244,6 +245,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 

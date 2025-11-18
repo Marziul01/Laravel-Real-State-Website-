@@ -15,6 +15,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomePropertyController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserBookingController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserManagmentController;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
@@ -218,6 +220,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/seo/settings', [SeoController::class, 'edit'])->name('admin.seo.settings');
         Route::post('/seo/settings/update', [SeoController::class, 'update'])->name('admin.seo.settings.update');
         
+        Route::get('/notifications/dropdown', [NotificationController::class, 'dropdown'])->name('notifications.dropdown');
+        Route::post('/notifications/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
+        Route::get('/notifications/view-all', [NotificationController::class, 'viewAll'])->name('notifications.all');
+
 
     });
 });

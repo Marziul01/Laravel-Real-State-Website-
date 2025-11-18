@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -32,6 +34,9 @@ class DashboardController extends Controller
         $buyProperties = Property::where('type', 'sell')->count();
 
         $bookings = Booking::where('status', 1)->get();
+
+        $threeDaysAgo = Carbon::now()->subDays(3);
+        Notification::where('created_at', '<', $threeDaysAgo)->delete();
 
         return view('admin.dashboard.dashboard',[
             'allTimeBooking'    => $allTimeBooking,
