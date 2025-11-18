@@ -23,6 +23,7 @@ class AdminAccess extends Model
         'pages_management',
         'seo',
         'reports',
+        'settings',
     ];
 
     public function admin()

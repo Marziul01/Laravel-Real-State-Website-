@@ -83,7 +83,7 @@ class AdminAccessController extends Controller
             $access->admin_id = $user->id;
 
             foreach ($access->getFillable() as $column) {
-                if ($column != 'admin_id' && $column != 'created_at' && $column != 'updated_at' && $column != 'seo' && $column != 'reports') {
+                if ($column != 'admin_id' && $column != 'created_at' && $column != 'updated_at' && $column != 'reports') {
                     $access->{$column} = $request->{$column};
                 }
             }
@@ -193,7 +193,7 @@ class AdminAccessController extends Controller
             $access = AdminAccess::where('admin_id', $admin->id)->first();
 
             foreach ($access->getFillable() as $col) {
-                if (!in_array($col, ['admin_id', 'created_at', 'updated_at', 'seo', 'reports'])) {
+                if (!in_array($col, ['admin_id', 'created_at', 'updated_at', 'reports'])) {
                     $access->{$col} = $request->{$col};
                 }
             }

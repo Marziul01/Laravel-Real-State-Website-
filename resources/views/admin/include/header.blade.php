@@ -75,11 +75,12 @@
                             <i class="bx bx-user bx-md me-3"></i><span>My Profile</span>
                         </a>
                     </li>
+                    @if ($access->settings != 2)
                     <li>
                         <a class="dropdown-item" href="{{ route('siteSettings') }}"> <i
                                 class="bx bx-cog bx-md me-3"></i><span>Settings</span> </a>
                     </li>
-                    
+                    @endif
                     <li>
                         <div class="dropdown-divider my-1"></div>
                     </li>
