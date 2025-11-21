@@ -249,6 +249,7 @@
                         </iframe>
 
                     </div>
+                    @if ($property->realtor)
                     <hr>
                     <div>
                         <p>Realtor :</p>
@@ -264,6 +265,7 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
