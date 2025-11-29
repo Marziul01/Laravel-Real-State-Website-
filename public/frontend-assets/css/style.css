@@ -695,6 +695,7 @@ a{
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Push reviewer info to the bottom */
+    width: 100%;
 }
 
 .stars {
