@@ -10,7 +10,7 @@
                 <a href="{{ route('property.create') }}" class="btn btn-primary">Add New Property</a>
                 @endif
             </div>
-            <div class="card-body  text-nowrap">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table" id="myTable">
                         <thead>
@@ -19,7 +19,7 @@
                                 <th>Image</th>
                                 <th>Property Type</th>
                                 <th>Name</th>
-                                <th>Description</th>
+                                <th width="400px">Description</th>
                                 <th>Price</th>
                                 <th>Location</th>
                                 <th>Rent Starts</th>
