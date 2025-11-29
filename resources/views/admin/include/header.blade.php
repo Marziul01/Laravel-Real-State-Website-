@@ -78,7 +78,7 @@
                     @if ($access->settings != 2)
                     <li>
                         <a class="dropdown-item" href="{{ route('siteSettings') }}"> <i
-                                class="bx bx-cog bx-md me-3"></i><span>Settings</span> </a>
+                            class="bx bx-cog bx-md me-3"></i><span>Settings</span> </a>
                     </li>
                     @endif
                     <li>

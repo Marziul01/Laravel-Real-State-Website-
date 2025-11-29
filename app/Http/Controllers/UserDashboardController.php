@@ -14,11 +14,10 @@ class UserDashboardController extends Controller
 {
     public static function dashboard(){
         // Fetch bookings of user
-        $bookings = Booking::where('user_id', auth()->id() )
-            ->with('property')
-            ->orderByRaw("CASE WHEN status = 1 THEN 0 ELSE 1 END") // Pending first
-            ->orderBy('start_date', 'desc')
-            ->get();
+        $bookings = Booking::where('user_id', auth()->id())
+    ->with('property')
+    ->orderBy('created_at', 'desc')
+    ->get();
 
          // Stats
         $totalBookings = $bookings->count();
@@ -31,6 +30,7 @@ class UserDashboardController extends Controller
             'pendingBookings' => $pendingBookings,
             'visitedBookings' => $visitedBookings,
             'countries' => Country::all(),
+            'reviews' => Review::where('user_id' , auth()->id())->get(),
         ]);
     }
 

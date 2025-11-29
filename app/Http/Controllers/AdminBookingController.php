@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BookingCancelledMail;
+use App\Mail\BookingConfirmedMail;
+use App\Mail\BookingVisitedMail;
 use App\Models\Booking;
 use App\Models\Coupon;
 use App\Models\PaymentMethod;
@@ -313,12 +316,14 @@ class AdminBookingController extends Controller
         ->flatten()
         ->values();
 
-    $property = Property::find($propertyId, ['rent_start', 'price']);
+    $property = Property::find($propertyId, ['rent_start', 'price', 'weekly_price', 'monthly_price']);
 
     return response()->json([
         'bookedDates' => $bookedDates,
         'rent_start' => $property->rent_start ?? now()->format('Y-m-d'),
-        'price' => $property->price ?? 0
+        'price'         => $property->price ?? 0,
+        'weekly_price'  => $property->weekly_price ?? 0,
+        'monthly_price' => $property->monthly_price ?? 0,
     ]);
 }
 
@@ -326,7 +331,42 @@ class AdminBookingController extends Controller
     public function show($id)
     {
         $booking = Booking::with(['property', 'coupon', 'payment', 'user'])->findOrFail($id);
-        return response()->json($booking);
+
+        $start = \Carbon\Carbon::parse($booking->start_date);
+        $end   = \Carbon\Carbon::parse($booking->end_date);
+
+        $duration_text = '';
+
+        if ($booking->booking_type === 'per-night') {
+            $nights = $start->diffInDays($end);
+            $duration_text = $nights . ' Night' . ($nights > 1 ? 's' : '');
+        } 
+        elseif ($booking->booking_type === 'weekly') {
+            $weeks = $start->diffInWeeks($end);
+            $duration_text = $weeks . ' Week' . ($weeks > 1 ? 's' : '');
+        } 
+        elseif ($booking->booking_type === 'monthly') {
+            $months = ceil($start->diffInMonths($end, false)); // round up to full months
+            $duration_text = $months . ' Month' . ($months > 1 ? 's' : '');
+        }
+
+        return response()->json([
+            'booking' => $booking,
+            // Dates
+            'start_date' => $start->format('M d, Y'),
+            'end_date' => $end->format('M d, Y'),
+
+            // Check-in / check-out formatted
+            'check_in' => $booking->property->check_in 
+                            ? \Carbon\Carbon::parse($booking->property->check_in)->format('g:i A')
+                            : null,
+            'check_out' => $booking->property->check_out 
+                            ? \Carbon\Carbon::parse($booking->property->check_out)->format('g:i A')
+                            : null,
+
+            // Duration
+            'duration' => $duration_text,
+        ]);
     }
 
     public function confirm($id)
@@ -335,9 +375,20 @@ class AdminBookingController extends Controller
             return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
         $booking = Booking::findOrFail($id);
-        $booking->payment_status = 2; // confirmed
-        $booking->status = 2; // confirmed
+        $booking->payment_status = 2; 
+        $booking->status = 2;
         $booking->save();
+
+        try{
+        Mail::to($booking->email)->send(new BookingConfirmedMail($booking));
+        } catch (\Exception $e) {
+                \Log::error('Email sending failed: ' . $e->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to send confirmed email.',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
 
         $notification = new Notification();
             $notification->user_id = auth()->id();
@@ -359,6 +410,16 @@ class AdminBookingController extends Controller
         $booking->status = 4; // cancelled
         $booking->save();
 
+        try{
+        Mail::to($booking->email)->send(new BookingCancelledMail($booking));
+        } catch (\Exception $e) {
+                \Log::error('Email sending failed: ' . $e->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to send cancelled email.',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
         $notification = new Notification();
             $notification->user_id = auth()->id();
             $notification->message = 'Booking status has been updated to canceled';
@@ -378,6 +439,17 @@ class AdminBookingController extends Controller
         $booking->payment_status = 2; // confirmed
         $booking->status = 3; // cancelled
         $booking->save();
+
+        try{
+        Mail::to($booking->email)->send(new BookingVisitedMail($booking));
+        } catch (\Exception $e) {
+                \Log::error('Email sending failed: ' . $e->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to send visited email.',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
 
         $notification = new Notification();
             $notification->user_id = auth()->id();
@@ -526,6 +598,7 @@ class AdminBookingController extends Controller
             $booking->email = $request->email;
             $booking->phone = $request->phone;
             $booking->address = $request->address;
+            $booking->booking_type = $request->booking_type;
             $booking->start_date = $request->start_date;
             $booking->end_date = $request->end_date;
             $booking->total = $request->total;
@@ -679,6 +752,7 @@ class AdminBookingController extends Controller
         $booking->email = $request->email;
         $booking->phone = $request->phone;
         $booking->address = $request->address;
+        $booking->booking_type = $request->booking_type;
         $booking->start_date = $request->start_date;
         $booking->end_date = $request->end_date;
         $booking->total = $request->total;

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AppointmentReceived;
 use App\Mail\InquiryReceived;
 use App\Models\AboutPage;
 use App\Models\AgentPage;
+use App\Models\Appointment;
 use App\Models\Blog;
 use App\Models\Booking;
 use App\Models\Carrer;
@@ -57,7 +59,7 @@ class HomeController extends Controller
             'sliders' => Slider::all(),
             'homepage' => HomePage::first(),
             'teams' => Team::all(),
-            'reviews' => Review::all(),
+            'reviews' => Review::where('status' , 2)->get(),
          ]);
     }
 
@@ -456,5 +458,65 @@ class HomeController extends Controller
             'services' => $services,
             'docunments' => $docunment,
         ]);
+    }
+
+    public function teamsAppointment($id){
+        $team = Team::find($id);
+        $services = Service::all();
+        return view('frontend.pages.team_appointment', [
+            'countries' => Country::all(),
+            'services' => $services,
+            'team' => $team,
+        ]);
+    }
+
+    public function appointmentSubmit(Request $request, $id)
+    {
+        $team = Team::findOrFail($id);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'email' => 'required|email',
+            'country_id' => 'required|string',
+            'schedule_date' => 'required|date',
+            'schedule_time' => 'required',
+            'demands' => 'required|array',
+            'message' => 'required|string|max:500',
+        ]);
+
+        $Appointment = Appointment::create([
+            'team_id' => $team->id,
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'country_id' => $validated['country_id'],
+            'schedule_date' => $validated['schedule_date'],
+            'schedule_time' => $validated['schedule_time'],
+            'demands' => implode(',', $validated['demands']),
+            'message' => $validated['message'],
+        ]);
+
+        // ✅ Get admin email
+        $settings = SiteSetting::find(1);
+        $adminEmail = $settings->site_email ?? 'admin@example.com';
+
+        // ✅ Send email immediately, log if fails
+        try {
+            Mail::to($adminEmail)->send(new AppointmentReceived($Appointment));
+            
+            Log::info("Appointment email sent to admin: {$adminEmail}");
+        } catch (\Exception $e) {
+            Log::error("Appointment email failed: " . $e->getMessage());
+        }
+
+        $notification = new Notification();
+            $notification->user_id = auth()->id();
+            $notification->message = 'New Appointment has been created';
+            $notification->notification_for = 'Appointment';
+            $notification->item_id = $Appointment->id;
+            $notification->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Appointment submitted successfully!']);
     }
 }

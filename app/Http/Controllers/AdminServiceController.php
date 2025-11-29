@@ -28,7 +28,20 @@ class AdminServiceController extends Controller
             return DataTables::of($services)
                 ->addIndexColumn()
                 ->addColumn('icon', function($row){
-                    return '<i class="'.$row->icon.' fa-lg text-primary"></i>';
+
+                    // If icon type is "image"
+                    if ($row->icon_type === 'image' && !empty($row->icon_image)) {
+                        return '<img src="'.asset($row->icon_image).'" 
+                                    style="width:30px;height:30px;object-fit:contain;">';
+                    }
+
+                    // If icon type is "picker"
+                    if (!empty($row->icon)) {
+                        return '<i class="'.$row->icon.' fa-lg text-primary"></i>';
+                    }
+
+                    // Default fallback
+                    return '<span class="text-muted">No Icon</span>';
                 })
                 ->addColumn('type', function($row){
                     $types = explode(',', $row->type);
@@ -78,10 +91,12 @@ class AdminServiceController extends Controller
             'type'        => 'required|array',
             'type.*'      => 'string',
             'name'        => 'required|string|max:255',
-            'icon'        => 'required|string|max:255',
             'file_type'   => 'required|string|in:Image,Video File,Video Link',
             'file'        => 'nullable',
             'description' => 'nullable|string',
+            'icon_type'   => 'required|in:picker,image',
+            'icon'        => 'required_if:icon_type,picker|string|nullable',
+            'icon_image'  => 'required_if:icon_type,image|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -95,7 +110,7 @@ class AdminServiceController extends Controller
 
         try {
             $filePath = null;
-
+            $filePath1 = null;
             // ================ FILE UPLOAD =================
             if (in_array($validated['file_type'], ['Image', 'Video File']) && $request->hasFile('file')) {
                 $ext = $request->file('file')->getClientOriginalExtension();
@@ -107,6 +122,15 @@ class AdminServiceController extends Controller
                 $filePath = "admin-assets/services/{$folder}/{$filename}";
             } elseif ($validated['file_type'] === 'Video Link') {
                 $filePath = $request->file;
+            }
+
+            if ($request->icon_type == 'image' && $request->hasFile('icon_image')) {
+                $ext1 = $request->file('icon_image')->getClientOriginalExtension();
+                $filename1 = uniqid('service_icon_') . '.' . $ext1;
+                $path1 = public_path("admin-assets/services/icon");
+                if (!file_exists($path1)) mkdir($path1, 0777, true);
+                $request->file('icon_image')->move($path1, $filename1);
+                $filePath1 = "admin-assets/services/icon/{$filename1}";
             }
 
             // ================ UNIQUE SLUG =================
@@ -126,6 +150,8 @@ class AdminServiceController extends Controller
                 'file_type'   => $validated['file_type'],
                 'file'        => $filePath,
                 'description' => $validated['description'] ?? null,
+                'icon_type'   => $validated['icon_type'],
+                'icon_image'   => $filePath1,
             ]);
 
             $notification = new Notification();
@@ -168,10 +194,11 @@ class AdminServiceController extends Controller
             'type'        => 'required|array',
             'type.*'      => 'string',
             'name'        => 'required|string|max:255',
-            'icon'        => 'required|string|max:255',
             'file_type'   => 'required|string|in:Image,Video File,Video Link',
             'file'        => 'nullable',
             'description' => 'nullable|string',
+            'icon_type'   => 'required|in:picker,image',
+            'icon'        => 'required_if:icon_type,picker|string|nullable',
         ]);
 
         if ($validator->fails()) {
@@ -185,9 +212,12 @@ class AdminServiceController extends Controller
 
         try {
             $filePath = $service->file; // Keep existing file unless replaced
-
+            $filePath1 = $service->icon_image;
             // ================ FILE UPLOAD =================
             if (in_array($validated['file_type'], ['Image', 'Video File']) && $request->hasFile('file')) {
+                if ($service->file && file_exists(public_path($service->file))) {
+                    unlink(public_path($service->file));
+                }
                 $ext = $request->file('file')->getClientOriginalExtension();
                 $filename = uniqid('service_') . '.' . $ext;
                 $folder = $validated['file_type'] === 'Image' ? 'images' : 'videos';
@@ -197,6 +227,18 @@ class AdminServiceController extends Controller
                 $filePath = "admin-assets/services/{$folder}/{$filename}";
             } elseif ($validated['file_type'] === 'Video Link') {
                 $filePath = $request->file;
+            }
+
+            if ($request->icon_type == 'image' && $request->hasFile('icon_image')) {
+                if ($service->icon_image && file_exists(public_path($service->icon_image))) {
+                    unlink(public_path($service->icon_image));
+                }
+                $ext1 = $request->file('icon_image')->getClientOriginalExtension();
+                $filename1 = uniqid('service_icon_') . '.' . $ext1;
+                $path1 = public_path("admin-assets/services/icon");
+                if (!file_exists($path1)) mkdir($path1, 0777, true);
+                $request->file('icon_image')->move($path1, $filename1);
+                $filePath1 = "admin-assets/services/icon/{$filename1}";
             }
 
             // ================ UNIQUE SLUG (IF NAME CHANGED) =================
@@ -219,6 +261,8 @@ class AdminServiceController extends Controller
                 'file_type'   => $validated['file_type'],
                 'file'        => $filePath,
                 'description' => $validated['description'] ?? null,
+                'icon_type'   => $validated['icon_type'],
+                'icon_image'   => $filePath1,
             ]);
 
             // ================ NOTIFICATION =================
@@ -254,6 +298,10 @@ class AdminServiceController extends Controller
 
             if ($Service->file && file_exists(public_path($Service->file))) {
                 unlink(public_path($Service->file));
+            }
+
+            if ($Service->icon_image && file_exists(public_path($Service->icon_image))) {
+                unlink(public_path($Service->icon_image));
             }
 
             $notification = new Notification();

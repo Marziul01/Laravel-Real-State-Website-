@@ -21,7 +21,19 @@
                 {{-- LEFT SIDE (TEXT CONTENT) --}}
                 <div class="col-md-6 px-2 py-4 p-md-4">
                     <div class=" mb-3">
-                        <div class="services-icon  mb-3"><i class="{{ $service->icon }} fs-2"></i></div>
+                        <div class="services-icon  mb-3">
+                            {{-- <i class="{{ $service->icon }} fs-2"></i> --}}
+                            @if ($service->icon_type === 'image' && $service->icon_image)
+                                        {{-- Show uploaded icon image --}}
+                                        <img src="{{ asset($service->icon_image) }}" 
+                                            alt="icon" 
+                                            style="width:45px; height:45px; object-fit:contain;" 
+                                            class="rounded">
+                                    @else
+                                        {{-- Show icon picker icon --}}
+                                        <i class="{{ $service->icon }} fs-2"></i>
+                                    @endif
+                        </div>
                         <h4 class="mb-0">{{ $service->name }}</h4>
                     </div>
                     <p class="text-muted mb-0">

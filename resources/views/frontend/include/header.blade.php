@@ -1,5 +1,5 @@
 <header id="masthead"
-    class="site-header navbar-static-top headerV2 {{ Route::currentRouteName() != 'home' ? 'OtherPages' : '' }} "
+    class="site-header navbar-static-top headerV2 {{ !in_array(Route::currentRouteName(), ['home', 'rent', 'services', 'about']) ? 'OtherPages' : '' }} "
     role="banner">
     <div class="container">
         <nav class="row navbar navbar-expand-xl p-lg-0 m-0">
@@ -9,8 +9,11 @@
                 </a>
             </div>
             <div class="col-3 col-sm-3 col-lg-2 col-md-2 navbar-brand">
-                <a href="{{ route('home') }}">
-                    <img src="{{ asset($setting->site_logo) }}" width="100" height="100%">
+                <a href="{{ route('home') }}" class="not-fixed-logo">
+                    <img @if(!in_array(Route::currentRouteName(), ['home', 'rent', 'services', 'about'])) src="{{ asset($setting->site_logo) }}" @else src="{{ asset($setting->slider_logo) }}" @endif width="100" height="100%">
+                </a>
+                <a href="{{ route('home') }}" class="fixed-logo">
+                    <img src="{{ asset($setting->site_logo) }}"width="100" height="100%">
                 </a>
             </div>
             <div class="col-7 col-sm-8 col-lg-10 col-md-9 nav-band pl-0">
@@ -22,19 +25,12 @@
                         @endphp
 
                         <ul id="menu-top-menu" class="navbar-nav">
-
-                            <li class="menu-item {{ $currentRoute == 'about' ? 'active' : '' }}">
-                                <a href="{{ route('about') }}">About Us</a>
+                            <li class="menu-item {{ $currentRoute == 'home' ? 'active' : '' }}">
+                                <a href="{{ route('home') }}">Home</a>
                             </li>
-
-                            <li class="menu-item {{ $currentRoute == 'services' ? 'active' : '' }}">
-                                <a href="{{ route('services') }}">Services</a>
-                            </li>
-
                             <li class="menu-item {{ $currentRoute == 'rent' ? 'active' : '' }}">
-                                <a href="{{ route('rent', ['type' => 'rent']) }}">Property Rent & Booking</a>
+                                <a href="{{ route('rent', ['type' => 'rent']) }}">Rent & Booking</a>
                             </li>
-
                             <!-- Buy Properties Dropdown -->
                             <li class="nav-item dropdown position-relative">
                                 <a href="{{ route('rent', ['type' => 'sell']) }}" class="nav-link dropdown-toggle" id="buyDropdown">
@@ -62,6 +58,12 @@
                                         @endif
                                 </ul>
                             </li>
+                            <li class="menu-item {{ $currentRoute == 'services' ? 'active' : '' }}">
+                                <a href="{{ route('services') }}">Services</a>
+                            </li>
+                            <li class="menu-item {{ $currentRoute == 'about' ? 'active' : '' }}">
+                                <a href="{{ route('about') }}">About Us</a>
+                            </li> 
                         </ul>
                     </div>
                     <div class="col-lg-6 d-flex nav-band-right justify-content-end">
@@ -93,7 +95,7 @@
                             </li>
 
                             <li class="register-tab">
-                                <a @if(Route::currentRouteName() != 'home')  href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#seriveFormModal" @else href="#contact-section" @endif class="btn-blue get-touch-btn">Get in Touch</a>
+                                <a  href="#contact-section" class="btn-blue get-touch-btn">Get in Touch</a>
                             </li>
                         </ul>
                     </div>
@@ -270,7 +272,7 @@
 </div>
 
 
-<div class="modal fade" id="seriveFormModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
+{{-- <div class="modal fade" id="seriveFormModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow-lg">
             <div class="modal-header bg-dark text-white rounded-top-4">
@@ -368,4 +370,4 @@
         </div>
     </div>
     
-</div>
+</div> --}}

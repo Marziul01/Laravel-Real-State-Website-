@@ -82,12 +82,15 @@
     @endif
 </div>
 
-<div class="section">
-    <h3>Realtor</h3>
-    <p><strong>Name:</strong> {{ $property->realtor->name }}</p>
-    <p><strong>Email:</strong> {{ $property->realtor->email }}</p>
-    <p><strong>Phone:</strong> {{ $property->realtor->mobile }}</p>
-</div>
+@if ($property->realtor)
+    <div class="section">
+        <h3>Realtor</h3>
+        <p><strong>Name:</strong> {{ $property->realtor->name }}</p>
+        <p><strong>Email:</strong> {{ $property->realtor->email }}</p>
+        <p><strong>Phone:</strong> {{ $property->realtor->mobile }}</p>
+    </div>
+@endif
+
 
 
 </body>

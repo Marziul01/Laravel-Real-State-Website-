@@ -32,6 +32,8 @@ class Property extends Model
         'status',
         'created_at',
         'updated_at',
+        'weekly_price',
+        'monthly_price',
     ];
 
     public function images(){

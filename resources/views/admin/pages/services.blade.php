@@ -73,18 +73,41 @@
                             <label class="form-label">Name</label>
                             <input type="text" name="name" class="form-control" required>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Icon Type</label>
+                            <select id="iconType" name="icon_type" class="form-select">
+                                <option value="">-- Choose Option --</option>
+                                <option value="picker">Icon Picker</option>
+                                <option value="image">Icon Image</option>
+                            </select>
+                        </div>
 
-                        <div class="col-md-6">
+                        <!-- ICON PICKER FIELD -->
+                        <div class="col-md-6 mb-3" id="iconPickerWrapper" style="display:none;">
                             <label class="form-label">Select Icon</label>
                             <div class="input-group">
                                 <input type="text" id="iconPicker" name="icon" class="form-control" placeholder="Choose icon">
-                                {{-- <span class="input-group-text"><i id="iconPreview" class="fa-solid fa-magnifying-glass"></i></span> --}}
+                                <span class="input-group-text"><i id="iconPreview" class="fa-solid fa-magnifying-glass"></i></span>
                             </div>
                         </div>
 
+                        <!-- ICON IMAGE UPLOAD FIELD -->
+                        <div class="col-md-6 mb-3" id="iconImageWrapper" style="display:none;">
+                            <label class="form-label">Upload Icon Image</label>
+                            <input type="file" name="icon_image" id="iconImage" class="form-control">
+                        </div>
+
+                        {{-- <div class="col-md-6">
+                            <label class="form-label">Select Icon</label>
+                            <div class="input-group">
+                                <input type="text" id="iconPicker" name="icon" class="form-control" placeholder="Choose icon">
+                                
+                            </div>
+                        </div> --}}
+
                         <div class="col-md-6">
                             <label class="form-label">File Type</label>
-                            <select name="file_type" id="file_type" class="form-control" required>
+                            <select name="file_type" id="file_type" class="form-select" required>
                                 <option value="">-- Select File Type --</option>
                                 <option value="Image">Image</option>
                                 <option value="Video File">Video File</option>
@@ -147,6 +170,23 @@
                         <input type="text" name="name" id="edit_name" class="form-control" required>
                     </div>
 
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Icon Type</label>
+                        <select id="editiconType" name="icon_type" class="form-select">
+                            <option value="">-- Choose Option --</option>
+                            <option value="picker">Icon Picker</option>
+                            <option value="image">Icon Image</option>
+                        </select>
+                    </div>
+
+                    <!-- ICON IMAGE UPLOAD FIELD -->
+                    <div class="col-md-6 mb-3" id="editiconImageWrapper" style="display:none;">
+                        <label class="form-label">Upload Icon Image</label>
+                        <input type="file" name="icon_image" id="editiconImage" class="form-control" accept="image/*">
+                        <div id="edit_iconImagePreview" style="display:none;"></div>
+                    </div>
+
+
                     <div class="col-md-6">
                         <label class="form-label">Select Icon</label>
                         <div class="input-group">
@@ -157,7 +197,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label">File Type</label>
-                        <select name="file_type" id="edit_file_type" class="form-control" required>
+                        <select name="file_type" id="edit_file_type" class="form-select" required>
                             <option value="">-- Select File Type --</option>
                             <option value="Image">Image</option>
                             <option value="Video File">Video File</option>
@@ -264,7 +304,26 @@ $(document).ready(function () {
             success: function(res) {
                 if(res.success){
                     toastr.success(res.message);
-                    $('#addServiceModal').modal('hide');
+                    // ✅ Ensure focus is released first
+                    document.activeElement.blur();
+
+                    // ✅ Get or create the correct modal instance
+                    let modalEl = document.getElementById('addServiceModal');
+                    let addModal = bootstrap.Modal.getInstance(modalEl);
+
+                    if (!addModal) {
+                        // If no instance exists (because it was opened via data-bs-toggle), create one
+                        addModal = new bootstrap.Modal(modalEl);
+                    }
+
+                    // ✅ Properly hide the modal
+                    addModal.hide();
+
+                    // ✅ Remove leftover backdrop (in case Bootstrap failed to)
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('padding-right', '');
+
+                    // ✅ Reset form and reload table
                     $('#serviceForm')[0].reset();
                     $('.select2').val(null).trigger('change');
                     table.ajax.reload();
@@ -318,6 +377,44 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function () {
+
+    $('#iconType').on('change', function () {
+        let type = $(this).val();
+
+        if (type === "picker") {
+
+            // Show icon picker
+            $("#iconPickerWrapper").show();
+
+            // Hide & clear image input
+            $("#iconImageWrapper").hide();
+            $("#iconImage").val("");
+
+        } else if (type === "image") {
+
+            // Show image upload
+            $("#iconImageWrapper").show();
+
+            // Hide & clear picker input
+            $("#iconPickerWrapper").hide();
+            $("#iconPicker").val("");
+
+        } else {
+
+            // Nothing selected → hide everything
+            $("#iconPickerWrapper").hide();
+            $("#iconImageWrapper").hide();
+
+            $("#iconPicker").val("");
+            $("#iconImage").val("");
+        }
+    });
+
+});
+</script>
+
 
 <script>
         $(document).on('click', '.delete-confirm', function(e) {
@@ -341,7 +438,9 @@ $(document).ready(function () {
         });
     </script>
 
-
+<script>
+    const BASE_URL = "{{ url('/') }}/";
+</script>
 <script>
 $(document).ready(function () {
 
@@ -351,13 +450,19 @@ $(document).ready(function () {
         dropdownParent: $('#editServiceModal')
     });
 
-    // ==================== ICON PICKER ====================
-    $('#editServiceModal').on('shown.bs.modal', function () {
+    // Helper to safely destroy iconpicker if present
+    function destroyIconpicker() {
+        try {
+            $('#edit_icon').iconpicker('destroy');
+        } catch (err) {
+            // ignore if not initialized
+        }
+    }
 
-        // Destroy any previous instance
-        $('#edit_icon').iconpicker('destroy');
+    // Initialize iconpicker (call when needed)
+    function initIconpicker() {
+        destroyIconpicker();
 
-        // Initialize again
         $('#edit_icon').iconpicker({
             container: '#editServiceModal',
             align: 'center',
@@ -371,13 +476,79 @@ $(document).ready(function () {
             labelHeader: '{0} of {1} pages',
             placement: 'bottom',
             search: true
-        }).on('iconpickerSelected', function (event) {
-            $('#edit_iconPreview').attr('class', event.iconpickerValue);
+        }).off('iconpickerSelected').on('iconpickerSelected', function (event) {
+            // update preview and the input value
+            $('#edit_iconPreview').attr('class', event.iconpickerValue).html('');
             $('#edit_icon').val(event.iconpickerValue);
         });
+    }
+
+    // Show/hide functions
+    function showIconPickerUI() {
+        // show existing edit_icon input group and hide file uploader
+        $('#edit_icon').closest('.col-md-6').show();
+        $('#editiconImageWrapper').hide();
+        $('#editiconImage').val('');
+        // ensure preview is ready for icon (not image)
+        $('#edit_iconPreview').html('').attr('class', '');
+        initIconpicker();
+    }
+
+    function showIconImageUI() {
+        // hide the text icon input (picker) visually but keep the input in DOM
+        $('#edit_icon').closest('.col-md-6').hide();
+        destroyIconpicker();
+        // clear picker value
+        $('#edit_icon').val('');
+        $('#edit_iconPreview').html('').attr('class', '');
+        // show image upload
+        $('#editiconImageWrapper').show();
+    }
+
+    function resetIconPreviews() {
+        $('#edit_iconPreview').html('').attr('class', '');
+    }
+
+    // ==================== ICON TYPE CHANGE HANDLER ====================
+    $('#editiconType').on('change', function() {
+        const val = $(this).val();
+
+        if (val === 'picker') {
+            showIconPickerUI();
+        } else if (val === 'image') {
+            showIconImageUI();
+        } else {
+            // none selected
+            $('#edit_icon').closest('.col-md-6').show();
+            destroyIconpicker();
+            $('#editiconImageWrapper').hide();
+            $('#editiconImage').val('');
+            $('#edit_icon').val('');
+            resetIconPreviews();
+        }
     });
 
-    // ==================== FILE TYPE HANDLER ====================
+    // ==================== ICON IMAGE PREVIEW ON SELECT ====================
+    $('#editiconImage').on('change', function(e) {
+        const file = this.files && this.files[0];
+        if (!file) {
+            // cleared
+            $('#edit_iconPreview').html('').attr('class', '');
+            return;
+        }
+
+        // show preview image inside the existing preview span
+        const url = URL.createObjectURL(file);
+        $('#edit_iconPreview').html(`<img src="${url}" style="max-height:32px; max-width:32px; display:block;" class="rounded">`);
+    });
+
+    // If the user clears the file input via JS: keep preview cleared
+    function clearIconImageInput() {
+        $('#editiconImage').val('');
+        $('#edit_iconPreview').html('').attr('class', '');
+    }
+
+    // ==================== FILE TYPE HANDLER (your existing file type logic) ====
     $('#edit_file_type').on('change', function () {
         const val = $(this).val();
         $('#edit_fileInputWrapper, #edit_linkInputWrapper, #edit_previewWrapper').hide();
@@ -395,47 +566,124 @@ $(document).ready(function () {
         let id = $(this).data('id');
 
         $.ajax({
-            url: `{{ route('admin.services.edit', ':id') }}`.replace(':id', id),
-            type: 'GET',
-            success: function (response) {
+    url: `{{ route('admin.services.edit', ':id') }}`.replace(':id', id),
+    type: 'GET',
+    success: function (response) {
 
-                // Fill data
-                $('#editServiceId').val(response.id);
-                $('#edit_name').val(response.name);
-                $('#edit_icon').val(response.icon);
-                $('#edit_iconPreview').attr('class', response.icon);
-                $('#edit_description').val(response.description);
-                $('#edit_file_type').val(response.file_type).trigger('change');
+        // Fill simple fields
+        $('#editServiceId').val(response.id);
+        $('#edit_name').val(response.name);
+        $('#edit_description').val(response.description);
+        $('#edit_file_type').val(response.file_type).trigger('change');
 
-                // Set Select2
-                if (response.type) {
-                    let types = response.type.split(',');
-                    $('#edit_type').val(types).trigger('change');
+        // Select2 (Type multiselect)
+        if (response.type) {
+            $('#edit_type').val(response.type.split(',')).trigger('change');
+        } else {
+            $('#edit_type').val(null).trigger('change');
+        }
+
+        // ============================================
+        //         FIXED ICON / IMAGE PREVIEW
+        // ============================================
+
+        $('#edit_iconPreview').hide().html('');
+        $('#edit_iconImagePreview').hide().html('');
+
+        const iconType = response.icon_type || (
+            response.icon ? 'picker'
+            : response.icon_image ? 'image'
+            : ''
+        );
+
+        $('#editiconType').val(iconType).trigger('change');
+
+        // ---------------- ICON PICKER ----------------
+        if (iconType === 'picker') {
+
+            setTimeout(() => {
+                if (response.icon) {
+                    $('#edit_icon').val(response.icon);
+
+                    $('#edit_iconPreview')
+                        .html(`<i class="${response.icon} fa-2x text-primary"></i>`)
+                        .show();
+
+                    try { $('#edit_icon').iconpicker('setIcon', response.icon); }
+                    catch (e) {}
                 }
+            }, 150);
 
-                // Show preview of current media
-                if (response.file) {
-                    $('#edit_previewWrapper').show();
+        }
 
-                    if (response.file_type === 'Image') {
-                        $('#edit_previewContent').html(`<img src="{{  asset('${response.file}') }}" class="img-fluid rounded" style="max-height:200px;">`);
-                    } else if (response.file_type === 'Video File') {
-                        $('#edit_previewContent').html(`<video src="{{  asset('/${response.file}') }}" controls style="max-height:200px;" class="rounded w-100"></video>`);
-                    } else if (response.file_type === 'Video Link') {
-                        $('#edit_previewContent').html(`<iframe src="${response.file}" class="w-100 rounded" style="height:200px;" allowfullscreen></iframe>`);
-                    }
-                }
+        // ---------------- IMAGE PREVIEW ----------------
+        if (iconType === 'image' && response.icon_image) {
 
-                // Show modal
-                $('#editServiceModal').modal('show');
-            },
-            error: function () {
-                toastr.error('Failed to fetch service details.');
+            const imgURL = BASE_URL + response.icon_image;
+
+            $('#edit_iconImagePreview')
+                .html(`<img src="${imgURL}" style="max-width:50px; max-height:50px;" class="rounded">`)
+                .show();
+
+            $('#edit_iconPreview').hide();
+            clearIconImageInput(); // your function
+        }
+
+        // ============================================
+        //          FIXED MAIN FILE PREVIEW
+        // ============================================
+
+        if (response.file) {
+
+            $('#edit_previewWrapper').show();
+
+            if (response.file_type === 'Image') {
+
+                const imgURL = BASE_URL + response.file;
+
+                $('#edit_previewContent')
+                    .html(`<img src="${imgURL}" class="img-fluid rounded" style="max-height:200px;">`);
+
+            } else if (response.file_type === 'Video File') {
+
+                const videoURL = BASE_URL + response.file;
+
+                $('#edit_previewContent')
+                    .html(`<video src="${videoURL}" controls class="rounded w-100" style="max-height:200px;"></video>`);
+
+            } else if (response.file_type === 'Video Link') {
+
+                $('#edit_previewContent')
+                    .html(`<iframe src="${response.file}" class="w-100 rounded" style="height:200px;" allowfullscreen></iframe>`);
+
+            }
+
+        } else {
+            $('#edit_previewWrapper').hide();
+            $('#edit_previewContent').empty();
+        }
+
+        // Show modal
+        $('#editServiceModal').modal('show');
+
+        // Initialize iconpicker only if picker type selected
+        $('#editServiceModal').off('shown.bs.modal').on('shown.bs.modal', function () {
+            if ($('#editiconType').val() === 'picker') {
+                initIconpicker();
+            } else {
+                destroyIconpicker();
             }
         });
+
+    },
+    error: function () {
+        toastr.error('Failed to fetch service details.');
+    }
+});
+
     });
 
-    // ==================== UPDATE SERVICE ====================
+    // ==================== UPDATE SERVICE (unchanged) ====================
     $('#editServiceForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -453,14 +701,26 @@ $(document).ready(function () {
                 toastr.success('Service updated successfully!');
                 $('#servicesTable').DataTable().ajax.reload(null, false); // if DataTable used
             },
-            error: function () {
+            error: function (xhr) {
+                // optionally show server validation messages
                 toastr.error('Update failed. Please check inputs.');
             }
         });
     });
 
+    // Cleanup when modal hidden (optional)
+    $('#editServiceModal').on('hidden.bs.modal', function () {
+        destroyIconpicker();
+        // optionally reset form fields if desired:
+        // $('#editServiceForm')[0].reset();
+        // $('#edit_type').val(null).trigger('change');
+        // clearIconImageInput();
+        // resetIconPreviews();
+    });
+
 });
 </script>
+
 
 
 

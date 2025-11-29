@@ -61,7 +61,7 @@ User Dashboard
                             <thead class="table-dark">
                                 <tr>
                                     <th>Property</th>
-                                    <th>Dates</th>
+                                    <th>Booking Date</th>
                                     <th>Guests</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -78,13 +78,33 @@ User Dashboard
                                                 <span>{{ $booking->property->name ?? 'N/A' }}</span>
                                             </a>
                                         </td>
+                                        @php
+                                            $start = \Carbon\Carbon::parse($booking->start_date);
+                                            $end = \Carbon\Carbon::parse($booking->end_date);
+
+                                            // Calculate differences
+                                            $nights = $start->diffInDays($end);       // per night
+                                            $weeks = $start->diffInWeeks($end);       // weekly
+                                            $months = ceil($start->diffInMonths($end, false)); // monthly, round up
+                                        @endphp
                                         <td>
-                                            {{ \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}
-                                            -
-                                            {{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}
+                                            {{-- Duration based on booking type --}}
+                                            @if($booking->booking_type === 'per-night')
+                                                <span class="text-primary fw-bold">{{ $nights }} Night{{ $nights > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @elseif($booking->booking_type === 'weekly')
+                                                <span class="text-success fw-bold">{{ $weeks }} Week{{ $weeks > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @elseif($booking->booking_type === 'monthly')
+                                                <span class="text-info fw-bold">{{ $months }} Month{{ $months > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @endif
+                                            
+                                            {{ $start->format('M d, Y') }} - {{ $end->format('M d, Y') }}
 
                                             <br>
-                                            (Check In: {{ $booking->property->check_in }} &  Check In: {{ $booking->property->check_out }})
+                                            (Check In: {{ \Carbon\Carbon::parse($booking->property->check_in)->format('g:i A') }} &  
+                                            Check Out: {{ \Carbon\Carbon::parse($booking->property->check_out)->format('g:i A') }})
                                         </td>
                                         <td>{{ $booking->total_guests }}</td>
                                         <td>
@@ -100,15 +120,18 @@ User Dashboard
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 align-items-center">
-                                                <button class="btn btn-sm btn-primary contact-btn d-flex align-items-center" data-id="{{ $booking->id }}">
-                                                    <i class="fa-brands fa-whatsapp"></i> Contact
-                                                </button>
+                                                @if($booking->property->realtor)
+                                                    <a class="btn btn-sm btn-primary contact-btn d-flex align-items-center" 
+                                                    href="https://wa.me/{{ $booking->property->realtor->phone }}">
+                                                        <i class="fa-brands fa-whatsapp"></i> Contact
+                                                    </a>
+                                                @endif
                                                 @if($booking->status != 3)
                                                 <a href="{{ route('booking.invoice.show', $booking->id) }}" target="_blank" class="btn btn-sm btn-primary d-flex align-items-center" >
                                                     <i class="fa-solid fa-download"></i> Invoice
                                                 </a>
                                                 @endif
-                                                @if($booking->status == 3)
+                                                @if($booking->status == 3 && !$booking->reviews()->where('user_id', auth()->id())->exists())
                                                     <button class="btn btn-sm btn-success review-btn" 
                                                             data-id="{{ $booking->id }}" 
                                                             data-property="{{ $booking->property->name }}">
@@ -203,7 +226,7 @@ User Dashboard
 $(document).ready(function () {
     $('#bookingsTable').DataTable({
         pageLength: 10,
-        order: [[0, 'asc']], // optional: sort by property name
+        order: [], // optional: sort by property name
         language: {
             search: "_INPUT_",
             searchPlaceholder: "Search bookings..."

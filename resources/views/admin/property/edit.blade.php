@@ -90,11 +90,27 @@
                                 <input type="date" name="rent_start" id="rent_start" class="form-control myDate" value="{{ $property->rent_start }}" placeholder="Booking Starting Date" required>
                             </div>
                             @endif
-                            <div class="mb-3">
-                                <label for="price">Price</label>
-                                <input type="number" name="price" id="price" class="form-control" placeholder="Price" value="{{ $property->price }}">
-                            </div>
-                            
+                            @if($property->type == 'rent')
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="price">Per Night Rent Price</label>
+                                        <input type="number" name="price" id="price" class="form-control" placeholder="Per Night Price" value="{{ $property->price }}" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="weekly_price">Weekly Rent Price</label>
+                                        <input type="number" name="weekly_price" id="weekly_price" class="form-control" placeholder="Weekly Rent Price" value="{{ $property->weekly_price }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="monthly_price">Monthly Rent Price</label>
+                                        <input type="number" name="monthly_price" id="monthly_price" class="form-control" placeholder="Monthly Rent Price" value="{{ $property->monthly_price }}">
+                                    </div>
+                                </div>
+                            @else
+                                <div class="mb-3">
+                                    <label for="price">Price</label>
+                                    <input type="number" name="price" id="price" class="form-control" placeholder="Price" value="{{ $property->price }}">
+                                </div>
+                            @endif
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="space">Property Space</label>

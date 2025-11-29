@@ -7,7 +7,15 @@
     <div class="row">
         @foreach($notifications as $n)
         <div class="col-md-3 mb-3">
-            <div class="p-3 border rounded bg-unread">
+            <div class="p-3 border rounded bg-unread notification-item @if ($n->user_id)
+                    @if ($n->user->role == 0)
+                        admin
+                    @else
+                        user
+                    @endif
+                    @else
+                    user
+                    @endif h-100">
                 <div class="fw-bold">
                     @if ($n->user_id)
                     @if ($n->user->role == 0)

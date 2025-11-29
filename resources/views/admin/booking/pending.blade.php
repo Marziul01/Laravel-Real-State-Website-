@@ -58,9 +58,11 @@
             </div>
 
             <div class="col-md-6">
-              <h6 class="fw-bold text-muted mb-2">Property Information</h6>
+              <h6 class="fw-bold text-muted mb-2">Booking Information</h6>
               <p><strong>Property:</strong> <span id="property_name"></span></p>
+              <p><strong>Duration:</strong> <span id="booking_duration"></span></p>
               <p><strong>Dates:</strong> <span id="booking_dates"></span></p>
+              <p><strong>CheckIn and CheckOut:</strong> <span id="checkins"></span></p>
               <p><strong>Total Guests:</strong> <span id="booking_guests"></span></p>
             </div>
           </div>
@@ -177,46 +179,48 @@ $(document).on('click', '.view-booking', function() {
             loader.addClass('d-none');
             content.removeClass('d-none');
 
-            $('#booking_name').text(response.name ?? 'N/A');
-            $('#booking_phone').text(response.phone ?? 'N/A');
-            $('#booking_email').text(response.email ?? 'N/A');
-            $('#booking_address').text(response.address ?? 'N/A');
-            $('#property_name').text(response.property?.name ?? 'N/A');
+            $('#booking_name').text(response.booking.name ?? 'N/A');
+            $('#booking_phone').text(response.booking.phone ?? 'N/A');
+            $('#booking_email').text(response.booking.email ?? 'N/A');
+            $('#booking_address').text(response.booking.address ?? 'N/A');
+            $('#property_name').text(response.booking.property?.name ?? 'N/A');
             $('#booking_dates').text(`${response.start_date} to ${response.end_date}`);
-            $('#booking_guests').text(response.total_guests ?? 'N/A');
-            $('#payment_method').text(response.payment?.name ?? 'N/A');
-            $('#transaction_id').text(response.transaction_id ?? 'N/A');
-            $('#bank_account').text(response.bank_account_number
-                ? `${response.bank_account_name} (${response.bank_account_number})`
+            $('#checkins').text(`Check In: ${response.check_in} | Check Out: ${response.check_out}`);
+            $('#booking_duration').text(response.duration);
+            $('#booking_guests').text(response.booking.total_guests ?? 'N/A');
+            $('#payment_method').text(response.booking.payment?.name ?? 'N/A');
+            $('#transaction_id').text(response.booking.transaction_id ?? 'N/A');
+            $('#bank_account').text(response.booking.bank_account_number
+                ? `${response.booking.bank_account_name} (${response.booking.bank_account_number})`
                 : 'N/A');
-            $('#total').text(response.total ?? '0');
-            $('#discount').text(response.discount ?? '0');
-            $('#grand_total').text(response.grand_total ?? '0');
-            $('#booking_notes').text(response.notes ?? 'No notes.');
+            $('#total').text(response.booking.total ?? '0');
+            $('#discount').text(response.booking.discount ?? '0');
+            $('#grand_total').text(response.booking.grand_total ?? '0');
+            $('#booking_notes').text(response.booking.notes ?? 'No notes.');
 
             // store id for confirm/cancel
-            $('#confirmBookingBtn').data('id', response.id);
-            $('#cancelBookingBtn').data('id', response.id);
-            $('#visitedBookingBtn').data('id', response.id);
-            $('#pendingBookingBtn').data('id', response.id);
+            $('#confirmBookingBtn').data('id', response.booking.id);
+            $('#cancelBookingBtn').data('id', response.booking.id);
+            $('#visitedBookingBtn').data('id', response.booking.id);
+            $('#pendingBookingBtn').data('id', response.booking.id);
 
             // hide all first
             $('#confirmBookingBtn, #cancelBookingBtn, #visitedBookingBtn, #pendingBookingBtn').addClass('d-none');
 
             // ✅ Show buttons based on booking status
-            if (response.status == 1) {
+            if (response.booking.status == 1) {
                 // Pending → show Confirm + Cancel
                 $('#confirmBookingBtn, #cancelBookingBtn').removeClass('d-none');
             } 
-            else if (response.status == 2) {
+            else if (response.booking.status == 2) {
                 // Confirmed → show Visited + Cancel + Pending
                 $('#visitedBookingBtn, #cancelBookingBtn, #pendingBookingBtn').removeClass('d-none');
             } 
-            else if (response.status == 3) {
+            else if (response.booking.status == 3) {
                 // Visited → show Cancel
                 $('#cancelBookingBtn').removeClass('d-none');
             } 
-            else if (response.status == 4) {
+            else if (response.booking.status == 4) {
                 // Cancelled → show Pending
                 $('#pendingBookingBtn').removeClass('d-none');
             }

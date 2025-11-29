@@ -142,6 +142,10 @@ class PropertyController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->expectsJson()) {
+            // continue normally
+        }
+
         if($request->type == 'rent'){
             if(auth()->user()->adminAccess->rent_property != 3){
                 return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
@@ -153,23 +157,44 @@ class PropertyController extends Controller
         }
 
         try {
-            // ✅ Validate request
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'price' => 'required|numeric',
-                'rent_start' => 'nullable|date',
-                'featured_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,avif|max:4096',
-                'gallery_images.*' => 'nullable|file|mimes:jpg,jpeg,png,webp,avif|max:4096',
-                'feature_keys' => 'nullable|array',
-                'feature_values' => 'nullable|array',
-                'amenities' => 'nullable|array',
-                'country_id' => 'required|integer',
-                'state_id' => 'nullable|integer',
-                'district_id' => 'nullable|integer',
-                'upazilla_id' => 'nullable|integer',
-                'property_type_id' => 'required',
-            ]);
+            try {
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255',
+                    'description' => 'nullable|string',
+                    'rent_start' => 'nullable|date',
+                    'featured_image' => 'nullable|file|mimes:jpg,jpeg,png,webp,avif|max:4096',
+                    'gallery_images.*' => 'nullable|file|mimes:jpg,jpeg,png,webp,avif|max:4096',
+                    'feature_keys' => 'nullable|array',
+                    'feature_values' => 'nullable|array',
+                    'amenities' => 'nullable|array',
+                    'country_id' => 'required|integer',
+                    'state_id' => 'nullable|integer',
+                    'district_id' => 'nullable|integer',
+                    'upazilla_id' => 'nullable|integer',
+                    'property_type_id' => 'required',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+
+                // Return JSON 422 with detailed errors
+                return response()->json([
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            if ($request->type === 'rent') {
+                if (!$request->price && !$request->weekly_price && !$request->monthly_price) {
+                    return response()->json([
+                        'errors' => ['price' => ['At least one rent price is required (daily, weekly, or monthly).']]
+                    ], 422);
+
+                }
+            } else { 
+                if (!$request->price) {
+                    return response()->json([
+                        'errors' => ['price' => ['You must provide the property price.']]
+                    ], 422);
+                }
+            }
 
             // ✅ Generate unique slug
             $baseSlug = Str::slug($validated['name']);
@@ -185,7 +210,9 @@ class PropertyController extends Controller
             $property->name = $validated['name'];
             $property->slug = $slug;
             $property->description = $validated['description'] ?? null;
-            $property->price = $validated['price'];
+            $property->price = $request->price;
+            $property->weekly_price = $request->weekly_price;
+            $property->monthly_price = $request->monthly_price;
             $property->rent_start = $validated['rent_start'];
             $property->country_id = $request->country_id;
             if($request->district_id){
@@ -345,12 +372,13 @@ class PropertyController extends Controller
                 }
             }
 
+            try{
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'featured_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,avif',
                 'gallery_images.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,webp,avif',
-                'price' => 'required|numeric',
+                
                 'rent_start' => 'nullable|date',
                 'space' => 'nullable|numeric',
                 'parking_space' => 'nullable|numeric',
@@ -371,6 +399,27 @@ class PropertyController extends Controller
                 'feature_values' => 'nullable|array',
                 'amenities' => 'nullable|array',
             ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                // Return JSON 422 with detailed errors
+                return response()->json([
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            if ($property->type === 'rent') {
+                if (!$request->price && !$request->weekly_price && !$request->monthly_price) {
+                    return response()->json([
+                        'errors' => ['price' => ['At least one rent price is required (daily, weekly, or monthly).']]
+                    ], 422);
+
+                }
+            } else { 
+                if (!$request->price) {
+                    return response()->json([
+                        'errors' => ['price' => ['You must provide the property price.']]
+                    ], 422);
+                }
+            }
 
             if ($property->name !== $validated['name']) {
                 // Generate unique slug only if name changed
@@ -391,6 +440,8 @@ class PropertyController extends Controller
                 'slug' => $slug,
                 'description' => $request->description,
                 'price' => $request->price,
+                'weekly_price' => $request->weekly_price,
+                'monthly_price' => $request->monthly_price,
                 'rent_start' => $request->rent_start,
                 'space' => $request->space,
                 'parking_space' => $request->parking_space,
@@ -407,6 +458,7 @@ class PropertyController extends Controller
                 'house' => $request->house,
                 'property_type_id' => $request->property_type_id,
                 'property_listing' => $request->property_listing ? implode(',', $request->property_listing) : null,
+                'realtor_id' => $request->realtor_id,
             ]);
 
             $propertySlug = $property->slug;

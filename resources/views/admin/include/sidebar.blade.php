@@ -184,6 +184,16 @@
             </a>
         </li>
         @endif
+
+        @if ($access->services != 2)
+        <li class="menu-item {{ Route::currentRouteName() == 'admin.services.inquiry' ? 'active' : '' }}">
+            <a href="{{ route('admin.services.inquiry') }}"
+                class="menu-link">
+                <i class="menu-icon1 tf-icons fa-solid fa-handshake-angle"></i>
+                <div class="text-truncate" data-i18n="Email">Service Inquiries</div>
+            </a>
+        </li>
+        @endif
         
         @if ($access->teams != 2)
         <li class="menu-item {{ Route::currentRouteName() == 'admin.teams' ? 'active' : '' }}">
@@ -191,6 +201,16 @@
                 class="menu-link">
                 <i class="menu-icon1 tf-icons fa-solid fa-users"></i>
                 <div class="text-truncate" data-i18n="Email">All Teams</div>
+            </a>
+        </li>
+        @endif
+
+        @if ($access->teams != 2)
+        <li class="menu-item {{ Route::currentRouteName() == 'appointment.index' ? 'active' : '' }}">
+            <a href="{{ route('appointment.index') }}"
+                class="menu-link">
+                <i class="menu-icon1 tf-icons fa-solid fa-users"></i>
+                <div class="text-truncate" data-i18n="Email">Appointment Requests</div>
             </a>
         </li>
         @endif

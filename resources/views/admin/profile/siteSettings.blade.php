@@ -66,6 +66,15 @@
                         @endif
                         <span class="text-danger error-text site_favicon_error"></span>
                     </div>
+                    <div class="form-group col-md-6 mb-3">
+                        <label>Site white Logo</label>
+                        <input type="file" class="form-control" name="slider_logo">
+                        @if($setting->slider_logo)
+                            <p class="my-2">Previous Image :</p>
+                            <img src="{{ asset($setting->slider_logo) }}" alt="Favicon" class="mt-2" width="120">
+                        @endif
+                        <span class="text-danger error-text site_favicon_error"></span>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
             </form>

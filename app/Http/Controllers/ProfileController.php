@@ -121,6 +121,17 @@ class ProfileController extends Controller
             $setting->signature = $relativePath . $signatureName;
         }
 
+        // Save Slider Logo Image
+        if ($request->hasFile('slider_logo')) {
+            if ($setting->slider_logo && file_exists(public_path($setting->slider_logo))) {
+                unlink(public_path($setting->slider_logo));
+            }
+
+            $signatureName = 'slider_logo.'. time() . $request->slider_logo->extension();
+            $request->slider_logo->move($uploadPath, $signatureName);
+            $setting->slider_logo = $relativePath . $signatureName;
+        }
+
         $setting->save();
 
         return response()->json(['message' => 'Site settings updated successfully!']);

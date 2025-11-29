@@ -34,7 +34,7 @@ class AdminAccessController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|max:255|unique:users,email',
-            'phone'     => 'required|string|max:20',
+            'phone'     => 'required|string|max:20|unique:users,phone',
             'role_type' => 'required|string|max:255',
             'image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -83,7 +83,7 @@ class AdminAccessController extends Controller
             $access->admin_id = $user->id;
 
             foreach ($access->getFillable() as $column) {
-                if ($column != 'admin_id' && $column != 'created_at' && $column != 'updated_at' && $column != 'reports') {
+                if ($column != 'admin_id' && $column != 'created_at' && $column != 'updated_at' && $column != 'reports' && $column != 'control_panel') {
                     $access->{$column} = $request->{$column};
                 }
             }
@@ -141,7 +141,7 @@ class AdminAccessController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|email|max:255|unique:users,email,' . $admin->id,
-            'phone'     => 'nullable|string|max:20',
+            'phone'     => 'nullable|string|max:20|unique:users,phone,' . $admin->id,
             'role_type' => 'required|string|max:255',
             'image'     => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'password'  => 'nullable|min:8',
@@ -193,7 +193,7 @@ class AdminAccessController extends Controller
             $access = AdminAccess::where('admin_id', $admin->id)->first();
 
             foreach ($access->getFillable() as $col) {
-                if (!in_array($col, ['admin_id', 'created_at', 'updated_at', 'reports'])) {
+                if (!in_array($col, ['admin_id', 'created_at', 'updated_at', 'reports' , 'control_panel'])) {
                     $access->{$col} = $request->{$col};
                 }
             }

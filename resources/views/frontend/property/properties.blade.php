@@ -9,10 +9,31 @@
 @endsection
 
 @section('content')
-    <div class="pagesheader" style="height: 100px"></div>
+    {{-- <div class="pagesheader" style="height: 100px"></div>
     <div class="breadcramb">
         <div class="container">
             <p class="mb-0 text-sm"> Home > All Properties</p>
+        </div>
+    </div> --}}
+
+    <div class="hero-otherpage">
+        <div class="image-hero" style="background-image: url('{{ asset('frontend-assets/images/slider.jpg') }}')">
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 overlay">
+                <div class="container d-flex flex-column align-items-center justify-content-center">
+                    <h1 class="text-white">Our All Properties</h1>
+                    <p class="text-white text-center px-4">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy ...</p>
+                </div>
+            </div>
+        </div>
+        <div class="container d-flex p-4 gap-4">
+            <div class="row texts">
+                <div class="col-md-4">
+                    <h2>Buy Dubai Properties: Luxury Property for Sale in UAE</h2>
+                </div>
+                <div class="col-md-8">
+                    <p>Experience the pinnacle of luxury with buying a property in Dubai, where stunning architecture meets world-class amenities. Each residence seamlessly blends elegance with comfort, offering breathtaking views of the city skyline and pristine beaches. Buy Dubai properties and embrace a lifestyle defined by sophistication and unmatched beauty.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -48,7 +69,7 @@
 
             </div>
         </div>
-        <div class="grid-container mt-4" id="propertyList">
+        <div class="grid-container mt-4 not-grid" id="propertyList">
             @include('frontend.property.property_list', ['properties' => $properties])
         </div>
         <div id="formLoaderbooking" class="form-loader booking d-none">

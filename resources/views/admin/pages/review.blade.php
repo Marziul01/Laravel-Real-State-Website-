@@ -111,12 +111,12 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Name</label>
-                        <input type="text" name="name" id="edit_name" class="form-control" required>
+                        <input type="text" name="name" id="edit_name" class="form-control editable-field" required>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Select Service</label>
-                        <select name="service_id" id="edit_service_id" class="form-select">
+                        <select name="service_id" id="edit_service_id" class="form-select editable-field">
                             <option value="">-- Select Service --</option>
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}">{{ $service->name }}</option>
@@ -126,12 +126,12 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Rating</label>
-                        <input type="number" name="rating" id="edit_rating" class="form-control" required min="1" max="5">
+                        <input type="number" name="rating" id="edit_rating" class="form-control editable-field" required min="1" max="5">
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">Comment</label>
-                        <textarea name="comment" id="edit_comment" class="form-control" rows="3"></textarea>
+                        <textarea name="comment" id="edit_comment" class="form-control editable-field" rows="3"></textarea>
                     </div>
 
                     <div class="col-md-6 d-none" id="statusWrapper">
@@ -292,15 +292,17 @@ $(document).ready(function () {
                 $('#statusWrapper').addClass('d-none');
 
                 if (res.property_id) {
-                    // Property review => make all readonly
-                    $('#editServiceForm input, #editServiceForm textarea, #editServiceForm select').prop('readonly', true).prop('disabled', true);
+                    // Disable only editable fields
+                    $('.editable-field').prop('readonly', true).prop('disabled', true);
 
-                    // Enable status select only
+                    // Show + enable status field
                     $('#statusWrapper').removeClass('d-none');
                     $('#edit_status').prop('disabled', false).prop('readonly', false);
                     $('#edit_status').val(res.status);
                 } else {
-                    // Service review => always active
+                    // Service review => allow full edit
+                    $('.editable-field').prop('readonly', false).prop('disabled', false);
+                    $('#statusWrapper').addClass('d-none');
                     $('#edit_status').val(2);
                 }
 

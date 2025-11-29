@@ -22,7 +22,7 @@
         <h2>{{ $setting->site_name }}</h2>
         <div class="company-info">
             {{ $setting->site_address }}<br>
-            Email: {{ $setting->site_email }} | Phone: {{ $setting->whatsapp }}
+            Email: {{ $setting->site_email }} | Phone: {{ $setting->site_phone }}
         </div>
     </div>
 
@@ -44,7 +44,32 @@
         <tbody>
             <tr>
                 <td>{{ $booking->property->name ?? 'N/A' }}</td>
-                <td>{{ $booking->start_date }} -to- {{ $booking->end_date }}</td>
+                @php
+                                            $start = \Carbon\Carbon::parse($booking->start_date);
+                                            $end = \Carbon\Carbon::parse($booking->end_date);
+
+                                            // Calculate differences
+                                            $nights = $start->diffInDays($end);       // per night
+                                            $weeks = $start->diffInWeeks($end);       // weekly
+                                            $months = ceil($start->diffInMonths($end, false)); // monthly, round up
+                                        @endphp
+                <td>{{-- Duration based on booking type --}}
+                                            @if($booking->booking_type === 'per-night')
+                                                <span class="text-primary fw-bold">{{ $nights }} Night{{ $nights > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @elseif($booking->booking_type === 'weekly')
+                                                <span class="text-success fw-bold">{{ $weeks }} Week{{ $weeks > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @elseif($booking->booking_type === 'monthly')
+                                                <span class="text-info fw-bold">{{ $months }} Month{{ $months > 1 ? 's' : '' }}</span>
+                                                <br>
+                                            @endif
+                                            
+                                            {{ $start->format('M d, Y') }} - {{ $end->format('M d, Y') }}
+
+                    <br>
+                    (Check In: {{ \Carbon\Carbon::parse($booking->property->check_in)->format('g:i A') }} &  
+                    Check Out: {{ \Carbon\Carbon::parse($booking->property->check_out)->format('g:i A') }})</td>
                 <td>{{ $booking->total_guests }}</td>
                 <td>{{ number_format($booking->total, 2) }}</td>
             </tr>
@@ -97,7 +122,7 @@
     </table>
 
     <div class="footer">
-        <p>For any queries, contact us at {{ $setting->site_email }} or call {{ $setting->whatsapp }}.</p>
+        <p>For any queries, contact us at {{ $setting->site_email }} or call {{ $setting->site_phone }}.</p>
         <p>Thank you for choosing {{ $setting->site_name }}!</p>
     </div>
 </body>

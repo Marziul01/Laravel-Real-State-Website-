@@ -5,29 +5,49 @@
 @endsection
 
 @section('content')
-    <div class="pagesheader" style="height: 100px"></div>
+    {{-- <div class="pagesheader" style="height: 100px"></div>
     <div class="breadcramb">
         <div class="container">
             <p class="mb-0 text-sm"> Home > Services</p>
         </div>
+    </div> --}}
+    <div class="hero-otherpage">
+        <div class="image-hero" style="background-image: url('{{ asset($about->image) }}')">
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 overlay">
+                <div class="container d-flex flex-column align-items-center justify-content-center">
+                    <h1 class="fw-bold text-white mb-3">About <span class="text-primary fw-bold">{{ $setting->site_name }}</span></h1>
+                    <p class="text-white text-center px-4">{{ $about->about_content ?? '' }}</p>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="container d-flex p-4 gap-4">
+            <div class="row texts">
+                <div class="col-md-4">
+                    <h2>Buy Dubai Properties: Luxury Property for Sale in UAE</h2>
+                </div>
+                <div class="col-md-8">
+                    <p>Experience the pinnacle of luxury with buying a property in Dubai, where stunning architecture meets world-class amenities. Each residence seamlessly blends elegance with comfort, offering breathtaking views of the city skyline and pristine beaches. Buy Dubai properties and embrace a lifestyle defined by sophistication and unmatched beauty.</p>
+                </div>
+            </div>
+        </div> --}}
     </div>
     <div class="container my-5">
-        <section class="py-5">
+        {{-- <section class="py-5">
             <div class="container">
                 <div class="row align-items-center gy-4">
                     <div class="col-lg-6">
-                        <h2 class="fw-bold mb-3">About <span class="text-primary">{{ $setting->site_name }}</span></h2>
+                        
                         <p class="text-muted mb-4" style="line-height: 1.8;">
                             {{ $about->about_content ?? '' }}
                         </p>
                         
                     </div>
                     <div class="col-lg-6 text-center">
-                        <img src="{{ asset($about->image) }}" class="rounded-3">
+                        <img src="{{ asset($about->image) }}" class="rounded-3 w-100 h-100">
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         {{-- =================== MISSION & VISION =================== --}}
         <section class="py-5">
@@ -72,11 +92,12 @@
                                     {{ $chairman->bio }}
                                 </p>
                                 @if ($chairman->email)
-                                    <strong><p class="small mb-0">Email: {{ $chairman->email }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Email: {{ $chairman->email }}</p></strong>
                                 @endif
                                 @if ($chairman->phone)
-                                    <strong><p class="small mb-0">Phone: {{ $chairman->phone }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Phone: {{ $chairman->phone }}</p></strong>
                                 @endif
+                                <a href="{{ route('teams.appointment' ,['id' => $chairman->id , 'name' => $chairman->name ] ) }}" class="btn btn-primary w-100 mt-3">Get Appointment</a>
                             </div>
                         </div>
                     @endif
@@ -93,11 +114,12 @@
                                     {{ $md->bio }}
                                 </p>
                                 @if ($md->email)
-                                    <strong><p class="small mb-0">Email: {{ $md->email }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Email: {{ $md->email }}</p></strong>
                                 @endif
                                 @if ($md->phone)
-                                    <strong><p class="small mb-0">Phone: {{ $md->phone }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Phone: {{ $md->phone }}</p></strong>
                                 @endif
+                                <a href="{{ route('teams.appointment' ,['id' => $md->id , 'name' => $md->name ] ) }}" class="btn btn-primary w-100 mt-3">Get Appointment</a>
                             </div>
                         </div>
                     @endif
@@ -118,11 +140,12 @@
                                 <h6 class="fw-bold mb-1">{{ $member->name }}</h6>
                                 <p class="text-primary small mb-2">{{ $member->position }}</p>
                                 @if ($member->email)
-                                    <strong><p class="small mb-0">Email: {{ $member->email }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Email: {{ $member->email }}</p></strong>
                                 @endif
                                 @if ($member->phone)
-                                    <strong><p class="small mb-0">Phone: {{ $member->phone }}</p></strong>
+                                    <strong><p class="small mb-0 realtor-email">Phone: {{ $member->phone }}</p></strong>
                                 @endif
+                                <a href="{{ route('teams.appointment' ,['id' => $member->id , 'name' => $member->name ] ) }}" class="btn btn-primary w-100 mt-3">Get Appointment</a>
                             </div>
                         </div>
                     @endforeach

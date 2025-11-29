@@ -10,7 +10,7 @@
 
 @section('content')
     <div id="content" class="site-content">
-        <div class="home-hero-section loading-normal-page">
+        <div class="home-hero-section loading-normal-page position-relative">
             <div class="swiper mySwiper" slides-per-view="auto">
                 <div class="swiper-wrapper" slides-per-view="auto">
                     @if ($sliders->isNotEmpty())
@@ -34,7 +34,6 @@
                         </div>
                     </div>
                     @endif
-                    
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -236,25 +235,44 @@
                     </form>
                 </div>
             </div>
+
+            <div class="hero-social-icons mb-2">
+                    <a href="{{ $setting->facebook }}" class="social-link1"><i
+                            class="fa-brands fa-facebook-f"></i></a>
+                    <a href="{{ $setting->twitter }}" class="social-link1"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="{{ $setting->instagram }}" class="social-link1"><i
+                            class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $setting->whatsapp) }}"
+                        class="social-link1"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
         </div>
 
         <div class="container  py-5">
             <div class="d-flex justify-content-between align-items-center">
                 <h3 class="reviews-title">TOP LISTED PROPERTIES</h3>
-                <a href="">View All <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="{{ route('rent') }}">View All <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="grid-container mt-4">
                 @if (
                     $properties->isNotEmpty() &&
                         $properties->filter(fn($property) => str_contains($property->property_listing, 'Top Listed'))->isNotEmpty())
-                    @foreach ($properties->filter(fn($property) => str_contains($property->property_listing, 'Top Listed'))->take(8) as $property)
+                    @foreach ($properties->filter(fn($property) => str_contains($property->property_listing, 'Top Listed'))->sortByDesc('created_at')->take(8) as $property)
                         <a href="{{ $property->type == 'rent' ? route('view.rent.property', $property->slug) : route('view.buy.property', $property->slug) }}"
                             class="no-hover-color-link">
                             <div class="property-card position-relative">
                                 <img src="{{ asset($property->featured_image) }}" class="property-img"
                                     alt="Property Image">
                                 <div class="property-tags propertyTypeFixed">
-                                    <span class="tag">Top Listed</span>
+                                   @if ($property->property_listing)
+                                                @foreach (explode(',', $property->property_listing) as $listing)
+                                                    @if ($listing != 'Top Listed' && $listing != 'New')
+                                                        <span class="tag">{{ trim($listing) }}</span>
+                                                    @endif
+                                                    @if ($listing == 'New')
+                                                        <img src="{{ asset('frontend-assets/images/svgviewer-png-output (1).png') }}" class="tag-image">
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                     <span class="tag">{{ $property->type == 'sell' ? 'Buy' : 'Rent' }}</span>
                                 </div>
                                 <div class="property-details">
@@ -333,7 +351,7 @@
                 <div class="swiper-wrapper">
                     <!-- Slides -->
                     @if ($properties->where('type', 'rent')->isNotEmpty())
-                        @foreach ($properties->where('type', 'rent')->take(8) as $property)
+                        @foreach ($properties->where('type', 'rent')->sortByDesc('created_at')->take(8) as $property)
                             <div class="swiper-slide">
                                 <a href="{{ $property->type == 'rent' ? route('view.rent.property', $property->slug) : route('view.buy.property', $property->slug) }}"
                                     class="no-hover-color-link">
@@ -343,7 +361,12 @@
                                         <div class="property-tags propertyTypeFixed">
                                             @if ($property->property_listing)
                                                 @foreach (explode(',', $property->property_listing) as $listing)
-                                                    <span class="tag">{{ trim($listing) }}</span>
+                                                    @if ($listing != 'New')
+                                                        <span class="tag">{{ trim($listing) }}</span>
+                                                    @endif
+                                                    @if ($listing == 'New')
+                                                        <img src="{{ asset('frontend-assets/images/svgviewer-png-output (1).png') }}" class="tag-image">
+                                                    @endif
                                                 @endforeach
                                             @endif
                                         </div>
@@ -411,7 +434,9 @@
 
 
                 <!-- Navigation arrows -->
-
+                <div class=" text-center">
+                    <a href="{{ route('rent', ['type' => 'rent']) }}" class="btn btn-sm btn-primary mt-2">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
             </div>
         </div>
 
@@ -425,7 +450,7 @@
                 <div class="swiper-wrapper">
                     <!-- Slides -->
                     @if ($properties->where('type', 'sell')->isNotEmpty())
-                        @foreach ($properties->where('type', 'sell')->take(8) as $property)
+                        @foreach ($properties->where('type', 'sell')->sortByDesc('created_at')->take(8) as $property)
                             <div class="swiper-slide">
                                 <a href="{{ $property->type == 'rent' ? route('view.rent.property', $property->slug) : route('view.buy.property', $property->slug) }}"
                                     class="no-hover-color-link">
@@ -435,7 +460,12 @@
                                         <div class="property-tags propertyTypeFixed">
                                             @if ($property->property_listing)
                                                 @foreach (explode(',', $property->property_listing) as $listing)
-                                                    <span class="tag">{{ trim($listing) }}</span>
+                                                   @if ($listing != 'New')
+                                                        <span class="tag">{{ trim($listing) }}</span>
+                                                    @endif
+                                                    @if ($listing == 'New')
+                                                        <img src="{{ asset('frontend-assets/images/svgviewer-png-output (1).png') }}" class="tag-image">
+                                                    @endif
                                                 @endforeach
                                             @endif
                                         </div>
@@ -501,19 +531,55 @@
                     @endif
                 </div>
             </div>
+            <div class=" text-center">
+                    <a href="{{ route('rent', ['type' => 'sell']) }}" class="btn btn-sm btn-primary mt-2">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+        </div>
+
+        <div class="container my-5 fixed-property-sec-div">
+            <div class="fixed-property-sec {{ Route::currentRouteName() == 'sendyourproperty' ? 'd-none' : '' }}">
+                <div class="d-flex flex-column align-items-end fixed-property-sec-inner">
+                    <a href="{{ route('sendyourproperty', ['type' => 'rent']) }}" class="fixed-property-btn rental-fixed">
+                        <div class="d-flex flex-column align-items-center justify-content-center position-relative z-index-9">
+                            <i class="fa-regular fa-house mb-2"></i>
+                            <p class="mb-3"> Rent Your Property</p>
+                        </div>
+                    </a>
+                    <a href="{{ route('sendyourproperty', ['type' => 'sell']) }}" class="fixed-property-btn selling-fixed">
+                        <div class="d-flex flex-column align-items-center justify-content-center position-relative z-index-9">
+                            <i class="fa-regular fa-house mb-2"></i>
+                            <p class="mb-1"> Sell Your Property</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="container my-5">
             <h2 class=" mb-4 reviews-title">OUR SERVICES</h2>
             <div class="row row-cols-2 row-cols-md-4 g-4">
                 @if ($services->isNotEmpty())
-                    @foreach ($services as $service )
+                    @foreach ($services as $service)
                         <div class="col">
                             <a class="service-card p-3" href="{{ route('home.serives', $service->slug) }}">
+                                
                                 <div class="icon-placeholder mb-2">
-                                    <i class="{{ $service->icon }}"></i>
+
+                                    @if ($service->icon_type === 'image' && $service->icon_image)
+                                        {{-- Show uploaded icon image --}}
+                                        <img src="{{ asset($service->icon_image) }}" 
+                                            alt="icon" 
+                                            style="width:45px; height:45px; object-fit:contain;" 
+                                            class="rounded">
+                                    @else
+                                        {{-- Show icon picker icon --}}
+                                        <i class="{{ $service->icon }} fa-2x text-primary"></i>
+                                    @endif
+
                                 </div>
+
                                 <p class="service-text mb-0">{{ $service->name }}</p>
+
                             </a>
                         </div>
                     @endforeach
@@ -552,7 +618,7 @@
                                             @if ($team->phone)
                                                 <p class="member-contact">{{ $team->phone }}</p>
                                             @endif
-                                            
+                                            <a href="{{ route('teams.appointment' ,['id' => $team->id , 'name' => $team->name ] ) }}" class="btn btn-primary w-100">Get Appointment</a>
                                         </div>
                                     </div>
                                 @endforeach
@@ -609,9 +675,10 @@
 
                 <hr class="my-5">
 
-                <div class="d-flex justify-content-between align-items-end mb-4 reviews-header">
-                    <a href="">View All <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="d-flex justify-content-start align-items-center mb-4 position-relative client-reviews">
                     <h3 class="reviews-title">CLIENT REVIEWS</h3>
+                    <div class="swiper-button-prev swiper-button-prev4"></div>
+                    <div class="swiper-button-next swiper-button-next4"></div>
                 </div>
 
                 <div class="swiper-container review-slider">
@@ -638,15 +705,12 @@
                         @endforeach
                     @endif
                     </div>
-
-
-
                 </div>
 
             </div>
         </section>
 
-        <section class="contact-section pb-5">
+        {{-- <section class="contact-section pb-5">
             <div class="container" id="contact-section">
                 <div class="mb-4">
                     <h2 class="reviews-title">Get In Touch</h2>
@@ -738,9 +802,13 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
     </div>
+
+    
+
+
 @endsection
 
 @section('customJs')
@@ -853,7 +921,11 @@
                         speed: 1500,
                         autoplay: {
                             delay: 5000
-                        }
+                        },
+                        pagination: {
+                            el: ".swiper-pagination",
+                            clickable: true,
+                        },
                     }
                 },
                 {
@@ -864,6 +936,10 @@
                         loop: true,
                         autoplay: {
                             delay: 4000
+                        },
+                        navigation: {
+                            nextEl: ".swiper-button-next1",
+                            prevEl: ".swiper-button-prev1",
                         },
                         breakpoints: {
                             0: {
@@ -886,6 +962,10 @@
                         autoplay: {
                             delay: 3000
                         },
+                        navigation: {
+                            nextEl: ".swiper-button-next2",
+                            prevEl: ".swiper-button-prev2",
+                        },
                         breakpoints: {
                             0: {
                                 slidesPerView: 1.3,
@@ -903,6 +983,10 @@
                     options: {
                         slidesPerView: 3,
                         loop: false,
+                        navigation: {
+                            nextEl: ".swiper-button-next3",
+                            prevEl: ".swiper-button-prev3",
+                        },
                         breakpoints: {
                             0: {
                                 slidesPerView: 1
@@ -918,6 +1002,10 @@
                     options: {
                         slidesPerView: 3,
                         loop: false,
+                        navigation: {
+                            nextEl: ".swiper-button-next4",
+                            prevEl: ".swiper-button-prev4",
+                        },
                         breakpoints: {
                             0: {
                                 slidesPerView: 1
@@ -999,89 +1087,6 @@
         });
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // ✅ Initialize Select2
-    
-        $('#demands-footer').select2({
-            width: '100%',
-            placeholder: "Select Multiple Demands",
-            allowClear: true
-        });
-    
 
-    // ✅ Initialize intl-tel-input for phone field
-    const phoneInput = document.querySelector("#phoneInquiry-footer");
-    const iti = window.intlTelInput(phoneInput, {
-        initialCountry: "bd",
-        preferredCountries: ["bd", "in", "us", "gb"],
-        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
-    });
-
-    // ✅ Handle form submit via AJAX
-    $('#inquiryForm-footer').on('submit', function (e) {
-        e.preventDefault();
-
-        const phoneError = document.querySelector('#phoneErrorInquiry-footer');
-        phoneError.textContent = '';
-
-        // ✅ Validate phone number
-        if (!iti.isValidNumber()) {
-            phoneError.textContent = 'Please enter a valid phone number.';
-            return;
-        }
-
-        // ✅ Prepare data
-        const formData = new FormData(this);
-        formData.set('phone', iti.getNumber()); // replace raw phone with full intl format
-
-        const actionUrl = $(this).attr('action');
-
-        const loader = document.getElementById('formLoaderbooking1');
-        loader.classList.remove('d-none');
-        // ✅ Send AJAX request
-        fetch(actionUrl, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: formData
-        })
-        .then(async response => {
-            loader.classList.add('d-none');
-
-            if (!response.ok) {
-                // If it's a validation error (422)
-                if (response.status === 422) {
-                    const data = await response.json();
-                    Object.values(data.errors).forEach(errorArray => {
-                        toastr.error(errorArray[0]); // Show first error of each field
-                    });
-                    return;
-                }
-
-                // Other server error
-                toastr.error('Something went wrong.');
-                return;
-            }
-
-            const data = await response.json();
-            if (data.status === 'success') {
-                toastr.success(data.message);
-                $('#inquiryForm-footer')[0].reset();
-                $('#demands-footer').val(null).trigger('change');
-                
-            } else {
-                toastr.error(data.message || 'Something went wrong.');
-            }
-        })
-        
-        .catch(() => {
-            loader.classList.add('d-none');
-            toastr.error('An error occurred. Please try again.');
-        });
-    });
-});
-</script>
 
 @endsection

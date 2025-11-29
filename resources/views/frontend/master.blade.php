@@ -33,12 +33,14 @@
     {{-- External Libraries --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.min.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.3/css/intlTelInput.min.css" />
 
     {{-- Local Styles --}}
     <link rel="stylesheet" href="{{ asset('frontend-assets/css/styles.css') }}">
@@ -47,16 +49,24 @@
     {{-- CSRF Token --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if($global_setting && $global_setting->gtm_id)
-    <!-- Google Tag Manager -->
-    <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id={{ $global_setting->gtm_id }}'+dl;
-        f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','{{ $global_setting->gtm_id }}');
-    </script>
+    @if ($global_setting && $global_setting->gtm_id)
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src =
+                    'https://www.googletagmanager.com/gtm.js?id={{ $global_setting->gtm_id }}' + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', '{{ $global_setting->gtm_id }}');
+        </script>
     @endif
 
 </head>
@@ -75,7 +85,7 @@
 
 
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
     </script>
@@ -115,38 +125,39 @@
     </script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const openBtn = document.querySelector(".header_whatsapp");
-    const panel = document.getElementById("sideLoginModal");
-    const closeBtn = panel.querySelector(".close-panel");
+        document.addEventListener("DOMContentLoaded", function() {
+            const openBtn = document.querySelector(".header_whatsapp");
+            const panel = document.getElementById("sideLoginModal");
+            const closeBtn = panel.querySelector(".close-panel");
 
-    // ✅ Toggle panel (open/close)
-    openBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        panel.classList.toggle("active");
-        document.body.style.overflow = panel.classList.contains("active") ? "hidden" : "auto";
-    });
+            // ✅ Toggle panel (open/close)
+            openBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                panel.classList.toggle("active");
+                document.body.style.overflow = panel.classList.contains("active") ? "hidden" : "auto";
+            });
 
-    // ✅ Close panel (button)
-    closeBtn.addEventListener("click", function() {
-        panel.classList.remove("active");
-        document.body.style.overflow = "auto";
-    });
+            // ✅ Close panel (button)
+            closeBtn.addEventListener("click", function() {
+                panel.classList.remove("active");
+                document.body.style.overflow = "auto";
+            });
 
-    // ✅ Close when clicking outside (but NOT on intl-tel-input dropdown)
-    document.addEventListener("click", function(e) {
-        const isClickInside = panel.contains(e.target);
-        const isTrigger = e.target.closest(".header_whatsapp");
-        const isPhoneDropdown = e.target.closest(".iti__country-list"); // <– ignore this
-        const isButtonLogin = e.target.closest(".dont-close"); // <– ignore this
+            // ✅ Close when clicking outside (but NOT on intl-tel-input dropdown)
+            document.addEventListener("click", function(e) {
+                const isClickInside = panel.contains(e.target);
+                const isTrigger = e.target.closest(".header_whatsapp");
+                const isPhoneDropdown = e.target.closest(".iti__country-list"); // <– ignore this
+                const isButtonLogin = e.target.closest(".dont-close"); // <– ignore this
 
-        if (!isClickInside && !isTrigger && !isPhoneDropdown && !isButtonLogin && panel.classList.contains("active")) {
-            panel.classList.remove("active");
-            document.body.style.overflow = "auto";
-        }
-    });
-});
-</script>
+                if (!isClickInside && !isTrigger && !isPhoneDropdown && !isButtonLogin && panel.classList
+                    .contains("active")) {
+                    panel.classList.remove("active");
+                    document.body.style.overflow = "auto";
+                }
+            });
+        });
+    </script>
 
 
 
@@ -246,7 +257,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 }
 
-                const url = isSignup ? "{{ route('user.register') }}" : "{{ route('user.authenticate') }}";
+                const url = isSignup ? "{{ route('user.register') }}" :
+                "{{ route('user.authenticate') }}";
 
                 loader.classList.remove('d-none');
                 $.ajax({
@@ -268,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 toastr.success('Login successful!');
                                 setTimeout(() => location.reload(), 1000);
                             }
-                        }else {
+                        } else {
                             // Only show message when success = false but NOT validation error
                             if (response.message) {
                                 $('#passwordError').text(response.message);
@@ -298,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             }
 
                             return;
-                        }else {
+                        } else {
                             $('#passwordError').text("Something went wrong. Please try again.");
                         }
                     }
@@ -512,58 +524,58 @@ document.addEventListener("DOMContentLoaded", function() {
     </script>
 
     <script>
-    $(document).ready(function() {
-        let addedFixedByMenu = false; // track if menu added 'fixed'
+        $(document).ready(function() {
+            let addedFixedByMenu = false; // track if menu added 'fixed'
 
-        // Function to open menu
-        function openMenu() {
-            $('#main-nav').addClass('show');
-            $('body').addClass('no-scroll'); // stop page scroll
+            // Function to open menu
+            function openMenu() {
+                $('#main-nav').addClass('show');
+                $('body').addClass('no-scroll'); // stop page scroll
 
-            // Only add 'fixed' if not already present
-            if (!$('#masthead').hasClass('fixed')) {
-                $('#masthead').addClass('fixed');
-                addedFixedByMenu = true; // track that it was added by menu
-            }
-        }
-
-        // Function to close menu
-        function closeMenu() {
-            $('#main-nav').removeClass('show');
-            $('body').removeClass('no-scroll'); // re-enable page scroll
-
-            // Remove 'fixed' only if it was added by the menu and scroll < 200px
-            if (addedFixedByMenu && $(window).scrollTop() < 200) {
-                $('#masthead').removeClass('fixed');
+                // Only add 'fixed' if not already present
+                if (!$('#masthead').hasClass('fixed')) {
+                    $('#masthead').addClass('fixed');
+                    addedFixedByMenu = true; // track that it was added by menu
+                }
             }
 
-            addedFixedByMenu = false;
-        }
+            // Function to close menu
+            function closeMenu() {
+                $('#main-nav').removeClass('show');
+                $('body').removeClass('no-scroll'); // re-enable page scroll
 
-        // Toggle open/close when hamburger is clicked
-        $('.hamburger-menu').on('click', function(e) {
-            e.preventDefault();
-            if ($('#main-nav').hasClass('show')) {
+                // Remove 'fixed' only if it was added by the menu and scroll < 200px
+                if (addedFixedByMenu && $(window).scrollTop() < 200) {
+                    $('#masthead').removeClass('fixed');
+                }
+
+                addedFixedByMenu = false;
+            }
+
+            // Toggle open/close when hamburger is clicked
+            $('.hamburger-menu').on('click', function(e) {
+                e.preventDefault();
+                if ($('#main-nav').hasClass('show')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+
+            // Close when clicking close icon
+            $('.close-menu').on('click', function() {
                 closeMenu();
-            } else {
-                openMenu();
-            }
-        });
+            });
 
-        // Close when clicking close icon
-        $('.close-menu').on('click', function() {
-            closeMenu();
+            // Close when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#main-nav, .hamburger-menu').length) {
+                    closeMenu();
+                }
+            });
         });
-
-        // Close when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#main-nav, .hamburger-menu').length) {
-                closeMenu();
-            }
-        });
-    });
-</script>
-<script>
+    </script>
+    <script>
         $(document).on('click', '.logout-confirm', function(e) {
             e.preventDefault();
 
@@ -585,20 +597,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     </script>
 
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', function () {
     // ✅ Initialize Select2
-    $('#seriveFormModal').on('shown.bs.modal', function() {
-        $('#demandsAll').select2({
-            dropdownParent: $('#seriveFormModal'),
+    
+        $('#demands-footer').select2({
             width: '100%',
             placeholder: "Select Multiple Demands",
             allowClear: true
         });
-    });
+    
 
     // ✅ Initialize intl-tel-input for phone field
-    const phoneInput = document.querySelector("#phoneInquiryservice");
+    const phoneInput = document.querySelector("#phoneInquiry-footer");
     const iti = window.intlTelInput(phoneInput, {
         initialCountry: "bd",
         preferredCountries: ["bd", "in", "us", "gb"],
@@ -606,10 +617,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ✅ Handle form submit via AJAX
-    $('#seriveFormM').on('submit', function (e) {
+    $('#inquiryForm-footer').on('submit', function (e) {
         e.preventDefault();
 
-        const phoneError = document.querySelector('#phoneErrorInquiryservice');
+        const phoneError = document.querySelector('#phoneErrorInquiry-footer');
         phoneError.textContent = '';
 
         // ✅ Validate phone number
@@ -624,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const actionUrl = $(this).attr('action');
 
-        const loader = document.getElementById('formLoaderbooking2');
+        const loader = document.getElementById('formLoaderbooking1');
         loader.classList.remove('d-none');
         // ✅ Send AJAX request
         fetch(actionUrl, {
@@ -655,14 +666,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             if (data.status === 'success') {
                 toastr.success(data.message);
-                $('#seriveFormM')[0].reset();
-                $('#demandsAll').val(null).trigger('change');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('seriveFormModal'));
-                modal.hide();
+                $('#inquiryForm-footer')[0].reset();
+                $('#demands-footer').val(null).trigger('change');
+                
             } else {
                 toastr.error(data.message || 'Something went wrong.');
             }
         })
+        
         .catch(() => {
             loader.classList.add('d-none');
             toastr.error('An error occurred. Please try again.');
@@ -671,43 +682,56 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-@if($global_setting && $global_setting->gtm_id)
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $global_setting->gtm_id }}"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-@endif
+    @if ($global_setting && $global_setting->gtm_id)
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $global_setting->gtm_id }}"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
 
-@if($global_setting && $global_setting->ga4_id)
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ $global_setting->ga4_id }}"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '{{ $global_setting->ga4_id }}');
-</script>
-@endif
+    @if ($global_setting && $global_setting->ga4_id)
+        <!-- Google Analytics 4 -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $global_setting->ga4_id }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
 
-@if($global_setting && $global_setting->meta_pixel_id)
-<!-- Meta Pixel -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '{{ $global_setting->meta_pixel_id }}'); 
-fbq('track', 'PageView');
-</script>
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', '{{ $global_setting->ga4_id }}');
+        </script>
+    @endif
 
-<noscript>
-  <img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id={{ $global_setting->meta_pixel_id }}&ev=PageView&noscript=1"/>
-</noscript>
-@endif
+    @if ($global_setting && $global_setting->meta_pixel_id)
+        <!-- Meta Pixel -->
+        <script>
+            ! function(f, b, e, v, n, t, s) {
+                if (f.fbq) return;
+                n = f.fbq = function() {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n;
+                n.loaded = !0;
+                n.version = '2.0';
+                n.queue = [];
+                t = b.createElement(e);
+                t.async = !0;
+                t.src = v;
+                s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '{{ $global_setting->meta_pixel_id }}');
+            fbq('track', 'PageView');
+        </script>
+
+        <noscript>
+            <img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id={{ $global_setting->meta_pixel_id }}&ev=PageView&noscript=1" />
+        </noscript>
+    @endif
 
 
 

@@ -29,7 +29,129 @@
                     @endif
                 </div>
 
-                <div class="rent-section mb-4 d-block d-md-none order-3">
+                <div class="rent-section property-pricings mb-3 d-block d-md-none order-4">
+
+                    <ul class="nav nav-tabs mb-3 border-0" id="bookingTabs">
+
+                        {{-- Per Night Tab --}}
+                        @if ($property->price)
+                            <li class="nav-item">
+                                <button class="nav-link active" data-type="per-night" data-bs-toggle="tab"
+                                    data-bs-target="#perNightTab1">
+                                    Per Night
+                                </button>
+                            </li>
+                        @endif
+
+                        {{-- Weekly Tab --}}
+                        @if ($property->weekly_price)
+                            <li class="nav-item">
+                                <button class="nav-link {{ !$property->price && $property->weekly_price ? 'active' : '' }}"
+                                    data-type="weekly" data-bs-toggle="tab" data-bs-target="#weeklyTab1">
+                                    Weekly
+                                </button>
+                            </li>
+                        @endif
+
+                        {{-- Monthly Tab --}}
+                        @if ($property->monthly_price)
+                            <li class="nav-item">
+                                <button
+                                    class="nav-link {{ !$property->price && !$property->weekly_price && $property->monthly_price ? 'active' : '' }}"
+                                    data-type="monthly" data-bs-toggle="tab" data-bs-target="#monthlyTab1">
+                                    Monthly
+                                </button>
+                            </li>
+                        @endif
+
+                    </ul>
+
+
+                    <div class="tab-content">
+                        @if ($property->price)
+                            <!-- PER NIGHT -->
+                            <div class="tab-pane fade show active" id="perNightTab1">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Price: <span class="pricePerNight">{{ $property->price }}</span> BDT
+                                    <sup>(per night)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="rentDateRange form-control"
+                                        placeholder="Select Booking Dates" readonly>
+
+                                    <h6 class="mt-2">Total Price: <span class="totalPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="per-night">
+
+                                    <a href="#"
+                                        class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Weekly Tab --}}
+                        @if ($property->weekly_price)
+                            <div class="tab-pane fade" id="weeklyTab1">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Weekly Price: <span class="priceWeekly">{{ $property->weekly_price }}</span> BDT
+                                    <sup>(per week)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="weeklyDateRange form-control"
+                                        placeholder="Select Weekly Booking" readonly>
+                                    <div class="weeklyError text-danger small mt-1"></div>
+                                    <h6 class="mt-2">Total Price: <span class="totalWeeklyPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="weekly">
+                                    
+
+                                    <a href="#"
+                                        class="rentSubmitBtnWeekly btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Weekly' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Monthly Tab --}}
+                        @if ($property->monthly_price)
+                            <div class="tab-pane fade" id="monthlyTab1">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Monthly Price: <span class="priceMonthly">{{ $property->monthly_price }}</span> BDT
+                                    <sup>(per month)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="monthlyDateRange form-control"
+                                        placeholder="Select Monthly Booking" readonly>
+                                    <div class="monthlyError text-danger small mt-1"></div>
+                                    <h6 class="mt-2">Total Price: <span class="totalMonthlyPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="monthly">
+                                    
+
+                                    <a href="#"
+                                        class="rentSubmitBtnMonthly btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Monthly' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
+
+                {{-- <div class="rent-section mb-4 ">
                     <h5>
                         <i class="fa-solid fa-wallet"></i>
                         Price : <span class="pricePerNight">{{ $property->price }}</span> BDT
@@ -61,7 +183,7 @@
                             {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
                         </a>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="property-info mb-4  order-4 order-md-3">
                     @if ($property->space)
@@ -178,24 +300,12 @@
                 {{-- <hr> --}}
             </div>
             <div class="col-md-4">
-                <div class="border rounded p-4">
-                    <div class="rent-section d-none d-md-block">
-                        <h5>
+                {{-- <div class="rent-section property-pricings mb-3">
+                    <h5>
                             <i class="fa-solid fa-wallet"></i>
                             Price : <span class="pricePerNight">{{ $property->price }}</span> BDT
                             <sup>(per night)</sup>
                         </h5>
-
-                        <div>
-                            <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#inquiryModal">
-                                <i class="fa-solid fa-envelope"></i> Property Inquiry
-                            </a>
-                            <a href="{{ route('property.print', $property->id) }}" target="_blank" class="btn btn-primary">
-                                <i class="fa-solid fa-print"></i>
-                            </a>
-                        </div>
-
                         <div class="rentProperty mt-3">
                             <div class="mb-3">
                                 <input type="text" class="rentDateRange form-control" placeholder="Select Booking Dates"
@@ -212,6 +322,145 @@
                                 {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
                             </a>
                         </div>
+                </div> --}}
+                <div class="rent-section property-pricings mb-3 d-none d-md-block">
+
+                    <ul class="nav nav-tabs mb-3 border-0" id="bookingTabs">
+
+                        {{-- Per Night Tab --}}
+                        @if ($property->price)
+                            <li class="nav-item">
+                                <button class="nav-link active" data-type="per-night" data-bs-toggle="tab"
+                                    data-bs-target="#perNightTab">
+                                    Per Night
+                                </button>
+                            </li>
+                        @endif
+
+                        {{-- Weekly Tab --}}
+                        @if ($property->weekly_price)
+                            <li class="nav-item">
+                                <button class="nav-link {{ !$property->price && $property->weekly_price ? 'active' : '' }}"
+                                    data-type="weekly" data-bs-toggle="tab" data-bs-target="#weeklyTab">
+                                    Weekly
+                                </button>
+                            </li>
+                        @endif
+
+                        {{-- Monthly Tab --}}
+                        @if ($property->monthly_price)
+                            <li class="nav-item">
+                                <button
+                                    class="nav-link {{ !$property->price && !$property->weekly_price && $property->monthly_price ? 'active' : '' }}"
+                                    data-type="monthly" data-bs-toggle="tab" data-bs-target="#monthlyTab">
+                                    Monthly
+                                </button>
+                            </li>
+                        @endif
+
+                    </ul>
+
+
+                    <div class="tab-content">
+                        @if ($property->price)
+                            <!-- PER NIGHT -->
+                            <div class="tab-pane fade show active" id="perNightTab">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Price: <span class="pricePerNight">{{ $property->price }}</span> BDT
+                                    <sup>(per night)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="rentDateRange form-control"
+                                        placeholder="Select Booking Dates" readonly>
+
+                                    <h6 class="mt-2">Total Price: <span class="totalPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="per-night">
+
+                                    <a href="#"
+                                        class="rentSubmitBtn btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Now' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Weekly Tab --}}
+                        @if ($property->weekly_price)
+                            <div class="tab-pane fade" id="weeklyTab">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Weekly Price: <span class="priceWeekly">{{ $property->weekly_price }}</span> BDT
+                                    <sup>(per week)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="weeklyDateRange form-control"
+                                        placeholder="Select Weekly Booking" readonly>
+                                    <div class="weeklyError text-danger small mt-1"></div>
+                                    <h6 class="mt-2">Total Price: <span class="totalWeeklyPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="weekly">
+                                    
+
+                                    <a href="#"
+                                        class="rentSubmitBtnWeekly btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Weekly' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Monthly Tab --}}
+                        @if ($property->monthly_price)
+                            <div class="tab-pane fade" id="monthlyTab">
+                                <h5>
+                                    <i class="fa-solid fa-wallet"></i>
+                                    Monthly Price: <span class="priceMonthly">{{ $property->monthly_price }}</span> BDT
+                                    <sup>(per month)</sup>
+                                </h5>
+
+                                <div class="rentProperty mt-3">
+                                    <input type="text" class="monthlyDateRange form-control"
+                                        placeholder="Select Monthly Booking" readonly>
+                                    <div class="monthlyError text-danger small mt-1"></div>
+                                    <h6 class="mt-2">Total Price: <span class="totalMonthlyPrice">0</span> BDT</h6>
+
+                                    <input type="hidden" class="bookingType" value="monthly">
+                                    
+
+                                    <a href="#"
+                                        class="rentSubmitBtnMonthly btn btn-primary w-100 {{ Auth::check() ? '' : 'disabled' }}">
+                                        <i class="fa-regular fa-calendar-check"></i>
+                                        {{ Auth::check() ? 'Book Monthly' : 'Please Login to Rent !' }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
+
+                <div class="border rounded p-4">
+                    <div class="rent-section ">
+
+
+                        <div>
+                            <a href="javascript:void(0)" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#inquiryModal">
+                                <i class="fa-solid fa-envelope"></i> Property Inquiry
+                            </a>
+                            <a href="{{ route('property.print', $property->id) }}" target="_blank"
+                                class="btn btn-primary">
+                                <i class="fa-solid fa-print"></i>
+                            </a>
+                        </div>
+
+
                     </div>
 
                     <hr>
@@ -244,34 +493,191 @@
                             }
                         @endphp
 
-                        <iframe width="100%" height="400" style="border:0" loading="lazy" allowfullscreen
+                        <iframe width="100%" height="300" style="border:0" loading="lazy" allowfullscreen
                             src="https://www.google.com/maps?q={{ urlencode($address ?? 'Dhaka, Bangladesh') }}&output=embed">
                         </iframe>
 
                     </div>
                     @if ($property->realtor)
-                    <hr>
-                    <div>
-                        <p>Realtor :</p>
-                        <div class="row border m-0 rounded p-3">
-                            <div class="col-md-4">
-                                <img src="{{ asset('admin-assets/img/assets/1746548373_681a369536d71.png') }}"
-                                    style="width: 100% ;" alt="">
-                            </div>
-                            <div class="col-md-8">
-                                <h4>{{ $property->realtor->name }}</h4>
-                                <p class="mb-1">Email : {{ $property->realtor->email }}</p>
-                                <p class="mb-1">Phone : {{ $property->realtor->mobile }}</p>
+                        <hr>
+                        <div>
+                            <p>Realtor :</p>
+                            <div class="row border m-0 rounded p-3">
+                                <div class="col-md-4">
+                                    <img src="{{ asset('admin-assets/img/assets/1746548373_681a369536d71.png') }}"
+                                        style="width: 100% ;" alt="">
+                                </div>
+                                <div class="col-md-8">
+                                    <h4>{{ $property->realtor->name }}</h4>
+                                    <p class="mb-1 realtor-email">Email : {{ $property->realtor->email }}</p>
+                                    <p class="mb-1">Phone : {{ $property->realtor->phone }}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @endif
+                </div>
+                <div class="mt-3">
+                    @php
+                    function renderStars($rating) {
+                        $fullStars = floor($rating);
+                        $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
+                        $emptyStars = 5 - $fullStars - $halfStar;
+                    @endphp
+
+                    @for ($i = 0; $i < $fullStars; $i++)
+                        <i class="fas fa-star text-warning"></i>
+                    @endfor
+
+                    @if ($halfStar)
+                        <i class="fas fa-star-half-alt text-warning"></i>
+                    @endif
+
+                    @for ($i = 0; $i < $emptyStars; $i++)
+                        <i class="far fa-star text-warning"></i>
+                    @endfor
+
+                    @php
+                    } // end function
+                    @endphp
+
+                    <p class="mb-2">Reviews :</p>
+                    @php
+                    $totalReviews = $reviews->count();
+                    $averageRating = $totalReviews > 0 ? $reviews->avg('rating') : 0;
+                    @endphp
+
+                    <div class="average-rating mb-2">
+                        @if($totalReviews > 0)
+                            {!! renderStars($averageRating) !!}
+                            <span class="ms-2">({{ number_format($averageRating, 1) }}/5 from {{ $totalReviews }} reviews)</span>
+                        @else
+                            {!! renderStars($averageRating) !!}
+                            <span>( No reviews found. )</span>
+                        @endif
+                    </div>
+                    <div class="swiper-container review-slider">
+                        <div class="swiper-wrapper">
+                        @if ($reviews->isNotEmpty())
+                            @foreach ($reviews as $review)
+                                <div class="swiper-slide">
+                                    <div class="review-card property-reviews">
+                                        <div class="stars mb-3">
+                                            @for ($i = 0; $i < $review->rating; $i++)
+                                                <i class="fas fa-star"></i>
+                                            @endfor
+                                        </div>
+                                        <p class="review-text">{{ $review->comment }}</p>
+
+                                        <div class="reviewer-info d-flex align-items-center mt-4">
+                                            <div class="text-start">
+                                                <p class="reviewer-name">{{ $review->user_id ? $review->user->name : $review->name }}</p>
+                                                <p class="reviewer-role">{{ $review->property_id ? 'Property: ' .$review->property->name : 'Service: ' . $review->service->name }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="container  py-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="reviews-title">Related PROPERTIES</h3>
+                <a href="{{ route('rent', ['type' => 'rent']) }}">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="grid-container mt-4">
+                @if ($properties->where('type', 'rent')->where('id', '!=', $property->id)->isNotEmpty())
+                    @foreach ($properties->where('type', 'rent')->where('id', '!=', $property->id)->sortByDesc('created_at')->take(4) as $related)
+                        <a href="{{ $related->type == 'rent' ? route('view.rent.property', $related->slug) : route('view.buy.property', $related->slug) }}"
+                            class="no-hover-color-link">
+                            <div class="property-card position-relative">
+                                <img src="{{ asset($related->featured_image) }}" class="property-img"
+                                    alt="Property Image">
+                                <div class="property-tags propertyTypeFixed">
+                                   <div class="property-tags propertyTypeFixed">
+                                            @if ($related->property_listing)
+                                                @foreach (explode(',', $related->property_listing) as $listing)
+                                                    @if ($listing != 'New')
+                                                        <span class="tag">{{ trim($listing) }}</span>
+                                                    @endif
+                                                    @if ($listing == 'New')
+                                                        <img src="{{ asset('frontend-assets/images/svgviewer-png-output (1).png') }}" class="tag-image">
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                </div>
+                                <div class="property-details">
+                                    <div class="property-title">{{ $related->name }}</div>
+                                    <div class="property-tags">
+                                        <span class="tag">{{ $related->propertyType->property_type }}</span>
+                                    </div>
+
+                                    <div class="property-info">
+                                        @if ($related->space)
+                                            <div class="">
+                                                <i class="fa-regular fa-house"></i>
+                                                SFT {{ $related->space }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->country_id == 19 && ($related->city || $related->propertyarea))
+                                            <div class="">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                {{ $related->city . ', ' . $related->propertyarea->name }}
+                                            </div>
+                                        @elseif($related->country_id != 19 && ($related->city || $related->state))
+                                            <div class="">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                {{ $related->city . ', ' . $related->state->name }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->bedrooms)
+                                            <div class="">
+                                                <i class="fa-solid fa-bed"></i>
+                                                {{ $related->bedrooms }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->bathrooms)
+                                            <div>
+                                                <i class="fa-solid fa-sink"></i>
+                                                {{ $related->bathrooms }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->parking_space)
+                                            <div>
+                                                <i class="fa-solid fa-car"></i>
+                                                {{ $related->parking_space }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->decoration == 'Full Furnished')
+                                            <div>
+                                                <i class="fa-solid fa-couch"></i>
+                                                {{ $related->decoration }}
+                                            </div>
+                                        @endif
+
+                                        <div><i class="fa-solid fa-wallet"></i> {{ $related->price }} ৳</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <p> Sorry! No realted Properties found . </p>
+                @endif
+            </div>
+        </div>
     </div>
-    <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="inquiryModal" tabindex="-1" aria-labelledby="inquiryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 rounded-4 shadow-lg ">
                 <div class="modal-header bg-dark text-white rounded-top-4">
@@ -291,8 +697,8 @@
                     </div>
 
                     <!-- Inquiry Form -->
-                    <form id="inquiryForm" class="position-relative" action="{{ route('property.inquiries', $property->id) }}"
-                        enctype="multipart/form-data">
+                    <form id="inquiryForm" class="position-relative"
+                        action="{{ route('property.inquiries', $property->id) }}" enctype="multipart/form-data">
                         @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -379,10 +785,10 @@
                         </div>
                     </form>
                 </div>
-                
+
             </div>
         </div>
-        
+
     </div>
 @endsection
 
@@ -404,7 +810,7 @@
 
         });
     </script>
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
 
             const bookedDates = @json($bookedDates);
@@ -459,7 +865,213 @@
                 });
             });
         });
-    </script>
+    </script> --}}
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+    const bookedDates = @json($bookedDates);
+    const bookingStartDate = "{{ $property->rent_start }}";
+    const propertyId = {{ $property->id }};
+    const baseUrl = `{{ route('user.booking.rent') }}`;
+    const today = new Date().toISOString().split('T')[0];
+
+    const minSelectableDate = bookingStartDate < today ? today : bookingStartDate;
+
+    document.querySelectorAll('.rent-section').forEach(section => {
+
+        // ---------------------------
+        // PER NIGHT BOOKING - No change
+        // ---------------------------
+        const pricePerNight = parseFloat(section.querySelector('.pricePerNight')?.innerText || 0);
+        const dateInput = section.querySelector('.rentDateRange');
+        const totalPriceEl = section.querySelector('.totalPrice');
+        const rentBtn = section.querySelector('.rentSubmitBtn');
+
+        if (dateInput) {
+            flatpickr(dateInput, {
+                mode: "range",
+                minDate: minSelectableDate,
+                dateFormat: "Y-m-d",
+                disable: bookedDates,
+                onChange(selectedDates) {
+                    if (selectedDates.length === 2) {
+                        const diffDays = Math.ceil(Math.abs(selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
+                        totalPriceEl.innerText = (diffDays * pricePerNight).toLocaleString();
+                    } else {
+                        totalPriceEl.innerText = 0;
+                    }
+                }
+            });
+
+            rentBtn?.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (rentBtn.classList.contains('disabled')) return;
+
+                const dateRange = dateInput.value.trim();
+                if (!dateRange) {
+                    alert('Please select booking dates.');
+                    return;
+                }
+
+                const [startDate, endDate] = dateRange.split(' to ');
+
+                const url =
+                    `${baseUrl}?property_id=${propertyId}&start_date=${startDate}&end_date=${endDate}&booking_type=per-night`;
+
+                window.location.href = url;
+            });
+        }
+
+
+        // ---------------------------
+        // WEEKLY BOOKING VALIDATION
+        // ---------------------------
+        const priceWeekly = parseFloat(section.querySelector('.priceWeekly')?.innerText || 0);
+        const weeklyInput = section.querySelector('.weeklyDateRange');
+        const weeklyTotalEl = section.querySelector('.totalWeeklyPrice');
+        const weeklyBtn = section.querySelector('.rentSubmitBtnWeekly');
+        const weeklyError = section.querySelector('.weeklyError'); // ❗ create small <div class="weeklyError text-danger"></div>
+
+        if (weeklyInput) {
+            flatpickr(weeklyInput, {
+                mode: "range",
+                minDate: minSelectableDate,
+                dateFormat: "Y-m-d",
+                disable: bookedDates,
+                onChange(selectedDates) {
+
+                    weeklyError.innerText = "";  
+                    weeklyBtn.classList.remove("disabled");
+
+                    if (selectedDates.length === 2) {
+
+                        const diffDays = Math.ceil(Math.abs(selectedDates[1] - selectedDates[0]) / (1000 * 60 * 60 * 24));
+
+                        // ❗ Weekly must be 7, 14, 21...
+                        if (diffDays % 7 !== 0) {
+                            weeklyError.innerText = "Please select exact weekly dates (7, 14, 21 days...).";
+                            weeklyTotalEl.innerText = 0;
+                            weeklyBtn.classList.add("disabled");
+                            return;
+                        }
+
+                        const weeks = diffDays / 7;
+                        weeklyTotalEl.innerText = (weeks * priceWeekly).toLocaleString();
+
+                    } else {
+                        weeklyTotalEl.innerText = 0;
+                    }
+                }
+            });
+
+            weeklyBtn?.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (weeklyBtn.classList.contains('disabled')) return;
+
+                if (!isLoggedIn) {  
+                    // Trigger the WhatsApp button
+                    const whatsappBtn = document.querySelector('.header_whatsapp');
+                    whatsappBtn?.click();
+                    return; // Stop here
+                }
+
+                const dateRange = weeklyInput.value.trim();
+                if (!dateRange) {
+                    alert('Please select weekly dates.');
+                    return;
+                }
+
+                const [startDate, endDate] = dateRange.split(' to ');
+
+                const url =
+                    `${baseUrl}?property_id=${propertyId}&start_date=${startDate}&end_date=${endDate}&booking_type=weekly`;
+
+                window.location.href = url;
+            });
+        }
+
+
+        // ---------------------------
+        // MONTHLY BOOKING VALIDATION
+        // ---------------------------
+        const priceMonthly = parseFloat(section.querySelector('.priceMonthly')?.innerText || 0);
+        const monthlyInput = section.querySelector('.monthlyDateRange');
+        const monthlyTotalEl = section.querySelector('.totalMonthlyPrice');
+        const monthlyBtn = section.querySelector('.rentSubmitBtnMonthly');
+        const monthlyError = section.querySelector('.monthlyError'); // ❗ create <div class="monthlyError text-danger"></div>
+
+        if (monthlyInput) {
+            flatpickr(monthlyInput, {
+                mode: "range",
+                minDate: minSelectableDate,
+                dateFormat: "Y-m-d",
+                disable: bookedDates,
+                onChange(selectedDates) {
+                    monthlyError.innerText = "";
+                    monthlyBtn.classList.remove("disabled");
+
+                    if (selectedDates.length === 2) {
+                        const start = selectedDates[0];
+                        const end = selectedDates[1];
+
+                        // Must start at day 1
+                        if (start.getDate() !== 1) {
+                            monthlyError.innerText = "Start date must be the 1st of the month.";
+                            monthlyTotalEl.innerText = 0;
+                            monthlyBtn.classList.add("disabled");
+                            return;
+                        }
+
+                        // Must end at last day of month
+                        const lastDayOfEndMonth = new Date(end.getFullYear(), end.getMonth() + 1, 0).getDate();
+                        if (end.getDate() !== lastDayOfEndMonth) {
+                            monthlyError.innerText = "End date must be the last day of the month.";
+                            monthlyTotalEl.innerText = 0;
+                            monthlyBtn.classList.add("disabled");
+                            return;
+                        }
+
+                        // ✅ Calculate full months
+                        const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+                        monthlyTotalEl.innerText = (months * priceMonthly).toLocaleString();
+
+                    } else {
+                        monthlyTotalEl.innerText = 0;
+                    }
+                }
+            });
+
+            monthlyBtn?.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (monthlyBtn.classList.contains('disabled')) return;
+
+                if (!isLoggedIn) {  
+                    // Trigger the WhatsApp button
+                    const whatsappBtn = document.querySelector('.header_whatsapp');
+                    whatsappBtn?.click();
+                    return; // Stop here
+                }
+
+                const dateRange = monthlyInput.value.trim();
+                if (!dateRange) {
+                    alert('Please select monthly dates.');
+                    return;
+                }
+
+                const [startDate, endDate] = dateRange.split(' to ');
+
+                const url =
+                    `${baseUrl}?property_id=${propertyId}&start_date=${startDate}&end_date=${endDate}&booking_type=monthly`;
+
+                window.location.href = url;
+            });
+        }
+
+    });
+});
+</script>
+
 
 
     <script>
@@ -531,4 +1143,38 @@
             });
         });
     </script>
+
+<script>
+    window.addEventListener('load', () => {
+        new Swiper('.review-slider', {
+            speed: 800,
+            lazy: {
+                loadPrevNext: true
+            },
+            observer: true,
+            observeParents: true,
+            resistanceRatio: 0,
+            centeredSlides: false,
+            freeMode: false,
+
+            slidesPerView: 1,
+            loop: true,
+
+            autoplay: {
+                delay: 5000, // 5 seconds
+                disableOnInteraction: false, // continue autoplay after user interaction
+            },
+
+            breakpoints: {
+                0: {
+                    slidesPerView: 1
+                },
+                768: {
+                    slidesPerView: 1
+                }
+            }
+        });
+    });
+</script>
+
 @endsection

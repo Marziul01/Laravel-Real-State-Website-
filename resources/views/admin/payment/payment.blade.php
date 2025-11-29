@@ -135,7 +135,7 @@
 
 
 
-    @if (isset($payment))
+    @if ($payments->isNotEmpty())
         @foreach ($payments as $method)
             <div class="modal fade" id="EditCategoryModal_{{ $method->id }}" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">

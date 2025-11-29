@@ -345,22 +345,23 @@ $(document).ready(function () {
 
             error: function (xhr) {
 
-                // Enable button back
                 $('.btn-primary', form).prop('disabled', false).text('Add Admin');
 
                 if (xhr.status === 422) {
 
-                    // Validation errors
-                    let errors = xhr.responseJSON.errors;
-
-                    $.each(errors, function (key, value) {
-                        toastr.error(value[0]);
-                    });
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        $.each(xhr.responseJSON.errors, function (key, messages) {
+                            toastr.error(messages[0]);
+                        });
+                    } else {
+                        toastr.error("Validation failed but no error messages returned.");
+                    }
 
                 } else {
                     toastr.error("Something went wrong!");
                 }
             }
+
         });
     });
 
@@ -376,12 +377,15 @@ $(document).on('input', 'input[name="password"]', function () {
 });
 </script>
 <script>
-    $(document).on('submit', '.edit-admin-form', function (e) {
+$(document).on('submit', '.edit-admin-form', function (e) {
     e.preventDefault();
-    let updateRoute = "{{ route('admin.control.update', ':id') }}";
+
     let form = $(this);
     let id = form.data('id');
+
+    let updateRoute = "{{ route('admin.control.update', ':id') }}";
     let url = updateRoute.replace(':id', id);
+
     let formData = new FormData(this);
 
     $.ajax({
@@ -390,9 +394,11 @@ $(document).on('input', 'input[name="password"]', function () {
         data: formData,
         processData: false,
         contentType: false,
+
         beforeSend: function () {
             toastr.info("Updating admin...");
         },
+
         success: function (res) {
 
             if (res.success) {
@@ -401,32 +407,59 @@ $(document).on('input', 'input[name="password"]', function () {
                 // Hide modal
                 $('#editAdminModal' + id).modal('hide');
 
-                // Reset the form
+                // Reset form
                 form[0].reset();
 
-                // Reload page after 1 second
+                // Reload page
                 setTimeout(() => {
                     location.reload();
                 }, 1000);
             } else {
-                toastr.error("Something went wrong!");
+                // If success=false but no validation error
+                toastr.error(res.message ?? "Something went wrong!");
             }
         },
+
         error: function (xhr) {
 
+            // =========================
+            //   1. VALIDATION ERRORS
+            // =========================
             if (xhr.status === 422) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, val) {
-                    toastr.error(val[0]);
-                });
-            } else {
-                toastr.error("Error: " + xhr.responseJSON.message);
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    $.each(xhr.responseJSON.errors, function (key, msgArr) {
+                        toastr.error(msgArr[0]);
+                    });
+                }
+                return;
             }
+
+            // =========================
+            //   2. PASSWORD MISMATCH (403)
+            // =========================
+            if (xhr.status === 403) {
+                toastr.error(xhr.responseJSON.message);
+                return;
+            }
+
+            // =========================
+            //   3. SERVER ERROR (500)
+            // =========================
+            if (xhr.status === 500) {
+                toastr.error(xhr.responseJSON.message);
+                console.log("Server error:", xhr.responseJSON.error);
+                return;
+            }
+
+            // =========================
+            //   4. FALLBACK ERROR
+            // =========================
+            toastr.error("Unexpected error occurred.");
         }
     });
 });
-
 </script>
+
     <script>
         $(document).on('click', '.delete-confirm', function(e) {
             e.preventDefault();

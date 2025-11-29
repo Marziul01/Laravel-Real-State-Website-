@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Country;
 use App\Models\Property;
+use App\Models\Review;
 use App\Models\SiteSetting;
 use DateTime;
 use DatePeriod;
@@ -38,19 +39,24 @@ class HomePropertyController extends Controller
                 $bookedDates[] = $date->format('Y-m-d');
             }
         }
-
+        $properties = Property::where('status', 1 )->get();
+        $reviews = Review::where('property_id', $property->id)->where('status' , 2)->get();
         return view('frontend.property.viewRent', [
             'property' => $property,
             'bookedDates' => $bookedDates,
             'countries' => Country::all(),
+            'properties' => $properties,
+            'reviews' => $reviews,
         ]);
     }
 
     public static function viewBuyProperty(Request $request , $slug){
         $property = Property::where('slug' , $slug)->first();
+        $properties = Property::where('status', 1 )->get();
         return view('frontend.property.viewBuy' ,[
             'property' => $property,
             'countries' => Country::all(),
+            'properties' => $properties,
         ]);
     }
 

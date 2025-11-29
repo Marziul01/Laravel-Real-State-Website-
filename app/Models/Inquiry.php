@@ -16,6 +16,7 @@ class Inquiry extends Model
         'schedule_time',
         'demands',
         'message',
+        'status',
     ];
 
     public function country(){

@@ -15,6 +15,8 @@ class Service extends Model
         'file_type',
         'file',
         'description',
+        'icon_type',
+        'icon_image',
     ];
 
 

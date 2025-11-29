@@ -18,7 +18,6 @@
 </head>
 <body>
     <div class="container">
-        {{-- Property info --}}
         <div class="property-header">
             <div>
                 <h2>{{ $inquiry->property->name }}</h2>

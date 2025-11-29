@@ -318,53 +318,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdown = document.getElementById("notificationDropdown");
     const listBox = document.getElementById("notificationList");
     const countBox = document.getElementById("notificationCount");
-    const viewAllBtn = document.getElementById("viewAllNotifBtn");
+    const viewAllBtn = document.getElementById("viewAllBtn");
 
     // -------------------------
-    // LOAD UNREAD COUNT ON PAGE LOAD
+    // FUNCTION TO LOAD NOTIFICATIONS
     // -------------------------
-    function loadNotificationCount() {
-        fetch("{{ route('notifications.dropdown') }}")
-            .then(res => res.json())
-            .then(data => {
-
-                // unread = read == 1
-                let unreadCount = data.notifications.filter(n => n.read == 1).length;
-
-                if (unreadCount > 0) {
-                    countBox.style.display = "inline-block";
-                    countBox.textContent = unreadCount;
-                } else {
-                    countBox.style.display = "none";
-                }
-
-                // View All button is ALWAYS visible
-                viewAllBtn.style.display = "block";
-            });
-    }
-
-    // Run immediately on page load
-    loadNotificationCount();
-
-
-    // -------------------------
-    // WHEN CLICKING THE BELL
-    // -------------------------
-    bell.addEventListener("click", function () {
-
-        if (dropdown.style.display === "block") {
-            dropdown.style.display = "none";
-            return;
-        }
-        dropdown.style.display = "block";
-
+    function loadNotifications() {
         fetch("{{ route('notifications.dropdown') }}")
             .then(res => res.json())
             .then(data => {
 
                 // unread count update
-                let unreadCount = data.notifications.filter(n => n.read == 1).length;
-
+                let unreadCount = data.total; // from controller
                 if (unreadCount > 0) {
                     countBox.style.display = "inline-block";
                     countBox.textContent = unreadCount;
@@ -396,63 +361,58 @@ document.addEventListener("DOMContentLoaded", function () {
                 // View All button is ALWAYS visible
                 viewAllBtn.style.display = "block";
             });
+    }
 
-        // Mark all as read when dropdown is opened
-        fetch("{{ route('notifications.markRead') }}", {
-            method: "POST",
-            headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            }
-        });
-    });
+    // -------------------------
+    // INITIAL LOAD
+    // -------------------------
+    loadNotifications();
 
 
     // -------------------------
-    // MARK ALL READ ON "VIEW ALL"
+    // WHEN CLICKING THE BELL
     // -------------------------
-    viewAllBtn.addEventListener("click", function () {
+    bell.addEventListener("click", function (e) {
+        e.stopPropagation(); // prevent triggering document click
 
+        if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+            return;
+        }
+
+        dropdown.style.display = "block";
+
+        // Fetch notifications first
+        loadNotifications();
+
+        // MARK ALL AS READ in background (after showing notifications)
         fetch("{{ route('notifications.markRead') }}", {
             method: "POST",
             headers: {
-                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
                 "Accept": "application/json"
             }
         })
-            .then(res => res.json())
-            .then(response => {
+        .then(res => res.json())
+        .then(() => {
+            // update unread count immediately
+            countBox.style.display = "none";
+        });
+    });
 
-                countBox.style.display = "none"; // instantly hide
-                loadNotificationCount(); // refresh count
-            });
+
+    // -------------------------
+    // CLOSE DROPDOWN ON CLICK OUTSIDE
+    // -------------------------
+    document.addEventListener("click", function (e) {
+        if (!dropdown.contains(e.target) && e.target !== bell) {
+            dropdown.style.display = "none";
+        }
     });
 
 });
 </script>
 
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const countBox = document.getElementById("notificationCount");
-
-    fetch("{{ route('notifications.dropdown') }}")
-        .then(res => res.json())
-        .then(data => {
-
-            // TOTAL unread from controller (NOT from top 10)
-            let unreadCount = data.total;
-
-            if (unreadCount > 0) {
-                countBox.style.display = "inline-block";
-                countBox.textContent = unreadCount;
-            } else {
-                countBox.style.display = "none";
-            }
-        });
-
-});
-</script>
 
 
 

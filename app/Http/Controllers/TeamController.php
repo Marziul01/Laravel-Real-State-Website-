@@ -15,7 +15,7 @@ class TeamController extends Controller
         if(auth()->user()->adminAccess->teams == 2){
             return redirect(route('admin.dashboard'))->with('error', 'Access Denied! You do not have permission to access this page.');
         }
-        return view('admin.pages.team',[
+        return view('admin.pages.Team',[
            'teams' => Team::all(), 
         ]);
     }

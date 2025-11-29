@@ -162,32 +162,58 @@ class ReviewsController extends Controller
         if(auth()->user()->adminAccess->reviews != 3){
             return redirect(route('admin.dashboard'))->with('error', 'Access Denied!');
         }
+
         $review = Review::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'name'        => 'required|string|max:255',
-            'service_id'        => 'required|exists:services,id',
-            'rating'   => 'required|integer|min:1|max:5',
-            'comment'        => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors'  => $validator->errors()
-            ], 422);
-        }
-
-        $validated = $validator->validated();
-
-        try {
-            $review->update([
-                'name' => $request->name,
-                'service_id' => $request->service_id,
-                'rating' => $request->rating,
-                'comment' => $request->comment,
-                'status' => $request->status ?? 2,
+        if($review->property_id  == null ){
+            $validator = Validator::make($request->all(), [
+                'name'        => 'required|string|max:255',
+                'service_id'        => 'required|exists:services,id',
+                'rating'   => 'required|integer|min:1|max:5',
+                'comment'        => 'required|string',
             ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors'  => $validator->errors()
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+
+            try {
+                $review->update([
+                    'name' => $request->name,
+                    'service_id' => $request->service_id,
+                    'rating' => $request->rating,
+                    'comment' => $request->comment,
+                    'status' => $request->status ?? 2,
+                ]);
+
+                $notification = new Notification();
+                $notification->user_id = auth()->id();
+                $notification->message = 'Review details updated.';
+                $notification->notification_for = 'Review';
+                $notification->item_id = $review->id;
+                $notification->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Review Details updated successfully!',
+                    'data'    => $review
+                ]);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something went wrong while updating service!',
+                    'error'   => $e->getMessage()
+                ], 500);
+            }
+        }else{
+            $review->status = $request->status;
+            $review->save();
 
             $notification = new Notification();
             $notification->user_id = auth()->id();
@@ -196,18 +222,11 @@ class ReviewsController extends Controller
             $notification->item_id = $review->id;
             $notification->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Review Details updated successfully!',
-                'data'    => $review
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong while updating service!',
-                'error'   => $e->getMessage()
-            ], 500);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Review Details updated successfully!',
+                    'data'    => $review
+                ]);
         }
     }
 

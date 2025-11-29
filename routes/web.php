@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\AdminServiceController;
 use App\Http\Controllers\AgentPageController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CarrerController;
 use App\Http\Controllers\ClientPropertySubmission;
@@ -24,6 +25,7 @@ use App\Http\Controllers\PropertyInquiryController;
 use App\Http\Controllers\PropertyTypeController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\ServiceInquiryController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\UserBookingController;
@@ -71,6 +73,8 @@ Route::get('/gallery', [HomeController::class, 'gallery'])->name('gallery');
 Route::get('/be/agents', [HomeController::class, 'Agents'])->name('agents');
 Route::get('/document/services', [HomeController::class, 'documentServices'])->name('document.services');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap']);
+Route::get('/teams/appointment/{id}', [HomeController::class, 'teamsAppointment'])->name('teams.appointment');
+Route::post('/team/appointment/submit/{id}', [HomeController::class, 'appointmentSubmit'])->name('team.appointment.submit');
 
 
 Route::get('/get-time', function () { 
@@ -223,6 +227,16 @@ Route::prefix('admin')->group(function () {
         Route::get('/notifications/dropdown', [NotificationController::class, 'dropdown'])->name('notifications.dropdown');
         Route::post('/notifications/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
         Route::get('/notifications/view-all', [NotificationController::class, 'viewAll'])->name('notifications.all');
+
+        Route::get('/services/inquiry', [ServiceInquiryController::class, 'servicesInquiry'])->name('admin.services.inquiry');
+        Route::get('/admin/services/inquiry/show', [ServiceInquiryController::class, 'show'])->name('admin.services.inquiry.show');
+        Route::post('/admin/services/inquiry/update-status', [ServiceInquiryController::class, 'updateStatus'])->name('admin.services.inquiry.updateStatus');
+        Route::post('/admin/services/inquiry/delete/{id}', [ServiceInquiryController::class, 'delete'])->name('admin.services.inquiry.delete');
+
+        Route::get('/team/appointment/submission', [AppointmentController::class, 'appointments'])->name('appointment.index');
+        Route::get('/admin/appointment/show', [AppointmentController::class, 'show'])->name('admin.appointment.show');
+        Route::post('/admin/appointment/update-status', [AppointmentController::class, 'updateStatus'])->name('admin.appointment.updateStatus');
+        Route::post('/admin/appointment/delete/{id}', [AppointmentController::class, 'delete'])->name('admin.appointment.delete');
 
 
     });

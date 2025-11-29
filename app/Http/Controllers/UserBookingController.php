@@ -24,6 +24,7 @@ class UserBookingController extends Controller
         $propertyId = $request->query('property_id');
         $startDate = $request->query('start_date');
         $endDate = $request->query('end_date');
+        $bookingType = $request->query('booking_type');
         if($propertyId == null){
             return redirect(route('home'))->with('errors' , 'Please choose a porperty booking!');
         }
@@ -55,6 +56,7 @@ class UserBookingController extends Controller
             'coupons' => Coupon::all(),
             'payments' => PaymentMethod::all(),
             'countries' => Country::all(),
+            'bookingType' => $bookingType,
         ]);
     }
 
@@ -102,8 +104,8 @@ class UserBookingController extends Controller
             'total_guests' => 'required|integer|min:1',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'total_price' => 'required|numeric|min:0',
-            'discounted_price' => 'nullable|numeric|min:0',
+            'total_price' => 'required|numeric|gt:0',
+            'discounted_price' => 'nullable|numeric|gt:0',
             'coupon_id' => 'nullable|exists:coupons,id',
             'payment_method' => 'required|exists:payment_methods,id',
             'transaction_id' => 'nullable|string|max:255',
@@ -162,6 +164,7 @@ class UserBookingController extends Controller
             $booking->phone = $request->phone;
             $booking->email = $request->email;
             $booking->address = $request->address;
+            $booking->booking_type = $request->booking_type;
             $booking->start_date = $request->start_date;
             $booking->end_date = $request->end_date;
             $booking->total = $request->total_price;

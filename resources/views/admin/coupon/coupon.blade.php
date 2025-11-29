@@ -129,11 +129,9 @@
 
 
 
-    @if (isset($coupon))
+    @if ($coupons->isNotEmpty())
         @foreach ($coupons as $coupon)
-            <div class="modal fade" id="EditCategoryModal_{{ $coupon->id }}" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <!-- Modal content goes here, make sure to customize it for each category -->
+            <div class="modal fade" id="EditCategoryModal_{{ $coupon->id }}" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header d-flex w-100 align-items-center justify-content-between">
@@ -141,12 +139,12 @@
                             <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                         </div>
                         <div class="modal-body">
-                            <form id="editCouponForm">
+                            <!-- Unique form ID per coupon -->
+                            <form id="editCouponForm_{{ $coupon->id }}" class="editCouponForm">
                                 @csrf
                                 @method('PUT')
-
                                 <input type="hidden" name="id" value="{{ $coupon->id }}">
-
+                                
                                 <div class="form-group mb-3">
                                     <label>Coupon Code</label>
                                     <input type="text" name="code" class="form-control" value="{{ $coupon->code }}" placeholder="Enter coupon code">
@@ -191,7 +189,8 @@
                     </div>
                 </div>
             </div>
-        @endforeach
+            @endforeach
+
     @endif
 
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
@@ -302,10 +301,12 @@ $(document).ready(function() {
 </script>
 <script>
 $(document).ready(function() {
-    $('#editCouponForm').on('submit', function(e) {
+    // Use delegated event to handle multiple forms
+    $(document).on('submit', '.editCouponForm', function(e) {
         e.preventDefault();
 
-        let couponId = $('input[name="id"]').val();
+        let form = $(this);
+        let couponId = form.find('input[name="id"]').val();
         let formData = new FormData(this);
 
         $.ajax({
@@ -337,4 +338,5 @@ $(document).ready(function() {
     });
 });
 </script>
+
 @endsection

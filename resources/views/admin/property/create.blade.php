@@ -79,9 +79,19 @@
                                 <label for="rent_start">Booking Starting Date</label>
                                 <input type="date" name="rent_start" id="rent_start" class="form-control myDate" placeholder="Booking Starting Date" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="price">Rent Price</label>
-                                <input type="number" name="price" id="price" class="form-control" placeholder="Price" required>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="price">Per Night Rent Price</label>
+                                    <input type="number" name="price" id="price" class="form-control" placeholder="Per Night Price" >
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="weekly_price">Weekly Rent Price</label>
+                                    <input type="number" name="weekly_price" id="weekly_price" class="form-control" placeholder="Weekly Rent Price" >
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="monthly_price">Monthly Rent Price</label>
+                                    <input type="number" name="monthly_price" id="monthly_price" class="form-control" placeholder="Monthly Rent Price">
+                                </div>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
@@ -696,6 +706,9 @@ $(document).ready(function () {
             data: formData,
             processData: false,
             contentType: false,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             success: function (response) {
                 $('#fullscreenLoader').fadeOut(200);
 

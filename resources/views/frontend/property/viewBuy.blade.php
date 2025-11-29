@@ -28,7 +28,7 @@
                         @endforeach
                     @endif
                 </div>
-                <div class="mb-4 d-block d-md-none order-3">
+                <div class="property-pricings mb-4 d-block d-md-none order-4">
                         <h5>
                             <i class="fa-solid fa-wallet"></i> Price : <span id="pricePerNight">{{ $property->price }}</span> BDT
                         </h5>
@@ -143,7 +143,7 @@
             </div>
             <div class="col-md-4">
                 <div class="border rounded p-4">
-                    <div class="d-none d-md-block">
+                    <div class="property-pricings d-none d-md-block">
                         <h5>
                             <i class="fa-solid fa-wallet"></i> Price : <span id="pricePerNight">{{ $property->price }}</span> BDT
                         </h5>
@@ -172,7 +172,7 @@
 
                         <iframe
                             width="100%"
-                            height="400"
+                            height="300"
                             style="border:0"
                             loading="lazy"
                             allowfullscreen
@@ -191,13 +191,105 @@
                             </div>
                             <div class="col-md-8">
                                 <h4>{{ $property->realtor->name }}</h4>
-                                <p class="mb-1">Email : {{ $property->realtor->email }}</p>
-                                <p class="mb-1">Phone : {{ $property->realtor->mobile }}</p>
+                                <p class="mb-1 realtor-email">Email : {{ $property->realtor->email }}</p>
+                                <p class="mb-1">Phone : {{ $property->realtor->phone }}</p>
                             </div>
                         </div>
                     </div>
                     @endif
                 </div>
+            </div>
+        </div>
+        <div class="container  py-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="reviews-title">Related PROPERTIES</h3>
+                <a href="{{ route('rent', ['type' => 'sell']) }}">View All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="grid-container mt-4">
+                @if ($properties->where('type', 'sell')->where('id', '!=', $property->id)->isNotEmpty())
+                    @foreach ($properties->where('type', 'sell')->where('id', '!=', $property->id)->sortByDesc('created_at')->take(4) as $related)
+                        <a href="{{ $related->type == 'rent' ? route('view.rent.property', $related->slug) : route('view.buy.property', $related->slug) }}"
+                            class="no-hover-color-link">
+                            <div class="property-card position-relative">
+                                <img src="{{ asset($related->featured_image) }}" class="property-img"
+                                    alt="Property Image">
+                                <div class="property-tags propertyTypeFixed">
+                                   <div class="property-tags propertyTypeFixed">
+                                            @if ($related->property_listing)
+                                                @foreach (explode(',', $related->property_listing) as $listing)
+                                                    @if ($listing != 'New')
+                                                        <span class="tag">{{ trim($listing) }}</span>
+                                                    @endif
+                                                    @if ($listing == 'New')
+                                                        <img src="{{ asset('frontend-assets/images/svgviewer-png-output (1).png') }}" class="tag-image">
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                </div>
+                                <div class="property-details">
+                                    <div class="property-title">{{ $related->name }}</div>
+                                    <div class="property-tags">
+                                        <span class="tag">{{ $related->propertyType->property_type }}</span>
+                                    </div>
+
+                                    <div class="property-info">
+                                        @if ($related->space)
+                                            <div class="">
+                                                <i class="fa-regular fa-house"></i>
+                                                SFT {{ $related->space }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->country_id == 19 && ($related->city || $related->propertyarea))
+                                            <div class="">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                {{ $related->city . ', ' . $related->propertyarea->name }}
+                                            </div>
+                                        @elseif($related->country_id != 19 && ($related->city || $related->state))
+                                            <div class="">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                                {{ $related->city . ', ' . $related->state->name }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->bedrooms)
+                                            <div class="">
+                                                <i class="fa-solid fa-bed"></i>
+                                                {{ $related->bedrooms }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->bathrooms)
+                                            <div>
+                                                <i class="fa-solid fa-sink"></i>
+                                                {{ $related->bathrooms }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->parking_space)
+                                            <div>
+                                                <i class="fa-solid fa-car"></i>
+                                                {{ $related->parking_space }}
+                                            </div>
+                                        @endif
+
+                                        @if ($related->decoration == 'Full Furnished')
+                                            <div>
+                                                <i class="fa-solid fa-couch"></i>
+                                                {{ $related->decoration }}
+                                            </div>
+                                        @endif
+
+                                        <div><i class="fa-solid fa-wallet"></i> {{ $related->price }} ৳</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                @else
+                    <p> Sorry! No realted Properties found . </p>
+                @endif
             </div>
         </div>
     </div>
